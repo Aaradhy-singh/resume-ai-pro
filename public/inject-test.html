@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Test Session Injector</title>
+</head>
+
+<body>
+    <script>
+        const testData = {
+            meta: { analysisVersion: "1.0", timestamp: Date.now() },
+            careerStage: { stage: "mid-level", confidence: 0.85 },
+            scores: {
+                keywordCoverage: {
+                    overall: 72,
+                    stageAdjusted: true,
+                    careerStage: "Mid-Level",
+                    disclaimer: "Score calibrated for mid-level candidate",
+                    factors: {
+                        keywordMatch: { score: 75, weight: 25, computation: "Keyword match rate", inputData: {} },
+                        skillDensity: { score: 68, weight: 20, computation: "Skill density score", inputData: {} }
+                    }
+                }
+            },
+            roles: {
+                topMatch: {
+                    occupation: { title: "Software Engineer", code: "15-1252" },
+                    fitLevel: "good",
+                    weightedScore: 72,
+                    overallMultiFactor: 72,
+                    matchType: "best-fit",
+                    coreSkillMatch: 78,
+                    experienceFit: 65,
+                    projectFit: 70,
+                    portfolioFit: 60,
+                    certificationFit: 55,
+                    matchedSkills: ["Python", "React", "TypeScript"],
+                    missingSkills: ["Kubernetes", "GraphQL"],
+                    multiFactorBreakdown: "Skills 78%, Experience 65%"
+                }
+            },
+            gaps: { critical: [], important: [], nice_to_have: [] },
+            improvements: { rewrittenBullets: [] },
+            parsedProfile: {
+                skills: { unrecognizedTerms: [] },
+                experience: { years: 4, companies: [] }
+            },
+            recommendations: [
+                {
+                    id: "rec1",
+                    title: "ADD QUANTIFIED METRICS",
+                    description: "Add specific numbers and percentages to demonstrate impact.",
+                    priorityLevel: "critical",
+                    estimatedEffort: "1-2 hours",
+                    estimatedImpact: 8,
+                    causalContext: { triggerDataSource: "resume analysis", deficiencyDetails: "No quantified achievements found." }
+                },
+                {
+                    id: "rec2",
+                    title: "STRENGTHEN ACTION VERBS",
+                    description: "Replace weak verbs with strong action verbs.",
+                    priorityLevel: "high",
+                    estimatedEffort: "30-60 minutes",
+                    estimatedImpact: 7,
+                    causalContext: { triggerDataSource: "resume analysis", deficiencyDetails: "Weak action verbs detected." }
+                }
+            ]
+        };
+
+        sessionStorage.setItem("resumeAnalysis", JSON.stringify(testData));
+        document.getElementById("status").textContent = "Session data injected! Click a link below:";
+    </script>
+    <h2>Test Injector</h2>
+    <p id="status">Injecting...</p>
+    <ul>
+        <li><a href="/results">Go to Results page</a></li>
+        <li><a href="/action-plan">Go to Action Plan page</a></li>
+    </ul>
+</body>
+
+</html>

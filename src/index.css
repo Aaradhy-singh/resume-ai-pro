@@ -1,0 +1,239 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #0A0A0A;
+    --bg-secondary: #111111;
+    --bg-card: #141414;
+    --border: #1F1F1F;
+    --text-primary: #F0F0F0;
+    --text-secondary: #E0E0E0; /* Updated for higher contrast */
+    --text-muted: #F3F4F6; /* Updated for higher contrast */
+    --accent: #0EA5E9;
+    --accent-dim: #0369A1;
+    --danger: #EF4444;
+    --success: #10B981;
+    --font-display: 'DM Serif Display', serif;
+    --font-body: 'DM Mono', monospace;
+    --background: 220 25% 10%;
+    /* Dark blue-black */
+    --foreground: 210 40% 98%;
+    /* White */
+    --card: 220 25% 15%;
+    /* Darker card */
+    --card-foreground: 210 40% 98%;
+    /* White */
+    --primary: 190 84% 50%;
+    /* Bright Cyan */
+    --primary-foreground: 220 25% 10%;
+    /* Dark text */
+    --secondary: 210 18% 93%;
+    --secondary-foreground: 220 25% 20%;
+    --muted: 210 15% 95%;
+    --muted-foreground: 220 10% 46%;
+    --accent: 168 72% 40%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214 20% 90%;
+    --input: 214 20% 90%;
+    --ring: 190 84% 32%;
+    --radius: 0.625rem;
+
+    --score-excellent: 160 84% 39%;
+    --score-good: 142 72% 45%;
+    --score-warning: 38 92% 50%;
+    --score-poor: 0 72% 51%;
+
+    --chart-1: 190 84% 32%;
+    --chart-2: 168 72% 40%;
+    --chart-3: 38 92% 50%;
+    --chart-4: 262 72% 55%;
+    --chart-5: 330 72% 55%;
+
+    --sidebar-background: 220 25% 8%;
+    --sidebar-foreground: 210 20% 90%;
+    --sidebar-primary: 190 84% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 20% 16%;
+    --sidebar-accent-foreground: 210 20% 90%;
+    --sidebar-border: 220 20% 18%;
+    --sidebar-ring: 190 84% 48%;
+  }
+
+  .dark {
+    --background: 220 25% 6%;
+    --foreground: 210 20% 95%;
+    --card: 220 25% 9%;
+    --card-foreground: 210 20% 95%;
+    --popover: 220 25% 9%;
+    --popover-foreground: 210 20% 95%;
+    --primary: 190 84% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 20% 16%;
+    --secondary-foreground: 210 20% 90%;
+    --muted: 220 15% 15%;
+    --muted-foreground: 215 15% 55%;
+    --accent: 168 72% 45%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 220 20% 18%;
+    --input: 220 20% 18%;
+    --ring: 190 84% 48%;
+    --sidebar-background: 220 25% 5%;
+    --sidebar-foreground: 210 20% 90%;
+    --sidebar-primary: 190 84% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 20% 12%;
+    --sidebar-accent-foreground: 210 20% 90%;
+    --sidebar-border: 220 20% 14%;
+    --sidebar-ring: 190 84% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Form Element Resets & Styling */
+  input, textarea, select {
+    font-family: inherit;
+    font-size: 16px; /* Prevent zooming */
+    background-color: #121212;
+    border: 1px solid #333333;
+    border-radius: 6px;
+    color: #F0F0F0;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: #00A8FF !important;
+    outline: none !important;
+    box-shadow: 0 0 0 1px #00A8FF !important;
+  }
+
+  /* File Dropzone Styling */
+  .dropzone-container {
+    background-color: #121212;
+    border: 1px solid #333333;
+    transition: all 150ms ease;
+  }
+
+  .dropzone-container:focus, .dropzone-container:hover {
+    border-color: #00A8FF;
+    outline: none;
+    box-shadow: 0 0 0 1px #00A8FF;
+  }
+
+  .dropzone-container.is-active {
+    border-color: #00A8FF;
+    background-color: rgba(0, 168, 255, 0.05);
+  }
+
+  body.debug-render * {
+    outline: 1px solid red !important;
+  }
+
+  /* --- STRICT TYPOGRAPHY OVERRIDES FOR UI BOXES --- */
+  .ui-box-override,
+  .ui-box-override *,
+  .surface-card,
+  .surface-card * {
+    font-family: inherit !important;
+  }
+
+  /* Remove default styling for pre/code tags */
+  pre, code {
+    font-family: inherit !important;
+    background: transparent !important;
+    white-space: pre-wrap !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    font-size: inherit !important;
+    color: inherit;
+  }
+
+  /* Ensure text color inside these boxes is pure white or bright off-white */
+  .ui-box-override,
+  .ui-box-override *,
+  .surface-card,
+  .surface-card * {
+    font-family: inherit !important;
+  }
+}
+
+@layer utilities {
+  .bg-primary-subtle {
+    background-color: hsl(var(--primary) / 0.08);
+  }
+
+  .bg-accent-subtle {
+    background-color: hsl(var(--accent) / 0.08);
+  }
+
+  .bg-destructive-subtle {
+    background-color: hsl(var(--destructive) / 0.06);
+  }
+
+  .border-destructive-subtle {
+    border-color: hsl(var(--destructive) / 0.2);
+  }
+
+  .border-accent-subtle {
+    border-color: hsl(var(--accent) / 0.25);
+  }
+
+  .hero-gradient {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(220 40% 12%) 100%);
+  }
+
+  .grid-pattern {
+    background-image:
+      linear-gradient(hsl(var(--border) / 0.5) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.5) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .surface-card {
+    background-color: #121212;
+    border: 1px solid #333333;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}

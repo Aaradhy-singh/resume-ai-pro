@@ -182,94 +182,114 @@ const ActionPlan = () => {
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
-      const margin = 18;
+      const margin = 20;
       const contentWidth = pageWidth - margin * 2;
       let y = margin;
-  
+
+      const hex = (h: string) => ({ r: parseInt(h.slice(1,3),16), g: parseInt(h.slice(3,5),16), b: parseInt(h.slice(5,7),16) });
+
       const checkPage = (needed: number) => {
         if (y + needed > pageHeight - margin) {
           doc.addPage();
+          doc.setFillColor(255,255,255);
+          doc.rect(0,0,pageWidth,pageHeight,'F');
           y = margin + 6;
         }
       };
-  
-      const hex = (h: string) => ({ r: parseInt(h.slice(1,3),16), g: parseInt(h.slice(3,5),16), b: parseInt(h.slice(5,7),16) });
-  
+
       const setFont = (size: number, style: 'normal'|'bold', colorHex: string) => {
         const c = hex(colorHex);
         doc.setFontSize(size);
-        doc.setFont('courier', style);
+        doc.setFont('helvetica', style);
         doc.setTextColor(c.r, c.g, c.b);
       };
-  
+
       const drawRect = (x: number, rectY: number, w: number, h: number, fillHex: string) => {
         const c = hex(fillHex);
         doc.setFillColor(c.r, c.g, c.b);
         doc.rect(x, rectY, w, h, 'F');
       };
-  
-      const hRule = (colorHex = '#DDDDDD') => {
+
+      const hRule = (colorHex = '#CCCCCC') => {
         const c = hex(colorHex);
         doc.setDrawColor(c.r, c.g, c.b);
-        doc.setLineWidth(0.2);
+        doc.setLineWidth(0.3);
         doc.line(margin, y, pageWidth - margin, y);
-        y += 4;
+        y += 5;
       };
-  
-      const bodyLine = (text: string, colorHex = '#222222', size = 8) => {
-        checkPage(6);
+
+      const bodyText = (text: string, colorHex = '#1A1A1A', size = 8) => {
+        checkPage(7);
         setFont(size, 'normal', colorHex);
         const lines = doc.splitTextToSize(text, contentWidth);
         lines.forEach((line: string) => {
-          checkPage(5.5);
+          checkPage(6);
           doc.text(line, margin, y);
-          y += 5;
+          y += 5.5;
         });
       };
-  
-      // ── COVER ──
-      doc.setFillColor(15, 23, 42);
-      doc.rect(0, 0, pageWidth, 52, 'F');
-      setFont(18, 'bold', '#0EA5E9');
-      doc.text('ACTION PLAN', margin, 20);
-      setFont(18, 'normal', '#FFFFFF');
-      doc.text('REPORT', margin, 30);
+
+      // ── COVER PAGE ──
+      doc.setFillColor(255,255,255);
+      doc.rect(0,0,pageWidth,pageHeight,'F');
+      drawRect(0, 0, pageWidth, 55, '#0F172A');
+
+      setFont(22, 'bold', '#0EA5E9');
+      doc.text('ACTION PLAN', margin, 22);
+      setFont(22, 'normal', '#FFFFFF');
+      doc.text('REPORT', margin, 33);
       setFont(8, 'normal', '#94A3B8');
-      doc.text(`Generated: ${new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}`, margin, 40);
-      doc.text('ResumeAI — Resume Optimization', margin, 46);
-  
-      // Progress summary box
-      y = 62;
-      drawRect(margin, y, 60, 24, '#F8FAFC');
-      setFont(20, 'bold', '#0EA5E9');
-      doc.text(`${completedCount}/${totalCount}`, margin + 4, y + 12);
-      setFont(7, 'normal', '#555555');
-      doc.text('ITEMS RESOLVED', margin + 4, y + 19);
-  
-      // Priority counts
+      doc.text(`Generated: ${new Date().toLocaleDateString('en-GB',{ year:'numeric', month:'long', day:'numeric' })}`, margin, 43);
+      doc.text('ResumeAI Pro — Resume Analysis Intelligence', margin, 49);
+
+      // Progress summary
+      y = 65;
+      drawRect(margin, y, 52, 30, '#F8FAFC');
+      setFont(24, 'bold', '#0EA5E9');
+      doc.text(`${completedCount}`, margin + 6, y + 16);
+      setFont(9, 'normal', '#555555');
+      doc.text(`/ ${totalCount}`, margin + 22, y + 16);
+      setFont(7, 'normal', '#888888');
+      doc.text('ITEMS RESOLVED', margin + 4, y + 24);
+
+      // Priority counts in grid
       const priorities = [
-        { label: 'CRITICAL', count: items.filter(i => i.priorityLevel === 'critical').length, color: '#EF4444' },
-        { label: 'HIGH', count: items.filter(i => i.priorityLevel === 'high').length, color: '#F59E0B' },
+        { label: 'CRITICAL', count: items.filter(i => i.priorityLevel === 'critical').length, color: '#DC2626' },
+        { label: 'HIGH', count: items.filter(i => i.priorityLevel === 'high').length, color: '#D97706' },
         { label: 'MEDIUM', count: items.filter(i => i.priorityLevel === 'medium').length, color: '#0EA5E9' },
         { label: 'LOW', count: items.filter(i => i.priorityLevel === 'low').length, color: '#10B981' },
       ];
-      let px = margin + 68;
+      let px = margin + 60;
       priorities.forEach(p => {
-        setFont(14, 'bold', p.color);
-        doc.text(String(p.count), px, y + 12);
-        setFont(6, 'normal', '#555555');
-        doc.text(p.label, px, y + 18);
-        px += 28;
+        const pc = hex(p.color);
+        doc.setFillColor(pc.r, pc.g, pc.b);
+        doc.rect(px, y + 2, 28, 26, 'F');
+        setFont(18, 'bold', '#FFFFFF');
+        doc.text(String(p.count), px + 4, y + 16);
+        setFont(6, 'bold', '#FFFFFF');
+        doc.text(p.label, px + 4, y + 23);
+        px += 32;
       });
-  
-      y = 96;
-      hRule('#DDDDDD');
-  
+
+      // Role name if from Career Explorer
+      const roleName = explorerRoleName;
+      if (roleName) {
+        y = 102;
+        setFont(8, 'normal', '#94A3B8');
+        doc.text(`TARGET ROLE: ${roleName.toUpperCase()}`, margin, y);
+      }
+
+      y = 108;
+      const c = hex('#CCCCCC');
+      doc.setDrawColor(c.r, c.g, c.b);
+      doc.setLineWidth(0.3);
+      doc.line(margin, y, pageWidth - margin, y);
+      y += 6;
+
       // ── SECTIONS ──
-      const categories = ['priority', 'skills', 'certifications', 'portfolio'] as const;
       const categoryLabels: Record<string, string> = {
         priority: 'RESUME STRUCTURE',
-        skills: 'SKILL GAPS',
+        skills: 'SKILL DEVELOPMENT',
         certifications: 'CERTIFICATIONS',
         portfolio: 'PORTFOLIO & VISIBILITY',
       };
@@ -279,63 +299,111 @@ const ActionPlan = () => {
         certifications: '#10B981',
         portfolio: '#8B5CF6',
       };
-  
+      const categoryDescriptions: Record<string, string> = {
+        priority: 'Fixes to resume structure, formatting, and content quality',
+        skills: 'Technical skills to acquire for your target role',
+        certifications: 'Certifications that strengthen your profile',
+        portfolio: 'Actions to improve your GitHub and project visibility',
+      };
+
+      const categories = ['priority', 'skills', 'certifications', 'portfolio'] as const;
+
       categories.forEach(cat => {
         const catItems = items.filter(i => i.category === cat);
         if (catItems.length === 0) return;
-  
-        checkPage(16);
-        const c = hex(categoryColors[cat]);
-        doc.setFillColor(15, 23, 42);
-        doc.rect(margin, y, contentWidth, 8, 'F');
-        doc.setFillColor(c.r, c.g, c.b);
-        doc.rect(margin, y, 2, 8, 'F');
-        setFont(8, 'bold', '#FFFFFF');
-        doc.text(categoryLabels[cat], margin + 6, y + 5.5);
+
+        checkPage(20);
+        const catColor = categoryColors[cat];
+        const cc = hex(catColor);
+        drawRect(margin, y, contentWidth, 10, '#0F172A');
+        doc.setFillColor(cc.r, cc.g, cc.b);
+        doc.rect(margin, y, 3, 10, 'F');
+        setFont(9, 'bold', '#FFFFFF');
+        doc.text(categoryLabels[cat], margin + 7, y + 7);
         setFont(7, 'normal', '#94A3B8');
-        doc.text(`${catItems.length} items`, pageWidth - margin - 16, y + 5.5);
-        y += 12;
-  
+        doc.text(`${catItems.length} item${catItems.length > 1 ? 's' : ''}`, pageWidth - margin - 18, y + 7);
+        y += 13;
+
+        setFont(7, 'normal', '#666666');
+        doc.text(categoryDescriptions[cat], margin, y);
+        y += 8;
+
         catItems.forEach((item, i) => {
-          checkPage(22);
-          const pColor = item.priorityLevel === 'critical' ? '#EF4444' : item.priorityLevel === 'high' ? '#F59E0B' : item.priorityLevel === 'medium' ? '#0EA5E9' : '#10B981';
+          checkPage(32);
+          const pColor = item.priorityLevel === 'critical' ? '#DC2626' : item.priorityLevel === 'high' ? '#D97706' : item.priorityLevel === 'medium' ? '#0EA5E9' : '#10B981';
           const bgColor = item.priorityLevel === 'critical' ? '#FEF2F2' : item.priorityLevel === 'high' ? '#FFFBEB' : item.priorityLevel === 'medium' ? '#EFF6FF' : '#F0FDF4';
-  
-          drawRect(margin, y, contentWidth, 6, bgColor);
-          const checked = item.completed ? '[X]' : '[ ]';
+
+          // Item header
+          drawRect(margin, y, contentWidth, 8, bgColor);
+          const checkbox = item.completed ? '[X]' : '[ ]';
           setFont(8, 'bold', '#111111');
-          doc.text(`${checked} ${(item.title ?? '').slice(0, 65)}`, margin + 2, y + 4.5);
+          const titleText = `${checkbox} ${(item.title ?? '').toUpperCase()}`;
+          const titleLines = doc.splitTextToSize(titleText, contentWidth - 28);
+          doc.text(titleLines[0], margin + 2, y + 5.5);
+
+          // Priority badge
           const pc = hex(pColor);
           doc.setFillColor(pc.r, pc.g, pc.b);
-          doc.rect(pageWidth - margin - 20, y + 1, 18, 4, 'F');
+          doc.rect(pageWidth - margin - 22, y + 2, 20, 4, 'F');
           setFont(6, 'bold', '#FFFFFF');
-          doc.text((item.priorityLevel ?? '').toUpperCase(), pageWidth - margin - 19, y + 4);
-          y += 9;
-  
-          setFont(7, 'normal', '#555555');
-          doc.text(`Effort: ${item.estimatedEffort ?? 'unknown'}  |  Impact: ${item.recruiterImpact ?? 'N/A'}/10`, margin + 2, y);
-          y += 5;
-  
+          doc.text((item.priorityLevel ?? '').toUpperCase(), pageWidth - margin - 21, y + 5);
+          y += 11;
+
+          // Effort and impact
+          setFont(7, 'normal', '#444444');
+          const impactVal = Math.min(item.recruiterImpact ?? 0, 10);
+          doc.text(`Effort: ${item.estimatedEffort ?? 'unknown'}  |  Impact: ${impactVal}/10`, margin + 2, y);
+          y += 7;
+
+          // Description
           if (item.description) {
-            bodyLine(item.description, '#777777', 7);
+            setFont(8, 'normal', '#222222');
+            const descLines = doc.splitTextToSize(item.description, contentWidth - 4);
+            descLines.forEach((line: string) => {
+              checkPage(6);
+              doc.text(line, margin + 2, y);
+              y += 5.5;
+            });
           }
+
+          // Why flagged
+          if (item.triggerReason) {
+            y += 2;
+            setFont(7, 'bold', '#555555');
+            doc.text('WHY THIS WAS FLAGGED:', margin + 2, y);
+            y += 5;
+            setFont(7, 'normal', '#666666');
+            const reasonLines = doc.splitTextToSize(`> ${item.triggerReason}`, contentWidth - 6);
+            reasonLines.forEach((line: string) => {
+              checkPage(6);
+              doc.text(line, margin + 2, y);
+              y += 5;
+            });
+          }
+
           y += 3;
-          if (i < catItems.length - 1) hRule('#EEEEEE');
+          if (i < catItems.length - 1) {
+            const lc = hex('#DDDDDD');
+            doc.setDrawColor(lc.r, lc.g, lc.b);
+            doc.setLineWidth(0.2);
+            doc.line(margin, y, pageWidth - margin, y);
+            y += 5;
+          }
         });
-        y += 6;
+        y += 8;
       });
-  
+
       // ── FOOTER ──
       const totalPages = (doc as any).internal.getNumberOfPages();
       for (let p = 1; p <= totalPages; p++) {
         doc.setPage(p);
-        doc.setFillColor(15, 23, 42);
-        doc.rect(0, pageHeight - 10, pageWidth, 10, 'F');
+        drawRect(0, pageHeight - 10, pageWidth, 10, '#0F172A');
         setFont(7, 'normal', '#94A3B8');
-        doc.text('ResumeAI — Resume Optimization', margin, pageHeight - 4);
-        doc.text(`Page ${p} of ${totalPages}`, pageWidth - margin - 16, pageHeight - 4);
+        doc.text('ResumeAI Pro — Resume Analysis Intelligence', margin, pageHeight - 4);
+        setFont(7, 'normal', '#94A3B8');
+        doc.text(`Page ${p} of ${totalPages}`, pageWidth - margin - 18, pageHeight - 4);
       }
-  
+
       doc.save('action-plan.pdf');
     } finally {
       setExporting(false);

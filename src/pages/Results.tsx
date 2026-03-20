@@ -38,7 +38,7 @@ const Results = () => {
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
-    const margin = 18;
+    const margin = 20;
     const contentWidth = pageWidth - margin * 2;
     let y = margin;
 
@@ -56,7 +56,7 @@ const Results = () => {
     const setFont = (size: number, style: 'normal'|'bold', colorHex: string) => {
       const c = hex(colorHex);
       doc.setFontSize(size);
-      doc.setFont('courier', style);
+      doc.setFont('helvetica', style);
       doc.setTextColor(c.r, c.g, c.b);
     };
 
@@ -66,135 +66,127 @@ const Results = () => {
       doc.rect(x, rectY, w, h, 'F');
     };
 
-    const hRule = (colorHex = '#DDDDDD') => {
+    const hRule = (colorHex = '#CCCCCC') => {
       const c = hex(colorHex);
       doc.setDrawColor(c.r, c.g, c.b);
-      doc.setLineWidth(0.2);
+      doc.setLineWidth(0.3);
       doc.line(margin, y, pageWidth - margin, y);
-      y += 4;
+      y += 5;
     };
 
     const sectionHeader = (label: string, number: string) => {
-      checkPage(16);
-      drawRect(margin, y, contentWidth, 8, '#0F172A');
+      checkPage(14);
+      drawRect(margin, y, contentWidth, 9, '#0F172A');
       const ac = hex('#0EA5E9');
-      doc.setFontSize(7);
-      doc.setFont('courier','bold');
+      doc.setFontSize(8);
+      doc.setFont('helvetica','bold');
       doc.setTextColor(ac.r, ac.g, ac.b);
-      doc.text(number, margin + 3, y + 5.5);
+      doc.text(number, margin + 3, y + 6);
       const wc = hex('#FFFFFF');
       doc.setTextColor(wc.r, wc.g, wc.b);
-      doc.text(label.toUpperCase(), margin + 14, y + 5.5);
-      y += 12;
+      doc.text(label.toUpperCase(), margin + 14, y + 6);
+      y += 13;
     };
 
-    const row = (label: string, value: string, valueColorHex = '#111111') => {
-      checkPage(7);
+    const row = (label: string, value: string, valueColorHex = '#1A1A1A') => {
+      checkPage(8);
       setFont(8, 'bold', '#555555');
       doc.text(label.toUpperCase(), margin, y);
       setFont(8, 'normal', valueColorHex);
-      const lines = doc.splitTextToSize(value, contentWidth - 55);
-      doc.text(lines[0] ?? '', margin + 50, y);
-      y += 5.5;
+      const lines = doc.splitTextToSize(value, contentWidth - 52);
+      doc.text(lines[0] ?? '', margin + 48, y);
+      y += 6;
       for (let i = 1; i < lines.length; i++) {
-        checkPage(5);
+        checkPage(6);
         setFont(8, 'normal', valueColorHex);
-        doc.text(lines[i], margin + 50, y);
-        y += 5;
+        doc.text(lines[i], margin + 48, y);
+        y += 5.5;
       }
     };
 
-    const bodyLine = (text: string, colorHex = '#222222', size = 8) => {
-      checkPage(6);
+    const bodyText = (text: string, colorHex = '#1A1A1A', size = 8) => {
+      checkPage(7);
       setFont(size, 'normal', colorHex);
       const lines = doc.splitTextToSize(text, contentWidth);
       lines.forEach((line: string) => {
-        checkPage(5.5);
+        checkPage(6);
         doc.text(line, margin, y);
-        y += 5;
+        y += 5.5;
       });
     };
 
-    const bullet = (text: string, colorHex = '#333333') => {
-      checkPage(6);
-      setFont(8, 'normal', '#0EA5E9');
+    const bullet = (text: string, colorHex = '#1A1A1A') => {
+      checkPage(7);
+      setFont(8, 'bold', '#0EA5E9');
       doc.text('•', margin, y);
       setFont(8, 'normal', colorHex);
       const lines = doc.splitTextToSize(text, contentWidth - 6);
       lines.forEach((line: string, i: number) => {
-        checkPage(5);
+        checkPage(6);
         doc.text(line, margin + 5, y);
-        if (i < lines.length - 1) y += 4.5;
+        if (i < lines.length - 1) y += 5;
       });
-      y += 5.5;
+      y += 6;
     };
 
     // ── COVER PAGE ──
     doc.setFillColor(255,255,255);
     doc.rect(0,0,pageWidth,pageHeight,'F');
-    drawRect(0, 0, pageWidth, 52, '#0F172A');
+    drawRect(0, 0, pageWidth, 55, '#0F172A');
 
-    setFont(18, 'bold', '#0EA5E9');
-    doc.text('RESUME ANALYSIS', margin, 20);
-    setFont(18, 'normal', '#FFFFFF');
-    doc.text('REPORT', margin, 30);
-
+    setFont(22, 'bold', '#0EA5E9');
+    doc.text('RESUME ANALYSIS', margin, 22);
+    setFont(22, 'normal', '#FFFFFF');
+    doc.text('REPORT', margin, 33);
     setFont(8, 'normal', '#94A3B8');
-    doc.text(`Generated: ${new Date().toLocaleDateString('en-GB',{ year:'numeric', month:'long', day:'numeric' })}`, margin, 40);
-    doc.text('ResumeAI — Browser-based Resume Diagnostics', margin, 46);
+    doc.text(`Generated: ${new Date().toLocaleDateString('en-GB',{ year:'numeric', month:'long', day:'numeric' })}`, margin, 43);
+    doc.text('ResumeAI Pro — Resume Analysis Intelligence', margin, 49);
 
-    const hasJD = !!data?.scores?.keywordCoverage;
+    // Score box
+    y = 65;
     const engineScoreList = [
-      { n: 'ATS Compatibility',   s: data?.scores?.format?.parsingReliabilityScore ?? 65 },
-      { n: 'Skill Gap Analysis',  s: data?.roles?.topRoles?.[0]?.matchScore ?? 45 },
-      { n: 'Experience Depth', s: (() => {
-          const years = data?.careerStage?.signals?.totalExperienceYears ?? 0;
-          const stage = data?.careerStage?.stage;
-          if (stage === 'student') return Math.round(Math.min(60, 30 + (data?.projectComplexity?.overallScore ?? 0) * 0.3));
-          if (stage === 'fresher') return Math.round(Math.min(65, 35 + years * 10));
-          return Math.round(Math.min(100, 40 + years * 8));
-        })() },
-      { n: 'Education Match', s: (() => {
-          const stage = data?.careerStage?.stage;
-          const certCount = data?.careerStage?.signals?.certificationCount ?? 0;
-          if (stage === 'student') return Math.round(Math.min(70, 40 + certCount * 5));
-          if (stage === 'fresher') return Math.round(Math.min(75, 45 + certCount * 4));
-          return Math.round(Math.min(90, 55 + certCount * 3));
-        })() },
-      { n: 'Impact Scoring',      s: data?.specificityReport?.averageScore ? Math.round(data.specificityReport.averageScore * 20) : 50 },
-      { n: 'Keyword Alignment',   s: data?.scores?.keywordCoverage?.overallScore ?? -1 },
-      { n: 'Portfolio Signals',   s: data?.scores?.portfolio?.portfolioScore ?? 0 },
-      { n: 'Career Trajectory',   s: data?.projectComplexity?.overallScore ?? 55 },
+      { n: 'ATS Score', s: data?.scores?.format?.parsingReliabilityScore ?? 65 },
+      { n: 'Skill Match', s: data?.roles?.topRoles?.[0]?.matchScore ?? 45 },
+      { n: 'Impact Score', s: data?.specificityReport?.averageScore ? Math.round(data.specificityReport.averageScore * 20) : 50 },
+      { n: 'Keywords', s: data?.scores?.keywordCoverage?.overallScore ?? -1 },
+      { n: 'Experience', s: (() => { const years = data?.careerStage?.signals?.totalExperienceYears ?? 0; const stage = data?.careerStage?.stage; if (stage === 'student') return Math.round(Math.min(60, 30 + (data?.projectComplexity?.overallScore ?? 0) * 0.3)); return Math.round(Math.min(100, 40 + years * 8)); })() },
+      { n: 'Education', s: Math.round(Math.min(70, 40 + (data?.careerStage?.signals?.certificationCount ?? 0) * 5)) },
+      { n: 'Portfolio', s: data?.scores?.portfolio?.portfolioScore ?? 0 },
+      { n: 'Trajectory', s: data?.projectComplexity?.overallScore ?? 55 },
     ];
     const scored = engineScoreList.filter(e => e.s !== -1);
     const avg = Math.round(scored.reduce((s,e) => s+e.s, 0) / scored.length);
-    const overall = hasJD ? (data?.scores?.keywordCoverage?.overallScore ?? 0) : avg;
+    const overall = avg;
     const scoreColor = overall >= 70 ? '#10B981' : overall >= 40 ? '#F59E0B' : '#EF4444';
 
-    // Score box on cover
-    y = 62;
-    drawRect(margin, y, 60, 28, '#F8FAFC');
-    setFont(22, 'bold', scoreColor);
-    doc.text(`${overall}`, margin + 6, y + 16);
+    // Overall score box
+    drawRect(margin, y, 52, 30, '#F8FAFC');
+    const sc = hex(scoreColor);
+    doc.setFontSize(26);
+    doc.setFont('helvetica','bold');
+    doc.setTextColor(sc.r, sc.g, sc.b);
+    doc.text(`${overall}`, margin + 5, y + 18);
     setFont(9, 'normal', '#555555');
-    doc.text('/100', margin + 22, y + 16);
+    doc.text('/100', margin + 28, y + 18);
     setFont(7, 'normal', '#888888');
-    doc.text('OVERALL SCORE', margin + 4, y + 23);
+    doc.text('OVERALL SCORE', margin + 4, y + 26);
 
-    // Engine scores summary on cover
-    let ex = margin + 68;
-    let ey = y + 6;
+    // Engine scores in 2x4 grid
+    const gridStartX = margin + 58;
+    const colWidth = (contentWidth - 58) / 4;
     engineScoreList.forEach((e, i) => {
-      if (i === 4) { ex = margin + 68; ey = y + 18; }
-      const col = e.s === -1 ? '#AAAAAA' : e.s >= 70 ? '#10B981' : e.s >= 40 ? '#F59E0B' : '#EF4444';
-      setFont(7, 'bold', '#555555');
-      doc.text(e.n.slice(0,16).toUpperCase(), ex, ey);
-      setFont(7, 'bold', col);
-      doc.text(e.s === -1 ? 'N/A' : `${e.s}%`, ex + 52, ey);
-      if (i !== 3) ex += (contentWidth - 68) / 4;
+      const col = i % 4;
+      const row2 = Math.floor(i / 4);
+      const ex = gridStartX + col * colWidth;
+      const ey = y + row2 * 14 + 6;
+      const ec = e.s === -1 ? '#AAAAAA' : e.s >= 70 ? '#10B981' : e.s >= 40 ? '#F59E0B' : '#EF4444';
+      setFont(7, 'bold', '#333333');
+      doc.text(e.n.toUpperCase(), ex, ey);
+      setFont(9, 'bold', ec);
+      doc.text(e.s === -1 ? 'N/A' : `${e.s}%`, ex, ey + 7);
     });
 
-    y = 100;
+    y = 105;
     hRule('#DDDDDD');
 
     // ── SECTION 1 — CAREER STAGE ──
@@ -203,9 +195,10 @@ const Results = () => {
     if (stage) {
       row('Stage', stage.stage?.toUpperCase() ?? 'Unknown');
       row('Confidence', `${stage.confidence ?? 0}%`);
-      row('Reasoning', stage.reasoning ?? 'N/A', '#444444');
+      row('Reasoning', stage.reasoning ?? 'N/A');
       if (stage.signals?.certificationCount) row('Certifications', String(stage.signals.certificationCount));
-      if (stage.signals?.totalExperienceYears) row('Experience Detected', `${stage.signals.totalExperienceYears} years`);
+      if (stage.signals?.totalExperienceYears) row('Experience', `${stage.signals.totalExperienceYears} years`);
+      if (stage.signals?.projectCount) row('Projects Detected', String(stage.signals.projectCount));
     }
     y += 4;
 
@@ -213,50 +206,49 @@ const Results = () => {
     sectionHeader('Top Role Match', '02');
     const top = data?.roles?.topRoles?.[0];
     if (top) {
-      row('Role', top.occupation.title ?? 'N/A');
+      row('Role', top.occupation?.title ?? top.role ?? 'N/A');
       row('Overall Fit', `${top.matchScore ?? 0}%`, top.matchScore >= 70 ? '#10B981' : top.matchScore >= 40 ? '#F59E0B' : '#EF4444');
       row('Core Skill Match', `${top.matchScore ?? 0}%`);
-      row('Experience Fit', `${top.matchScore ?? 0}%`);
-      row('Certification Fit', `${top.matchScore ?? 0}%`);
+      const expScore = (() => { const years = data?.careerStage?.signals?.totalExperienceYears ?? 0; const s = data?.careerStage?.stage; if (s === 'student') return Math.round(Math.min(60, 30 + (data?.projectComplexity?.overallScore ?? 0) * 0.3)); return Math.round(Math.min(100, 40 + years * 8)); })();
+      row('Experience Fit', `${expScore}%`);
+      const certScore = Math.round(Math.min(70, 40 + (data?.careerStage?.signals?.certificationCount ?? 0) * 5));
+      row('Certification Fit', `${certScore}%`);
       if (top.missingCrucialSkills?.length > 0) {
-        y += 2;
-        setFont(7, 'bold', '#EF4444');
+        y += 3;
+        setFont(8, 'bold', '#EF4444');
         doc.text('CRITICAL MISSING SKILLS:', margin, y);
-        y += 5;
-        top.missingCrucialSkills.slice(0,6).forEach((s: string) => bullet(s, '#CC3333'));
-      }
-      if ([].length > 0) {
-        setFont(7, 'bold', '#F59E0B');
-        doc.text('SUPPORTING SKILLS TO ADD:', margin, y);
-        y += 5;
-        [].slice(0,4).forEach((s: string) => bullet(s, '#996600'));
+        y += 6;
+        top.missingCrucialSkills.slice(0,5).forEach((s: string) => bullet(s, '#CC2222'));
       }
     }
     y += 4;
 
     // ── SECTION 3 — KEYWORD GAPS ──
     sectionHeader('Keyword Gap Analysis', '03');
+    const hasJD = !!data?.scores?.keywordCoverage;
     if (!hasJD) {
-      bodyLine('No job description provided. Add a JD on the Analyze page for keyword alignment scoring.', '#888888');
+      bodyText('No job description provided. Paste a JD on the Analyze page to unlock keyword alignment scoring.', '#555555');
     } else {
       const genuine = data?.gaps?.genuineGaps ?? [];
       const mention = data?.gaps?.mentionGaps ?? [];
       row('JD Alignment Score', `${data?.scores?.keywordCoverage?.overallScore ?? 0}%`, scoreColor);
       y += 2;
       if (genuine.length > 0) {
-        setFont(7, 'bold', '#EF4444');
-        doc.text(`GENUINE GAPS — ${genuine.length} keywords to learn:`, margin, y);
-        y += 5;
-        genuine.slice(0,8).forEach((g: any) => bullet(g.keyword || g.skill || g, '#CC3333'));
+        setFont(8, 'bold', '#CC2222');
+        doc.text(`GENUINE GAPS (${genuine.length} skills to learn):`, margin, y);
+        y += 6;
+        genuine.slice(0,8).forEach((g: any) => bullet(g.keyword || g, '#CC2222'));
       }
       if (mention.length > 0) {
         checkPage(10);
-        setFont(7, 'bold', '#F59E0B');
-        doc.text(`MENTION GAPS — ${mention.length} keywords already known, add to resume:`, margin, y);
-        y += 5;
-        mention.slice(0,8).forEach((g: any) => bullet(g.keyword || g.skill || g, '#996600'));
+        setFont(8, 'bold', '#B45309');
+        doc.text(`MENTION GAPS (${mention.length} skills to add to resume):`, margin, y);
+        y += 6;
+        mention.slice(0,8).forEach((g: any) => bullet(g.keyword || g, '#B45309'));
       }
-      if (genuine.length === 0 && mention.length === 0) bodyLine('No significant keyword gaps detected.', '#10B981');
+      if (genuine.length === 0 && mention.length === 0) {
+        bodyText('No significant keyword gaps detected. Your resume aligns well with the job description.', '#10B981');
+      }
     }
     y += 4;
 
@@ -264,19 +256,25 @@ const Results = () => {
     sectionHeader('Bullet Impact Scoring', '04');
     const spec = data?.specificityReport;
     if (spec) {
-      row('Grade', spec.overallGrade ?? 'F', spec.overallGrade === 'A' ? '#10B981' : spec.overallGrade === 'B' ? '#10B981' : spec.overallGrade === 'C' ? '#F59E0B' : '#EF4444');
+      row('Grade', spec.overallGrade ?? 'F', spec.overallGrade === 'A' || spec.overallGrade === 'B' ? '#10B981' : spec.overallGrade === 'C' ? '#F59E0B' : '#EF4444');
       row('Average Score', `${spec.averageScore ?? 0} / 5`);
       row('Total Bullets', String(spec.bullets?.length ?? 0));
       row('Strong Bullets', String(spec.strongBullets?.length ?? 0), '#10B981');
       row('Weak Bullets', String(spec.weakBullets?.length ?? 0), '#EF4444');
+      const dist = spec.distribution;
+      if (dist) {
+        y += 2;
+        bodyText(`Score breakdown: ${dist[1] ?? 0} vague, ${dist[2] ?? 0} generic, ${dist[3] ?? 0} named-tech, ${dist[4] ?? 0} outcome-linked, ${dist[5] ?? 0} specific`, '#555555', 7);
+      }
       if (spec.weakBullets?.length > 0) {
         y += 3;
-        setFont(7, 'bold', '#B45309');
+        setFont(8, 'bold', '#B45309');
         doc.text('WEAKEST BULLETS TO REWRITE:', margin, y);
-        y += 5;
-        spec.weakBullets.slice(0,4).forEach((b: any) => bullet(
-          `${b.text?.slice(0,90)}${b.text?.length > 90 ? '...' : ''}`, '#666666'
-        ));
+        y += 6;
+        spec.weakBullets.slice(0,4).forEach((b: any) => {
+          const truncated = b.text?.length > 120 ? b.text.slice(0, 117) + '...' : b.text;
+          bullet(truncated ?? '', '#555555');
+        });
       }
     }
     y += 4;
@@ -285,26 +283,31 @@ const Results = () => {
     sectionHeader('Prioritized Action Plan', '05');
     const recs = data?.recommendations ?? [];
     if (recs.length === 0) {
-      bodyLine('No recommendations generated.', '#888888');
+      bodyText('No recommendations generated. Run analysis with a job description for targeted recommendations.', '#555555');
     } else {
       recs.forEach((rec, i) => {
-        checkPage(24);
-        const pColor = rec.priorityLevel === 'critical' ? '#EF4444' : rec.priorityLevel === 'high' ? '#F59E0B' : rec.priorityLevel === 'medium' ? '#0EA5E9' : '#10B981';
+        checkPage(28);
+        const pColor = rec.priorityLevel === 'critical' ? '#DC2626' : rec.priorityLevel === 'high' ? '#D97706' : rec.priorityLevel === 'medium' ? '#0EA5E9' : '#10B981';
         const bgColor = rec.priorityLevel === 'critical' ? '#FEF2F2' : rec.priorityLevel === 'high' ? '#FFFBEB' : rec.priorityLevel === 'medium' ? '#EFF6FF' : '#F0FDF4';
-        drawRect(margin, y, contentWidth, 6, bgColor);
+        drawRect(margin, y, contentWidth, 7, bgColor);
         setFont(8, 'bold', '#111111');
-        doc.text(`${i+1}. ${(rec.title ?? '').toUpperCase().slice(0,70)}`, margin + 2, y + 4.5);
+        const title = `${i+1}. ${(rec.title ?? '').toUpperCase()}`;
+        const titleLines = doc.splitTextToSize(title, contentWidth - 26);
+        doc.text(titleLines[0], margin + 2, y + 5);
         const pc = hex(pColor);
         doc.setFillColor(pc.r, pc.g, pc.b);
-        doc.rect(pageWidth - margin - 22, y + 1, 20, 4, 'F');
+        doc.rect(pageWidth - margin - 22, y + 1.5, 20, 4, 'F');
         setFont(6, 'bold', '#FFFFFF');
-        doc.text((rec.priorityLevel ?? '').toUpperCase(), pageWidth - margin - 21, y + 4);
-        y += 9;
-        setFont(7, 'normal', '#555555');
+        doc.text((rec.priorityLevel ?? '').toUpperCase(), pageWidth - margin - 21, y + 4.5);
+        y += 10;
+        setFont(7, 'normal', '#444444');
         doc.text(`Effort: ${rec.estimatedEffort ?? 'unknown'}  |  Impact: ${rec.estimatedImpact ?? 'N/A'}/10`, margin + 2, y);
-        y += 5;
-        bodyLine(typeof rec.causalContext === 'string' ? rec.causalContext : '', '#777777', 7);
-        y += 3;
+        y += 6;
+        const context = typeof rec.causalContext === 'string' ? rec.causalContext : '';
+        if (context) {
+          bodyText(context, '#666666', 7);
+        }
+        y += 2;
         hRule('#EEEEEE');
       });
     }
@@ -315,20 +318,29 @@ const Results = () => {
     const proj = data?.projectComplexity;
     if (proj) {
       row('Overall Score', `${proj.overallScore ?? 0} / 100`, proj.overallScore >= 70 ? '#10B981' : proj.overallScore >= 40 ? '#F59E0B' : '#EF4444');
-      row('Tier', (proj as any).tier ?? proj.complexityTier ?? 'N/A');
-      if (proj.summary) { y += 2; bodyLine(proj.summary, '#555555', 8); }
+      row('Complexity Tier', proj.complexityTier ?? 'N/A');
+      if (proj.summary) { y += 2; bodyText(proj.summary, '#444444'); }
+      if (proj.dimensions?.length > 0) {
+        y += 3;
+        proj.dimensions.forEach((d: any) => {
+          checkPage(7);
+          const normalizedScore = d.score > 10 ? Math.round(d.score / 10) : Math.round(d.score);
+          const cappedScore = Math.min(10, normalizedScore);
+          row(d.name, `${cappedScore}/10`);
+        });
+      }
     }
     y += 4;
 
-    // ── FOOTER ON ALL PAGES ──
+    // ── FOOTER ──
     const totalPages = (doc as any).internal.getNumberOfPages();
     for (let p = 1; p <= totalPages; p++) {
       doc.setPage(p);
       drawRect(0, pageHeight - 10, pageWidth, 10, '#0F172A');
       setFont(7, 'normal', '#94A3B8');
-      doc.text('ResumeAI — Browser-based Resume Diagnostics', margin, pageHeight - 4);
+      doc.text('ResumeAI Pro — Resume Analysis Intelligence', margin, pageHeight - 4);
       setFont(7, 'normal', '#94A3B8');
-      doc.text(`Page ${p} of ${totalPages}`, pageWidth - margin - 16, pageHeight - 4);
+      doc.text(`Page ${p} of ${totalPages}`, pageWidth - margin - 18, pageHeight - 4);
     }
 
     doc.save('resume-analysis-report.pdf');

@@ -442,7 +442,7 @@ export function buildIntrinsicDeficiencies(input: RecommendationInput): CausalRe
             priorityLevel: specificityCheck.averageScore < 2 ? 'high' : 'medium',
             estimatedEffort: '2-3 hours',
             estimatedImpact: 8,
-            causalContext: `Average specificity score: ${specificityCheck.averageScore}/5. distribution: ${Object.entries(specificityCheck.distribution).map(([k, v]) => `${k}★:${v}`).join(', ')}`,
+            causalContext: `Average specificity score: ${specificityCheck.averageScore}/5. distribution: ${Object.entries(specificityCheck.distribution).map(([k, v]) => `${k}*:${v}`).join(', ')}`,
         });
     }
 

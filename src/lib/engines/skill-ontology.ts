@@ -59,6 +59,11 @@ export const SKILL_ONTOLOGY: SkillDefinition[] = [
   { canonical: 'Tailwind CSS', variants: ['tailwind', 'tailwindcss'], category: 'framework', basePriority: 4 },
   { canonical: 'HTML', variants: ['html5', 'hypertext markup language'], category: 'framework', basePriority: 3 },
   { canonical: 'CSS', variants: ['css3', 'sass', 'scss', 'less', 'styled components'], category: 'framework', basePriority: 3 },
+  { canonical: 'Three.js', variants: ['threejs', 'three js', 'webgl 3d', '3d graphics', 'three.js library'], category: 'framework', basePriority: 4 },
+  { canonical: 'WebGL', variants: ['webgl2', 'web graphics', 'opengl web', 'glsl', 'shader programming'], category: 'framework', basePriority: 3 },
+  { canonical: 'TensorFlow.js', variants: ['tensorflowjs', 'tensorflow js', 'tfjs', 'ml in browser', 'browser ml'], category: 'framework', basePriority: 4 },
+  { canonical: 'MediaPipe', variants: ['mediapipe hands', 'hand tracking', 'pose detection', 'gesture detection', 'mediapipe ml'], category: 'framework', basePriority: 3 },
+
 
   // ── BACKEND FRAMEWORKS ──
   { canonical: 'Node.js', variants: ['node', 'nodejs', 'express', 'expressjs'], category: 'framework', basePriority: 5 },
@@ -80,7 +85,8 @@ export const SKILL_ONTOLOGY: SkillDefinition[] = [
   { canonical: 'Hugging Face', variants: ['huggingface', 'transformers library', 'hugging face transformers'], category: 'framework', basePriority: 4 },
   { canonical: 'LangChain', variants: ['langchain', 'lang chain'], category: 'framework', basePriority: 4 },
   { canonical: 'OpenAI API', variants: ['openai', 'gpt api', 'chatgpt api'], category: 'framework', basePriority: 4 },
-  { canonical: 'Prompt Engineering', variants: ['prompt design', 'prompt development', 'prompting llm'], category: 'concept', basePriority: 4 },
+  { canonical: 'Prompt Engineering', variants: ['prompt design', 'prompt development', 'prompting llm', 'prompt engineering', 'prompt writing', 'prompting', 'system prompt', 'prompt crafting', 'prompt optimization'], category: 'concept', basePriority: 4 },
+
   { canonical: 'RAG', variants: ['retrieval augmented generation', 'retrieval-augmented generation', 'rag pipeline', 'vector search', 'semantic search', 'embeddings search'], category: 'concept', basePriority: 4 },
   { canonical: 'LLMs', variants: ['large language model', 'large language models', 'llm', 'llms', 'local llm', 'local llm deployment', 'llm deployment', 'language model', 'foundation model', 'generative model'], category: 'concept', basePriority: 5 },
   { canonical: 'MLflow', variants: ['ml flow', 'mlflow tracking'], category: 'tool', basePriority: 3 },
@@ -89,6 +95,15 @@ export const SKILL_ONTOLOGY: SkillDefinition[] = [
   { canonical: 'Computer Vision', variants: ['cv', 'image recognition', 'object detection', 'opencv'], category: 'concept', basePriority: 4 },
   { canonical: 'NLP', variants: ['natural language processing', 'text classification', 'named entity recognition', 'ner'], category: 'concept', basePriority: 4 },
   { canonical: 'Deep Learning', variants: ['neural networks', 'cnn', 'rnn', 'lstm', 'transformer model'], category: 'concept', basePriority: 4 },
+  { canonical: 'Ollama', variants: ['ollama llm', 'local inference', 'local model', 'offline llm', 'on-device llm'], category: 'tool', basePriority: 4 },
+  { canonical: 'Gradio', variants: ['gradio interface', 'gradio app', 'gradio ui'], category: 'framework', basePriority: 3 },
+  { canonical: 'Generative AI', variants: ['genai', 'generative artificial intelligence', 'generative models', 'gen ai', 'ai generation'], category: 'concept', basePriority: 5 },
+  { canonical: 'Few-shot Learning', variants: ['few shot', 'few-shot', 'in-context learning', 'zero-shot learning', 'zero shot'], category: 'concept', basePriority: 4 },
+  { canonical: 'Chain-of-Thought', variants: ['cot', 'chain of thought', 'reasoning chains', 'step by step reasoning'], category: 'concept', basePriority: 4 },
+  { canonical: 'LLM Understanding', variants: ['llm comprehension', 'language model understanding', 'model behavior', 'llm evaluation'], category: 'concept', basePriority: 4 },
+  { canonical: 'Prompt Evaluation', variants: ['prompt testing', 'prompt assessment', 'output evaluation', 'llm evaluation', 'model evaluation'], category: 'concept', basePriority: 3 },
+  { canonical: 'Token Optimization', variants: ['token efficiency', 'context window', 'token management', 'prompt optimization'], category: 'concept', basePriority: 3 },
+
 
   // ── CLOUD ──
   { canonical: 'AWS', variants: ['amazon web services', 'ec2', 's3', 'lambda', 'aws cloud', 'cloudformation', 'ecs', 'eks', 'rds', 'dynamodb', 'sqs', 'sns'], category: 'cloud', basePriority: 5 },

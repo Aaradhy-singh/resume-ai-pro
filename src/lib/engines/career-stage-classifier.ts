@@ -96,7 +96,13 @@ function countContentSections(resumeText: string): {
 } {
     // Count "Project" sections or bullet-pointed projects
     const projectMatches = resumeText.match(/\bproject\b/gi) || [];
-    const projectCount = Math.min(projectMatches.length, 10); // Cap to avoid overcounting
+    const projectTitleMatches = resumeText.match(/(?:^|\n)[A-Z][^\n]{10,60}(?:Project|System|App|Tool|Platform|Engine|Interface|Bot|Assistant)\b/gm) || [];
+    const builtMatches = resumeText.match(/(?:built|developed|created|designed|implemented)\s+(?:a|an)\s+/gi) || [];
+    const projectCount = Math.min(
+        Math.max(projectMatches.length, projectTitleMatches.length, builtMatches.length),
+        10
+    );
+
 
     // Count explicit cert keywords
     const certKeywordMatches = resumeText.match(

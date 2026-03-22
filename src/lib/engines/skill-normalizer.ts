@@ -83,7 +83,25 @@ export function extractRawSkills(text: string): string[] {
         return pattern.test(lowercaseText) ? [...acc, variant] : acc;
     }, []);
 
-    return Array.from(new Set(detectedSkills));
+    const uniqueSkills = Array.from(new Set(detectedSkills));
+
+    // Extract capitalized technology-looking terms not in ontology
+    const techPattern = /\b([A-Z][a-zA-Z0-9]*(?:\.[a-zA-Z0-9]+)*(?:\.js|\.py|\.io)?)\b/g;
+    const techMatches = text.match(techPattern) || [];
+    const knownSkills = new Set(uniqueSkills.map(s => s.toLowerCase()));
+    
+    techMatches.forEach(term => {
+        if (
+            term.length >= 3 &&
+            !knownSkills.has(term.toLowerCase()) &&
+            !['The', 'This', 'That', 'With', 'From', 'Using', 'And', 'For', 'Are', 'Was', 'Has', 'Have', 'Not', 'But', 'You', 'All', 'Can', 'Her', 'Was', 'One', 'Our', 'Out', 'Day', 'Get', 'Has', 'Him', 'His', 'How', 'Its', 'May', 'New', 'Now', 'Old', 'See', 'Two', 'Way', 'Who', 'Did', 'Let'].includes(term)
+        ) {
+            uniqueSkills.push(term.toLowerCase());
+        }
+    });
+
+    return Array.from(new Set(uniqueSkills));
+
 }
 
 /**
@@ -214,7 +232,19 @@ export function extractAndNormalizeSkills(text: string): SkillExtractionResult {
             }
         } else {
             unrecognizedTerms.push(skill);
+            // Passthrough: treat unrecognized terms as their own canonical skill
+            // This prevents penalizing skills that exist in both resume and JD
+            // but are not yet in the ontology
+            if (lowerSkill.length >= 3) {
+                normalizedSkills.push({
+                    canonical: skill,
+                    rawVariants: [skill],
+                    category: 'tool' as any,
+                    confidence: 60,
+                });
+            }
         }
+
     });
 
     return {

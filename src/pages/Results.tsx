@@ -247,8 +247,14 @@ const Results = () => {
         mention.slice(0,8).forEach((g: any) => bullet(g.keyword || g, '#B45309'));
       }
       if (genuine.length === 0 && mention.length === 0) {
-        bodyText('No significant keyword gaps detected. Your resume aligns well with the job description.', '#10B981');
+        const jdScore = data?.scores?.keywordCoverage?.overallScore ?? 0;
+        if (jdScore < 60) {
+          bodyText(`JD alignment score is ${jdScore}%. The keyword gap engine did not detect specific missing skills but your overall alignment is below threshold. Review the JD manually for domain-specific terminology.`, '#F59E0B');
+        } else {
+          bodyText('No significant keyword gaps detected. Your resume aligns well with the job description.', '#10B981');
+        }
       }
+
     }
     y += 4;
 
@@ -964,11 +970,29 @@ const Results = () => {
                                 letterSpacing: '0.08em'
                               }}>{g.keyword}</div>
                             ))
-                            : <div style={{
-                              fontFamily: "inherit",
-                              fontSize: '11px',
-                              color: '#E0E0E0'
-                            }}>No missing keywords detected.</div>;
+                            : (() => {
+                                const jdScore = data?.scores?.keywordCoverage?.overallScore ?? 0;
+                                if (jdScore < 60) {
+                                  return (
+                                    <div style={{
+                                      fontFamily: "inherit",
+                                      fontSize: '11px',
+                                      color: '#F59E0B',
+                                      lineHeight: 1.6
+                                    }}>
+                                      JD alignment score is {jdScore}%. The keyword gap engine did not detect specific missing skills but your overall alignment is below threshold. Review the JD manually for domain-specific terminology.
+                                    </div>
+                                  );
+                                }
+                                return (
+                                  <div style={{
+                                    fontFamily: "inherit",
+                                    fontSize: '11px',
+                                    color: '#10B981'
+                                  }}>No significant keyword gaps detected. Your resume aligns well with the job description.</div>
+                                );
+                              })()
+
                         })()}
                       </div>
                     </section>

@@ -206,7 +206,7 @@ const Results = () => {
     sectionHeader('Top Role Match', '02');
     const top = data?.roles?.topRoles?.[0];
     if (top) {
-      row('Role', top.occupation?.title ?? top.role ?? 'N/A');
+      row('Role', top.occupation?.title ?? 'N/A');
       row('Overall Fit', `${top.matchScore ?? 0}%`, top.matchScore >= 70 ? '#10B981' : top.matchScore >= 40 ? '#F59E0B' : '#EF4444');
       row('Core Skill Match', `${top.matchScore ?? 0}%`);
       const expScore = (() => { const years = data?.careerStage?.signals?.totalExperienceYears ?? 0; const s = data?.careerStage?.stage; if (s === 'student') return Math.round(Math.min(60, 30 + (data?.projectComplexity?.overallScore ?? 0) * 0.3)); return Math.round(Math.min(100, 40 + years * 8)); })();
@@ -337,6 +337,49 @@ const Results = () => {
       }
     }
     y += 4;
+    
+    // ── SECTION 7 — GITHUB PORTFOLIO ──
+    const portfolio = data?.scores?.portfolio;
+    if (portfolio) {
+      sectionHeader('GitHub Portfolio Analysis', '07');
+      row('Portfolio Score', `${portfolio.portfolioScore ?? 0} / 100`, (portfolio.portfolioScore ?? 0) >= 70 ? '#10B981' : (portfolio.portfolioScore ?? 0) >= 40 ? '#F59E0B' : '#EF4444');
+      row('Public Repositories', String(portfolio.profileData?.publicRepos ?? 0));
+      row('Total Stars', String(portfolio.repositoryMetrics?.totalStars ?? 0));
+      row('Languages Used', Object.keys(portfolio.repositoryMetrics?.languageDistribution ?? {}).slice(0, 5).join(', ') || 'N/A');
+      row('Last Active', portfolio.repositoryMetrics?.lastActiveDate ? new Date(portfolio.repositoryMetrics.lastActiveDate).toLocaleDateString('en-GB') : 'N/A');
+      y += 3;
+      if (portfolio.insights) {
+        setFont(8, 'bold', '#555555');
+        doc.text('INSIGHT SCORES:', margin, y);
+        y += 6;
+        row('Activity Score', `${portfolio.insights.activityScore ?? 0}%`);
+        row('Quality Score', `${portfolio.insights.qualityScore ?? 0}%`);
+        row('Diversity Score', `${portfolio.insights.diversityScore ?? 0}%`);
+        row('Documentation Score', `${portfolio.insights.documentationScore ?? 0}%`);
+        row('Consistency Score', `${portfolio.insights.consistencyScore ?? 0}%`);
+      }
+      if (portfolio.topProjects?.length > 0) {
+        y += 3;
+        setFont(8, 'bold', '#555555');
+        doc.text('TOP PROJECTS:', margin, y);
+        y += 6;
+        portfolio.topProjects.slice(0, 5).forEach((proj: any) => {
+          checkPage(12);
+          setFont(8, 'bold', '#1A1A1A');
+          doc.text(proj.name ?? 'Unknown', margin, y);
+          setFont(7, 'normal', '#555555');
+          doc.text(`Stars: ${proj.stars ?? 0}  |  Language: ${proj.language ?? 'N/A'}  |  README: ${proj.hasReadme ? 'Yes' : 'No'}`, margin, y + 5);
+          if (proj.description) {
+            setFont(7, 'normal', '#777777');
+            const descLines = doc.splitTextToSize(proj.description, contentWidth);
+            doc.text(descLines[0], margin, y + 10);
+          }
+          y += 16;
+        });
+      }
+      y += 4;
+    }
+
 
     // ── FOOTER ──
     const totalPages = (doc as any).internal.getNumberOfPages();

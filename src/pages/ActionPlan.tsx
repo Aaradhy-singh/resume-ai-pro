@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import type { AnalysisResult } from "@/lib/engines/analysis-orchestrator";
 import { ActionItem, categoryConfig, ActionCategoryCard } from "@/components/action-plan/ActionCategoryCard";
+import { FeedbackModal } from '@/components/FeedbackModal';
 import { safeStorage } from "@/lib/storage-safe";
+
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 
 type PriorityFilter = 'all' | 'critical' | 'high' | 'medium' | 'low';
@@ -14,7 +16,9 @@ const ActionPlan = () => {
   const [analysisHasBeenRun, setAnalysisHasBeenRun] = useState(false);
   const [activeFilter, setActiveFilter] = useState<PriorityFilter>('all');
   const [exporting, setExporting] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
   const [explorerRoleName, setExplorerRoleName] = useState<string>('');
+
 
   useEffect(() => {
     const savedRoleName = safeStorage.getItem('explorerRoleName');
@@ -687,9 +691,29 @@ const ActionPlan = () => {
           ⊕ EXPLORE CAREER PATHS
         </button>
       </div>
+
+      {/* Floating Feedback Button */}
+      <button
+        onClick={() => setShowFeedback(true)}
+        style={{
+          position: 'fixed', bottom: '24px', right: '24px',
+          background: '#0D0D0D', border: '1px solid #3A3A3A',
+          color: '#9A9A9A', fontFamily: "'DM Mono', monospace",
+          fontSize: '10px', textTransform: 'uppercase',
+          padding: '10px 16px', cursor: 'pointer',
+          letterSpacing: '0.1em', zIndex: 50,
+          transition: 'all 0.2s',
+        }}
+        onMouseEnter={e => { e.currentTarget.style.borderColor = '#0EA5E9'; e.currentTarget.style.color = '#0EA5E9'; }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor = '#3A3A3A'; e.currentTarget.style.color = '#9A9A9A'; }}
+      >
+        ✦ FEEDBACK
+      </button>
+      {showFeedback && <FeedbackModal onClose={() => setShowFeedback(false)} />}
     </div>
     </DashboardLayout>
   );
 };
+
 
 export default ActionPlan;

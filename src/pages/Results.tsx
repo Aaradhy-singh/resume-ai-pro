@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { type AnalysisResult } from "@/lib/engines/analysis-orchestrator";
+import { FeedbackModal } from '@/components/FeedbackModal';
+
 import { safeStorage } from "@/lib/storage-safe";
 import { toast } from "sonner";
 import jsPDF from 'jspdf';
@@ -12,6 +14,8 @@ const Results = () => {
   const [activeTab, setActiveTab] = useState<
     "OVERVIEW" | "SKILL GAPS" | "ATS" | "IMPACT" | "KEYWORDS" | "EXPERIENCE" | "EDUCATION" | "PORTFOLIO"
   >("OVERVIEW");
+  const [showFeedback, setShowFeedback] = useState(false);
+
 
   useEffect(() => {
     try {
@@ -1314,8 +1318,27 @@ const Results = () => {
 
         </div>
       </div>
+      {/* Floating Feedback Button */}
+      <button
+        onClick={() => setShowFeedback(true)}
+        style={{
+          position: 'fixed', bottom: '24px', right: '24px',
+          background: '#0D0D0D', border: '1px solid #3A3A3A',
+          color: '#9A9A9A', fontFamily: "'DM Mono', monospace",
+          fontSize: '10px', textTransform: 'uppercase',
+          padding: '10px 16px', cursor: 'pointer',
+          letterSpacing: '0.1em', zIndex: 50,
+          transition: 'all 0.2s',
+        }}
+        onMouseEnter={e => { e.currentTarget.style.borderColor = '#0EA5E9'; e.currentTarget.style.color = '#0EA5E9'; }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor = '#3A3A3A'; e.currentTarget.style.color = '#9A9A9A'; }}
+      >
+        ✦ FEEDBACK
+      </button>
+      {showFeedback && <FeedbackModal onClose={() => setShowFeedback(false)} />}
     </div>
   );
 };
+
 
 export default Results;

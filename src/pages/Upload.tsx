@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { safeStorage } from "@/lib/storage-safe"; // Added import for safeStorage
 import { useToast } from "@/components/ui/use-toast"; // Added import for useToast
+import posthog from 'posthog-js';
+
 const UploadPage = () => {
   const navigate = useNavigate();
   const { toast: shadcnToast } = useToast(); // Renamed to avoid conflict with sonner toast
@@ -40,6 +42,11 @@ const UploadPage = () => {
 
       // EXECUTE GROUNDED PIPELINE
       // This enforces: Validation -> Stage Classification -> Stage-Gated Scoring -> Verification
+      posthog.capture('resume_analysis_started', {
+        hasJobDescription: !!jobDescription,
+        hasGithubUsername: !!githubUsername,
+        targetRole: targetRole || 'none',
+      });
       const results = await analyzeResume(
         parsedResume,
         hasJobDescription ? jobDescription : undefined,
@@ -49,6 +56,11 @@ const UploadPage = () => {
       );
 
       // Store complete grounded analysis results using safeStorage
+      posthog.capture('resume_analysis_completed', {
+        overallScore: results.scores?.keywordCoverage?.overallScore ?? 0,
+        careerStage: results.careerStage?.stage ?? 'unknown',
+        topRole: results.roles?.topRoles?.[0]?.occupation?.title ?? 'unknown',
+      });
       const success = safeStorage.setItem("resumeAnalysis", JSON.stringify(results));
       if (!success) {
         shadcnToast({ // Using shadcnToast for storage error

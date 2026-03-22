@@ -4,6 +4,7 @@ import type { AnalysisResult } from "@/lib/engines/analysis-orchestrator";
 import { ActionItem, categoryConfig, ActionCategoryCard } from "@/components/action-plan/ActionCategoryCard";
 import { FeedbackModal } from '@/components/FeedbackModal';
 import { safeStorage } from "@/lib/storage-safe";
+import posthog from 'posthog-js';
 
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 
@@ -182,6 +183,7 @@ const ActionPlan = () => {
   const handleExport = async () => {
     setExporting(true);
     try {
+      posthog.capture('action_plan_exported');
       const { jsPDF } = await import('jspdf');
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       const pageWidth = doc.internal.pageSize.getWidth();

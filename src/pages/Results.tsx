@@ -6,6 +6,7 @@ import { FeedbackModal } from '@/components/FeedbackModal';
 import { safeStorage } from "@/lib/storage-safe";
 import { toast } from "sonner";
 import jsPDF from 'jspdf';
+import posthog from 'posthog-js';
 
 const Results = () => {
   const navigate = useNavigate();
@@ -39,6 +40,7 @@ const Results = () => {
   // FIX 2: Real export logic (ported from ResultsHeader.tsx)
   const handleExport = () => {
     if (!data) return;
+    posthog.capture('pdf_exported', { page: 'results' });
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
@@ -559,7 +561,10 @@ const Results = () => {
               ↓ EXPORT REPORT
             </button>
             <button
-              onClick={() => navigate("/action-plan")}
+              onClick={() => {
+                posthog.capture('action_plan_viewed');
+                navigate("/action-plan");
+              }}
               style={{ background: "#0EA5E9", border: "none", color: "#000000", fontFamily: "inherit", fontSize: "11px", textTransform: "uppercase", padding: "8px 16px", borderRadius: "0px", cursor: "pointer", fontWeight: "bold", letterSpacing: "0.08em" }}
             >
               → VIEW ACTION PLAN

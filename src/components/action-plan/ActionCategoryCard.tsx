@@ -180,6 +180,61 @@ export function ActionCategoryCard({ cat, categoryItems, catIdx, toggleItem }: A
                                 </div>
                             )}
 
+                            {item.category === 'skills' && item.title && (
+                              <div style={{ marginTop: '16px', marginLeft: '28px' }}>
+                                <div style={{
+                                  fontFamily: 'inherit', fontSize: '10px', color: '#0EA5E9',
+                                  letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '8px'
+                                }}>
+                                  WHERE TO LEARN
+                                </div>
+                                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                  {[
+                                    {
+                                      label: 'Google',
+                                      url: `https://www.google.com/search?q=learn+${encodeURIComponent(item.title.replace(/^(Learn|Acquire|Add)\s+/i, '').replace(/\s+experience$/i, ''))}+tutorial`,
+                                    },
+                                    {
+                                      label: 'YouTube',
+                                      url: `https://www.youtube.com/results?search_query=${encodeURIComponent(item.title.replace(/^(Learn|Acquire|Add)\s+/i, '').replace(/\s+experience$/i, ''))}+tutorial`,
+                                    },
+                                    {
+                                      label: 'freeCodeCamp',
+                                      url: `https://www.freecodecamp.org/news/search/?query=${encodeURIComponent(item.title.replace(/^(Learn|Acquire|Add)\s+/i, '').replace(/\s+experience$/i, ''))}`,
+                                    },
+                                    {
+                                      label: 'GitHub',
+                                      url: `https://github.com/search?q=${encodeURIComponent(item.title.replace(/^(Learn|Acquire|Add)\s+/i, '').replace(/\s+experience$/i, ''))}&type=repositories`,
+                                    },
+                                  ].map(link => (
+                                    <a
+                                      key={link.label}
+                                      href={link.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      style={{
+                                        fontFamily: 'inherit', fontSize: '10px',
+                                        color: '#9A9A9A', border: '1px solid #3A3A3A',
+                                        padding: '4px 10px', textDecoration: 'none',
+                                        letterSpacing: '0.05em', transition: 'all 0.15s',
+                                        background: 'transparent'
+                                      }}
+                                      onMouseEnter={e => {
+                                        e.currentTarget.style.color = '#0EA5E9';
+                                        e.currentTarget.style.borderColor = '#0EA5E9';
+                                      }}
+                                      onMouseLeave={e => {
+                                        e.currentTarget.style.color = '#9A9A9A';
+                                        e.currentTarget.style.borderColor = '#3A3A3A';
+                                      }}
+                                    >
+                                      {link.label}
+                                    </a>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
                             {/* Footer row: Effort + Impact */}
                             <div style={{
                                 display: 'flex',

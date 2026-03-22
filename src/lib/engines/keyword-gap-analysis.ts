@@ -72,7 +72,24 @@ export function analyzeKeywordGaps(
     let matchedWeight = 0;
     let totalWeight = 0;
 
+    const STOPWORDS = new Set([
+        'title', 'engineer', 'responsibilities', 'integrate', 'support', 'work',
+        'team', 'experience', 'skills', 'role', 'job', 'position', 'company',
+        'required', 'preferred', 'ability', 'knowledge', 'understanding', 'strong',
+        'good', 'excellent', 'great', 'looking', 'candidate', 'must', 'will',
+        'should', 'would', 'could', 'year', 'years', 'month', 'months', 'day',
+        'days', 'time', 'working', 'help', 'build', 'develop', 'create', 'design',
+        'implement', 'manage', 'lead', 'drive', 'ensure', 'provide', 'maintain',
+        'improve', 'increase', 'reduce', 'deliver', 'review', 'write', 'test',
+        'analyze', 'monitor', 'report', 'communicate', 'collaborate', 'coordinate',
+        'minimum', 'maximum', 'plus', 'bonus', 'salary', 'benefits', 'location',
+        'remote', 'hybrid', 'office', 'full', 'part', 'contract', 'permanent',
+    ]);
+
     jdSkills.normalizedSkills.forEach(skill => {
+        if (STOPWORDS.has(skill.canonical.toLowerCase())) return;
+        if (skill.canonical.length < 3) return;
+
         const canonical = skill.canonical.toLowerCase();
 
         // Skip if we've already processed this canonical skill

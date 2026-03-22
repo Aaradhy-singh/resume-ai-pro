@@ -213,8 +213,16 @@ async function _analyzeGitHubPortfolioInternal(
             }
         });
 
+        const filteredRepos = ownRepos.filter((repo: any) => 
+            !repo.fork &&
+            !repo.archived &&
+            repo.name.toLowerCase() !== username.toLowerCase() &&
+            repo.name !== 'Aaradhy-Singh' &&
+            !repo.name.toLowerCase().includes('profile')
+        );
+
         const repoAnalysis = await Promise.all(
-            ownRepos.slice(0, 6).map(async (repo: any) => {
+            filteredRepos.slice(0, 6).map(async (repo: any) => {
                 try {
                     const [languagesRes, commitsRes] = await Promise.all([
                         octokit.rest.repos.listLanguages({

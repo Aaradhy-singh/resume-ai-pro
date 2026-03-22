@@ -242,65 +242,56 @@ export function FeedbackModal({ onClose }: Props) {
             )}
 
             {/* Navigation buttons */}
-            <div style={{ display: 'flex', gap: '12px', marginTop: '28px' }}>
-              {step === 2 && (
-                <button
-                  onClick={() => setStep(1)}
-                  style={{
-                    background: 'transparent', color: '#9A9A9A',
-                    border: '1px solid #3A3A3A',
-                    fontFamily: "'DM Mono', monospace", fontSize: '11px',
-                    textTransform: 'uppercase', padding: '10px 20px',
-                    cursor: 'pointer', letterSpacing: '0.08em',
-                  }}
-                >
-                  ← BACK
-                </button>
-              )}
-              {step === 1 ? (
-                <button
-                  onClick={() => setStep(2)}
-                  disabled={form.overall === 0}
-                  style={{
-                    background: form.overall === 0 ? '#1A1A1A' : '#0EA5E9',
-                    color: form.overall === 0 ? '#555555' : '#000000',
-                    border: 'none',
-                    fontFamily: "'DM Mono', monospace", fontSize: '11px',
-                    textTransform: 'uppercase', padding: '10px 24px',
-                    cursor: form.overall === 0 ? 'not-allowed' : 'pointer',
-                    letterSpacing: '0.08em', fontWeight: 'bold',
-                  }}
-                >
-                  NEXT →
-                </button>
-              ) : (
-                <button
-                  onClick={handleSubmit}
-                  disabled={submitting}
-                  style={{
-                    background: '#0EA5E9', color: '#000000',
-                    border: 'none',
-                    fontFamily: "'DM Mono', monospace", fontSize: '11px',
-                    textTransform: 'uppercase', padding: '10px 24px',
-                    cursor: 'pointer', letterSpacing: '0.08em', fontWeight: 'bold',
-                  }}
-                >
-                  {submitting ? 'SENDING...' : 'SUBMIT FEEDBACK'}
-                </button>
-              )}
-              <button
-                onClick={onClose}
-                style={{
-                  background: 'transparent', color: '#555555',
-                  border: 'none',
-                  fontFamily: "'DM Mono', monospace", fontSize: '11px',
-                  textTransform: 'uppercase', padding: '10px',
-                  cursor: 'pointer', letterSpacing: '0.08em',
-                  marginLeft: 'auto',
-                }}
-              >
-                SKIP
-              </button>
+            <div style={{ display: 'flex', gap: '12px', marginTop: '28px', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                {step === 2 && (
+                  <button
+                    onClick={() => setStep(1)}
+                    style={{
+                      background: 'transparent', color: '#9A9A9A',
+                      border: '1px solid #3A3A3A',
+                      fontFamily: "'DM Mono', monospace", fontSize: '11px',
+                      textTransform: 'uppercase', padding: '10px 20px',
+                      cursor: 'pointer', letterSpacing: '0.08em',
+                    }}
+                  >
+                    ← BACK
+                  </button>
+                )}
+              </div>
+              <div>
+                {step === 1 ? (
+                  <button
+                    onClick={() => setStep(2)}
+                    disabled={form.overall === 0}
+                    style={{
+                      background: form.overall === 0 ? '#1A1A1A' : '#0EA5E9',
+                      color: form.overall === 0 ? '#555555' : '#000000',
+                      border: 'none',
+                      fontFamily: "'DM Mono', monospace", fontSize: '11px',
+                      textTransform: 'uppercase', padding: '10px 24px',
+                      cursor: form.overall === 0 ? 'not-allowed' : 'pointer',
+                      letterSpacing: '0.08em', fontWeight: 'bold',
+                    }}
+                  >
+                    NEXT →
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleSubmit}
+                    disabled={submitting}
+                    style={{
+                      background: '#0EA5E9', color: '#000000',
+                      border: 'none',
+                      fontFamily: "'DM Mono', monospace", fontSize: '11px',
+                      textTransform: 'uppercase', padding: '10px 24px',
+                      cursor: 'pointer', letterSpacing: '0.08em', fontWeight: 'bold',
+                    }}
+                  >
+                    {submitting ? 'SENDING...' : 'SUBMIT FEEDBACK'}
+                  </button>
+                )}
+              </div>
             </div>
           </>
         )}

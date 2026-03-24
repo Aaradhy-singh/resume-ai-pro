@@ -29,6 +29,9 @@ export function normalizeParsedText(rawText: string): string {
     // Collapse multiple spaces into one
     text = text.replace(/[ \t]{2,}/g, ' ');
 
+    // Fix incorrectly spaced hyphens — "word - word" → "word-word"
+    text = text.replace(/(\w)\s+-\s+(\w)/g, '$1-$2');
+
     // Normalize newlines (max 2 consecutive newlines to preserve paragraphs)
     text = text.replace(/\n{3,}/g, '\n\n');
 

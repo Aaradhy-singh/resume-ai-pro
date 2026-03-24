@@ -16,7 +16,7 @@ export const DebugObservabilityPanel: React.FC<DebugPanelProps> = ({ lastResult,
     const [detReport, setDetReport] = useState<DeterminismReport | null>(null);
     const [advResults, setAdvResults] = useState<AdversarialResult[]>([]);
 
-    if (process.env.NODE_ENV === 'production') return null;
+    if (!import.meta.env.DEV) return null;
 
     const runFullAudit = async () => {
         if (!sampleResume) return;

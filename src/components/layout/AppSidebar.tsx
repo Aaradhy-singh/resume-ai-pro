@@ -19,6 +19,7 @@ const menuItems = [
 export function AppSidebar() {
   return (
     <Sidebar
+      collapsible="offcanvas"
       style={{ "--sidebar-width": "220px" } as React.CSSProperties}
       className="border-r border-[var(--border)] bg-[var(--bg-primary)] w-[220px]"
     >

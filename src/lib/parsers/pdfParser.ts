@@ -42,10 +42,49 @@ export async function extractTextFromPDF(file: File): Promise<PDFParseResult> {
             const page = await pdf.getPage(pageNum);
             const textContent = await page.getTextContent();
 
-            // Combine text items
-            const pageText = textContent.items
-                .map((item: unknown) => (item as { str: string }).str)
-                .join(' ');
+            let pageText = '';
+            let lastX = 0;
+            let lastY = 0;
+            let lastWidth = 0;
+            let lastStr = '';
+
+            textContent.items.forEach((item: unknown) => {
+                const textItem = item as { str: string; transform: number[]; width: number; height: number };
+                if (!textItem.str) return;
+
+                const x = textItem.transform[4];
+                const y = textItem.transform[5];
+                const width = textItem.width;
+
+                if (pageText === '') {
+                    pageText += textItem.str;
+                } else {
+                    const yDiff = Math.abs(y - lastY);
+                    const xGap = x - (lastX + lastWidth);
+
+                    if (yDiff > 5) {
+                        // New line
+                        pageText += '\n' + textItem.str;
+                    } else if (xGap > 8) {
+                        // Large horizontal gap — new word
+                        pageText += ' ' + textItem.str;
+                    } else if (xGap < -2) {
+                        // Overlapping or same position — likely continuation
+                        pageText += textItem.str;
+                    } else if (/[-\u2010\u2011\u2012\u2013\u2014\u2015]$/.test(lastStr) && xGap < 2) {
+                        // Hyphenated word at end of line — keep hyphen and join without space
+                        pageText = pageText + textItem.str;
+                    } else {
+                        // Normal adjacent text
+                        pageText += textItem.str;
+                    }
+                }
+
+                lastX = x;
+                lastY = y;
+                lastWidth = width;
+                lastStr = textItem.str;
+            });
 
             fullText += pageText + '\n\n';
         }
@@ -56,6 +95,8 @@ export async function extractTextFromPDF(file: File): Promise<PDFParseResult> {
         if (!cleanedText) {
             throw new ParserError("PDF contains no readable text. It may be an image scan without OCR.", "NO_TEXT_EXTRACTED");
         }
+
+        console.log('PDF PARSED TEXT:', cleanedText.substring(0, 500));
 
         return {
             text: cleanedText,

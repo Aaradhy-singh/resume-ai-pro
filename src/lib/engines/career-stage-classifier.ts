@@ -121,9 +121,9 @@ function countContentSections(resumeText: string): {
     ) || [];
 
     // Deduplicate: use the higher of keyword count
-    // or line-based count, capped at 10
+    // or line-based count, capped at 15
     const certificationCount = Math.min(
-        10,
+        15,
         Math.max(
             certKeywordMatches.length,
             Math.round(certLineMatches.length / 2),

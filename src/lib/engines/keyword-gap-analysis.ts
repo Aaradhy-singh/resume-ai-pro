@@ -84,6 +84,12 @@ export function analyzeKeywordGaps(
         'analyze', 'monitor', 'report', 'communicate', 'collaborate', 'coordinate',
         'minimum', 'maximum', 'plus', 'bonus', 'salary', 'benefits', 'location',
         'remote', 'hybrid', 'office', 'full', 'part', 'contract', 'permanent',
+        'aaradhy', 'singh', 'phagwara', 'punjab', 'india', 'lovely', 
+        'professional', 'university', 'objective', 'seeking', 'currently',
+        'pursuing', 'computer', 'science', 'engineering', 'diploma',
+        'bachelor', 'master', 'degree', 'student', 'fresher', 'intern',
+        'internship', 'opportunities', 'environment', 'real',
+        'apply', 'hands', 'independently', 'focused', 'building',
     ]);
 
     jdSkills.normalizedSkills.forEach(skill => {

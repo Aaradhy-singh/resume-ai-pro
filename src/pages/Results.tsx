@@ -534,7 +534,7 @@ const Results = () => {
 
   return (
     // FIX 1: No box-shadow, no glow, flat #000000 background
-    <div style={{ minHeight: "100vh", backgroundColor: "#000000", color: "#FFFFFF", paddingBottom: "100px" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#000000", color: "#FFFFFF", paddingBottom: "100px", overflowX: 'hidden', maxWidth: '100vw' }}>
       <GlobalStyles />
 
       {/* Sticky Page Header */}
@@ -660,7 +660,7 @@ const Results = () => {
             )}
           </div>
 
-          <div style={{ flex: "2 1 400px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0", borderTop: "1px solid #333333", borderLeft: "1px solid #333333" }}>
+          <div style={{ flex: "2 1 400px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0", borderTop: "1px solid #333333", borderLeft: "1px solid #333333", paddingBottom: "80px" }}>
             {engineScores.map((engine) => (
               <div key={engine.name} style={{ borderBottom: "1px solid #333333", borderRight: "1px solid #333333", padding: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -697,7 +697,7 @@ const Results = () => {
             'PORTFOLIO': null,
           };
           return (
-            <div style={{ display: "flex", flexWrap: "wrap", borderBottom: "1px solid #3A3A3A", marginTop: "48px", overflowX: "auto" }}>
+            <div style={{ display: "flex", borderBottom: "1px solid #3A3A3A", marginTop: "48px", overflowX: "auto", whiteSpace: "nowrap", WebkitOverflowScrolling: "touch" }}>
               {(["OVERVIEW", "SKILL GAPS", "ATS", "IMPACT", "KEYWORDS", "EXPERIENCE", "EDUCATION", "PORTFOLIO"] as const).map(tab => (
                 <button
                   key={tab}

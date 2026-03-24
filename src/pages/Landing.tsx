@@ -81,6 +81,15 @@ const Landing = () => {
         .nav-link-underline:hover::after { width: 100%; }
         .list-icon-red { color: #EF4444 !important; }
         .list-icon-green { color: #10B981 !important; }
+        .trusted-logo {
+          filter: grayscale(100%) brightness(0.6);
+          opacity: 0.6;
+          transition: all 0.3s ease;
+        }
+        .trusted-logo:hover {
+          filter: grayscale(0%) brightness(1);
+          opacity: 1;
+        }
       `}</style>
 
       {/* 1. NAVBAR */}
@@ -194,56 +203,60 @@ const Landing = () => {
 
           {/* CTA Buttons */}
           <div
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-            style={{ position: 'relative', zIndex: 1 }}
+            className="flex flex-col gap-4 justify-center items-center w-full"
+            style={{ position: 'relative', zIndex: 1, maxWidth: '400px' }}
           >
-            <button
-              onClick={handleAnalyzeClick}
-              className="font-sans text-[11px] uppercase tracking-widest px-8 py-4 transition-all duration-200"
-              style={{
-                background: '#0EA5E9',
-                color: '#000000',
-                border: '1px solid #0EA5E9',
-                cursor: 'pointer',
-                fontWeight: 'bold',
-                letterSpacing: '0.15em',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.background = '#FFFFFF';
-                e.currentTarget.style.borderColor = '#FFFFFF';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.background = '#0EA5E9';
-                e.currentTarget.style.borderColor = '#0EA5E9';
-              }}
-            >
-              ANALYZE MY RESUME →
-            </button>
-            <a
-              href="#how-it-works"
-              className="font-sans text-[11px] uppercase tracking-widest px-8 py-4 transition-all duration-200"
-              style={{
-                background: 'transparent',
-                color: '#FFFFFF',
-                border: '1px solid #4A4A4A',
-                cursor: 'pointer',
-                letterSpacing: '0.15em',
-                textDecoration: 'none',
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.borderColor = '#0EA5E9';
-                e.currentTarget.style.color = '#0EA5E9';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.borderColor = '#4A4A4A';
-                e.currentTarget.style.color = '#FFFFFF';
-              }}
-            >
-              SEE HOW IT WORKS
-            </a>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">
+              <button
+                onClick={handleAnalyzeClick}
+                className="font-sans text-[11px] uppercase tracking-widest px-8 py-4 transition-all duration-200"
+                style={{
+                  background: '#0EA5E9',
+                  color: '#000000',
+                  border: '1px solid #0EA5E9',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  letterSpacing: '0.15em',
+                  flex: 1,
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = '#FFFFFF';
+                  e.currentTarget.style.borderColor = '#FFFFFF';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = '#0EA5E9';
+                  e.currentTarget.style.borderColor = '#0EA5E9';
+                }}
+              >
+                ANALYZE MY RESUME →
+              </button>
+              <a
+                href="#how-it-works"
+                className="font-sans text-[11px] uppercase tracking-widest px-8 py-4 transition-all duration-200"
+                style={{
+                  background: 'transparent',
+                  color: '#FFFFFF',
+                  border: '1px solid #4A4A4A',
+                  cursor: 'pointer',
+                  letterSpacing: '0.15em',
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flex: 1,
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = '#0EA5E9';
+                  e.currentTarget.style.color = '#0EA5E9';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = '#4A4A4A';
+                  e.currentTarget.style.color = '#FFFFFF';
+                }}
+              >
+                SEE HOW IT WORKS
+              </a>
+            </div>
           </div>
           </div>
 
@@ -252,14 +265,14 @@ const Landing = () => {
             <div className="text-center text-[10px] text-[#E0E0E0] uppercase tracking-widest mb-8">
               Trusted by job seekers targeting
             </div>
-            <div className="flex flex-wrap justify-center sm:justify-between items-center gap-8">
+            <div className="flex flex-wrap justify-center sm:justify-between items-center gap-8 cursor-default">
               {/* Logos mocked as text for robustness over unknown assets */}
-              <span className="font-serif text-2xl" style={{ color: '#E0E0E0' }}>Google</span>
-              <span className="font-serif text-2xl" style={{ color: '#E0E0E0' }}>Amazon</span>
-              <span className="font-serif text-2xl" style={{ color: '#E0E0E0' }}>Meta</span>
-              <span className="font-serif text-2xl" style={{ color: '#E0E0E0' }}>Microsoft</span>
-              <span className="font-serif text-2xl" style={{ color: '#E0E0E0' }}>OpenAI</span>
-              <span className="font-serif text-2xl" style={{ color: '#E0E0E0' }}>Stripe</span>
+              <span className="font-serif text-2xl trusted-logo" style={{ color: '#E0E0E0' }}>Google</span>
+              <span className="font-serif text-2xl trusted-logo" style={{ color: '#E0E0E0' }}>Amazon</span>
+              <span className="font-serif text-2xl trusted-logo" style={{ color: '#E0E0E0' }}>Meta</span>
+              <span className="font-serif text-2xl trusted-logo" style={{ color: '#E0E0E0' }}>Microsoft</span>
+              <span className="font-serif text-2xl trusted-logo" style={{ color: '#E0E0E0' }}>OpenAI</span>
+              <span className="font-serif text-2xl trusted-logo" style={{ color: '#E0E0E0' }}>Stripe</span>
             </div>
           </div>
         </section>
@@ -608,6 +621,7 @@ const Landing = () => {
                 cursor: 'pointer',
                 fontWeight: 'bold',
                 transition: 'all 0.2s',
+                width: '100%',
               }}
               onMouseEnter={e => {
                 e.currentTarget.style.background = '#FFFFFF';

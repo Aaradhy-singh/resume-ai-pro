@@ -42,13 +42,18 @@ export function JobDescriptionInput({ onJobDescriptionChange }: JobDescriptionIn
                         value={jobDescription}
                         onChange={(e) => handleChange(e.target.value)}
                         onBlur={() => setJdTouched(true)}
-                        rows={10}
-                        className="rounded-none resize-y min-h-[200px] shadow-none focus-visible:ring-0" style={{ background: '#080808', border: '1px solid #555555', color: '#F0F0F0', fontFamily: "'DM Mono', monospace", fontSize: '12px' }}
+                        rows={Math.max(10, Math.min(20, jobDescription.split('\n').length))}
+                        className="rounded-none resize-y min-h-[250px] shadow-none focus-visible:ring-0" style={{ background: '#080808', border: '1px solid #555555', color: '#F0F0F0', fontFamily: "'DM Mono', monospace", fontSize: '12px' }}
                     />
                     <div className="flex items-center justify-between font-[var(--font-body)] text-[11px] text-[#E0E0E0] mt-2">
                         <span className={charCount < minChars ? '' : isValid ? 'text-[var(--accent)]' : 'text-red-500'}>
                             {charCount.toLocaleString()} characters
                         </span>
+                        {charCount >= 8000 && charCount <= maxChars && (
+                            <span className="text-[#F59E0B]">
+                                Warning: JD too long
+                            </span>
+                        )}
                         {charCount > 0 && charCount < minChars && (
                             <span>
                                 {minChars - charCount} more characters needed

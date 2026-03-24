@@ -299,9 +299,10 @@ export function ResultsHeader({ data }: ResultsHeaderProps) {
     };
 
     return (
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4"
-            style={{ borderBottom: '1px solid #1F1F1F', paddingBottom: '24px' }}
-        >
+        <div className="flex flex-col w-full">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4"
+                style={{ borderBottom: '1px solid #1F1F1F', paddingBottom: '24px' }}
+            >
             <div className="space-y-1">
                 <div
                     className="flex items-center gap-2 mb-2 cursor-pointer transition-colors"
@@ -406,6 +407,7 @@ export function ResultsHeader({ data }: ResultsHeaderProps) {
                     Export Report
                 </button>
             </div>
+        </div>
         </div>
     );
 }

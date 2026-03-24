@@ -82,12 +82,11 @@ const Landing = () => {
         .list-icon-red { color: #EF4444 !important; }
         .list-icon-green { color: #10B981 !important; }
         .trusted-logo {
-          filter: grayscale(100%) brightness(0.6);
-          opacity: 0.6;
-          transition: all 0.3s ease;
+          filter: grayscale(100%) brightness(2);
+          opacity: 0.9;
+          transition: opacity 0.3s ease;
         }
         .trusted-logo:hover {
-          filter: grayscale(0%) brightness(1);
           opacity: 1;
         }
       `}</style>
@@ -421,7 +420,7 @@ const Landing = () => {
           <div className="grid md:grid-cols-3 gap-8">
             {/* Step 01 */}
             <div className="ui-box-override" style={{ position: 'relative', overflow: 'hidden', background: '#0D0D0D', border: '1px solid #3A3A3A', boxShadow: '0 4px 12px rgba(255, 255, 255, 0.05)', padding: '32px 28px' }}>
-              <div style={{ position: 'absolute', top: '-20px', right: '12px', fontFamily: "inherit", fontSize: '160px', color: '#0EA5E9', opacity: 0.05, lineHeight: 1, pointerEvents: 'none', userSelect: 'none', zIndex: 0, letterSpacing: '-0.05em' }}>01</div>
+              <div style={{ position: 'absolute', top: '24px', right: '28px', color: '#FFFFFF', fontSize: '32px', fontWeight: 300, lineHeight: 1, zIndex: 0 }}>01</div>
               <div style={{ position: 'relative', zIndex: 1 }}>
                 <div className="text-[12px] text-white uppercase tracking-widest mb-4 font-sans">— UPLOAD YOUR RESUME</div>
                 <p className="text-[12px] text-[#E0E0E0] leading-relaxed">
@@ -432,7 +431,7 @@ const Landing = () => {
 
             {/* Step 02 */}
             <div className="ui-box-override" style={{ position: 'relative', overflow: 'hidden', background: '#0D0D0D', border: '1px solid #3A3A3A', boxShadow: '0 4px 12px rgba(255, 255, 255, 0.05)', padding: '32px 28px' }}>
-              <div style={{ position: 'absolute', top: '-20px', right: '12px', fontFamily: "inherit", fontSize: '160px', color: '#0EA5E9', opacity: 0.05, lineHeight: 1, pointerEvents: 'none', userSelect: 'none', zIndex: 0, letterSpacing: '-0.05em' }}>02</div>
+              <div style={{ position: 'absolute', top: '24px', right: '28px', color: '#FFFFFF', fontSize: '32px', fontWeight: 300, lineHeight: 1, zIndex: 0 }}>02</div>
               <div style={{ position: 'relative', zIndex: 1 }}>
                 <div className="text-[12px] text-white uppercase tracking-widest mb-4 font-sans">— RUN 8 DIAGNOSTIC ENGINES</div>
                 <p className="text-[12px] text-[#E0E0E0] leading-relaxed">
@@ -443,7 +442,7 @@ const Landing = () => {
 
             {/* Step 03 */}
             <div className="ui-box-override" style={{ position: 'relative', overflow: 'hidden', background: '#0D0D0D', border: '1px solid #3A3A3A', boxShadow: '0 4px 12px rgba(255, 255, 255, 0.05)', padding: '32px 28px' }}>
-              <div style={{ position: 'absolute', top: '-20px', right: '12px', fontFamily: "inherit", fontSize: '160px', color: '#0EA5E9', opacity: 0.05, lineHeight: 1, pointerEvents: 'none', userSelect: 'none', zIndex: 0, letterSpacing: '-0.05em' }}>03</div>
+              <div style={{ position: 'absolute', top: '24px', right: '28px', color: '#FFFFFF', fontSize: '32px', fontWeight: 300, lineHeight: 1, zIndex: 0 }}>03</div>
               <div style={{ position: 'relative', zIndex: 1 }}>
                 <div className="text-[12px] text-white uppercase tracking-widest mb-4 font-sans">— EXECUTE YOUR ACTION PLAN</div>
                 <p className="text-[12px] text-[#E0E0E0] leading-relaxed">

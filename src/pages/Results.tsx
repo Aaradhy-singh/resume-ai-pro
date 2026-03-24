@@ -536,7 +536,7 @@ const Results = () => {
     ? "No formal work experience detected. Academic projects and certifications are factored into career stage scoring."
     : `Detected ${expYears} year${expYears === 1 ? '' : 's'} of experience`;
 
-  const topRoleForShare = data?.roles?.topRoles?.[0]?.occupation?.title ?? data?.roles?.topRoles?.[0]?.role ?? 'Software Engineer';
+  const topRoleForShare = data?.roles?.topRoles?.[0]?.occupation?.title ?? 'Software Engineer';
 
   return (
     // FIX 1: No box-shadow, no glow, flat #000000 background
@@ -544,7 +544,7 @@ const Results = () => {
       <GlobalStyles />
       <ShareModal open={shareModalOpen} onClose={setShareModalOpen} score={overallScore} role={topRoleForShare} />
 
-      {/* Sticky Compact Header */}
+      {/* Sticky Page Header */}
       <div style={{
         position: "sticky",
         top: 0,
@@ -553,138 +553,133 @@ const Results = () => {
         zIndex: 10,
         padding: "16px 24px"
       }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: scoreDetailsOpen ? '16px' : '0'
-          }}>
-            {/* Left: Title + Date + Back */}
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '24px' }}>
-              <button
-                onClick={() => navigate('/upload')}
-                style={{
-                  fontFamily: "inherit", fontSize: '11px', color: '#E0E0E0', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px'
-                }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#FFFFFF')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#E0E0E0')}
-              >
-                ← BACK
-              </button>
-              <div>
-                <p style={{ fontSize: '10px', color: '#0EA5E9', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>
-                  Analysis Results
-                </p>
-                <p style={{ fontSize: '12px', color: '#6B6B6B', marginTop: '4px', marginBottom: 0 }}>
-                  Generated {data.meta?.timestamp ? new Date(data.meta.timestamp).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Just now'}
-                </p>
-              </div>
+        <div style={{ maxWidth: "1100px", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div>
+            <div style={{ fontFamily: "inherit", fontSize: "8px", color: "#0EA5E9", textTransform: "uppercase", letterSpacing: "0.25em", marginBottom: "4px" }}>
+              DIAGNOSTIC RESULTS
             </div>
-
-            {/* Center: Compact Score */}
-            <div 
-              style={{ display: 'flex', alignItems: 'baseline', gap: '8px', cursor: 'pointer', userSelect: 'none' }}
-              onClick={() => setScoreDetailsOpen(!scoreDetailsOpen)}
-              title="Click to toggle score details"
-            >
-              <span style={{ fontSize: '32px', fontWeight: 700, color: '#F0F0F0' }}>
-                {overallScore}
-              </span>
-              <span style={{ fontSize: '14px', color: '#6B6B6B' }}>/100</span>
-              <span style={{
-                fontSize: '10px',
-                color: overallScore >= 70 ? '#10B981' : overallScore >= 50 ? '#F59E0B' : '#EF4444',
-                marginLeft: '8px',
-                padding: '2px 8px',
-                border: `1px solid ${overallScore >= 70 ? '#10B981' : overallScore >= 50 ? '#F59E0B' : '#EF4444'}`,
-              }}>
-                {overallScore >= 70 ? 'STRONG' : overallScore >= 50 ? 'NEEDS WORK' : 'CRITICAL'}
-              </span>
-              <span style={{ fontSize: '12px', color: '#6B6B6B', marginLeft: '8px' }}>
-                {scoreDetailsOpen ? '▲' : '▼'}
-              </span>
-            </div>
-
-            {/* Right: Actions */}
-            <div style={{ display: 'flex', gap: '12px' }}>
-              <button
-                onClick={handleExport}
-                style={{ background: "transparent", border: "1px solid #2A2A2A", color: "#FFFFFF", fontFamily: "inherit", fontSize: "11px", textTransform: "uppercase", padding: "8px 16px", borderRadius: "0px", cursor: "pointer", letterSpacing: "0.08em" }}
-              >
-                ↓ EXPORT PDF
-              </button>
-              <button
-                onClick={() => {
-                  posthog.capture('share_modal_opened');
-                  setShareModalOpen(true);
-                }}
-                style={{
-                  background: '#0A66C2', color: '#FFFFFF', border: 'none', fontFamily: "'DM Mono', monospace", fontSize: '11px', textTransform: 'uppercase', padding: '10px 16px', cursor: 'pointer', letterSpacing: '0.08em', display: 'flex', alignItems: 'center', gap: '6px'
-                }}
-              >
-                SHARE
-              </button>
-              <button
-                onClick={() => {
-                  posthog.capture('action_plan_viewed');
-                  navigate("/action-plan");
-                }}
-                style={{ background: "#0EA5E9", border: "none", color: "#000000", fontFamily: "inherit", fontSize: "11px", textTransform: "uppercase", padding: "8px 16px", borderRadius: "0px", cursor: "pointer", fontWeight: "bold", letterSpacing: "0.08em" }}
-              >
-                → VIEW ACTION PLAN
-              </button>
-            </div>
+            <div style={{ fontSize: "20px", color: "#FFFFFF", fontWeight: "normal", lineHeight: 1 }}>Results</div>
           </div>
-
-          {/* Collapsible Score Details */}
-          {scoreDetailsOpen && (
-            <div className="ui-box-override" style={{ background: "#111111", border: "1px solid #333333", padding: "24px", display: "flex", flexWrap: "wrap", gap: "40px", marginTop: "16px", animation: "fadeIn 0.2s ease-in-out" }}>
-              <div style={{ flex: "1 1 200px", borderRight: "1px solid #333333", paddingRight: "24px" }}>
-                <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#FFFFFF", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "8px" }}>
-                  SCORE BREAKDOWN
-                </div>
-                <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#AAAAAA", lineHeight: 1.6 }}>
-                  {scoreLabel}
-                </div>
-                {!hasJD && (
-                  <div style={{ marginTop: "16px" }}>
-                    <button
-                      onClick={() => navigate('/upload')}
-                      style={{ fontFamily: "inherit", fontSize: "10px", color: "#5A5A5A", background: "none", border: "none", cursor: "pointer", letterSpacing: "0.1em", padding: 0, textTransform: "uppercase", textAlign: "left", lineHeight: 1.6 }}
-                    >
-                      JD ALIGNMENT SCORE REQUIRES A JOB DESCRIPTION.{"\n"}
-                      ADD ONE IN ANALYZE RESUME FOR A FULL SCORE. →
-                    </button>
-                  </div>
-                )}
-              </div>
-              <div style={{ flex: "2 1 400px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0", borderTop: "1px solid #333333", borderLeft: "1px solid #333333" }}>
-                {engineScores.map((engine) => (
-                  <div key={engine.name} style={{ borderBottom: "1px solid #333333", borderRight: "1px solid #333333", padding: "12px 16px", display: "flex", flexDirection: "column", gap: "6px" }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div style={{ fontFamily: "inherit", fontSize: "9px", color: "#FFFFFF", textTransform: "uppercase" }}>{engine.name}</div>
-                      <div style={{ fontFamily: "inherit", fontSize: "16px", color: engine.score === -1 ? '#E0E0E0' : getScoreColor(engine.score) }}>
-                        {engine.score === -1 ? 'N/A' : engine.score}
-                      </div>
-                    </div>
-                    <div style={{ width: '100%', height: '2px', background: '#1A1A1A' }}>
-                      <div style={{ width: engine.score === -1 ? '0%' : `${engine.score}%`, height: '100%', background: engine.score === -1 ? '#2A2A2A' : getScoreColor(engine.score), transition: 'width 0.4s ease' }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          <div style={{ display: "flex", gap: "12px" }}>
+            <button
+              onClick={handleExport}
+              style={{ background: "transparent", border: "1px solid #2A2A2A", color: "#FFFFFF", fontFamily: "inherit", fontSize: "11px", textTransform: "uppercase", padding: "8px 16px", borderRadius: "0px", cursor: "pointer", letterSpacing: "0.08em" }}
+            >
+              ↓ EXPORT REPORT
+            </button>
+            <button
+              onClick={() => {
+                posthog.capture('share_modal_opened');
+                setShareModalOpen(true);
+              }}
+              style={{
+                background: 'transparent',
+                border: '1px solid #0EA5E9',
+                color: '#0EA5E9',
+                fontFamily: "'DM Mono', monospace",
+                fontSize: '11px',
+                fontWeight: 600,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                padding: '10px 20px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(14,165,233,0.1)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+            >
+              SHARE
+            </button>
+            <button
+              onClick={() => {
+                posthog.capture('action_plan_viewed');
+                navigate("/action-plan");
+              }}
+              style={{ background: "#0EA5E9", border: "none", color: "#000000", fontFamily: "inherit", fontSize: "11px", textTransform: "uppercase", padding: "8px 16px", borderRadius: "0px", cursor: "pointer", fontWeight: "bold", letterSpacing: "0.08em" }}
+            >
+              → VIEW ACTION PLAN
+            </button>
+          </div>
         </div>
       </div>
 
       <div style={{ maxWidth: "1100px", margin: "32px auto 0", padding: "0 24px" }}>
 
+        {/* FIX 6: Back button / Analyze Another Resume */}
+        <button
+          onClick={() => navigate('/upload')}
+          style={{
+            fontFamily: "inherit",
+            fontSize: '11px',
+            color: '#E0E0E0',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            padding: '0',
+            marginBottom: '24px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px'
+          }}
+          onMouseEnter={e => (e.currentTarget.style.color = '#FFFFFF')}
+          onMouseLeave={e => (e.currentTarget.style.color = '#E0E0E0')}
+        >
+          ← ANALYZE ANOTHER RESUME
+        </button>
+
+        {/* Overall Score Banner */}
+        <div className="ui-box-override" style={{ background: "#2A2A2A", border: "2px solid #737373", boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)", padding: "32px", display: "flex", flexWrap: "wrap", gap: "40px" }}>
+          <div style={{ flex: "1 1 300px", borderRight: "1px solid #333333", paddingRight: "40px" }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', marginBottom: '8px' }}>
+              <span style={{ fontFamily: "inherit", fontSize: "80px", color: scoreColor, lineHeight: 1, letterSpacing: '-0.02em' }}>{overallScore}</span>
+              <span style={{ fontFamily: "inherit", fontSize: "18px", color: "#F3F4F6" }}>/100</span>
+            </div>
+            <div style={{ width: '120px', height: '2px', background: '#1A1A1A', marginTop: '12px' }}>
+              <div style={{ width: `${overallScore}%`, height: '100%', background: scoreColor, transition: 'width 0.6s ease' }} />
+            </div>
+            <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#FFFFFF", textTransform: "uppercase", marginTop: "12px", letterSpacing: "0.1em" }}>
+              OVERALL RESUME SCORE
+            </div>
+            <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", marginTop: "4px" }}>
+              {scoreLabel}
+            </div>
+            {!hasJD && (
+              <div style={{ marginTop: "16px" }}>
+                <button
+                  onClick={() => navigate('/upload')}
+                  style={{ fontFamily: "inherit", fontSize: "10px", color: "#5A5A5A", background: "none", border: "none", cursor: "pointer", letterSpacing: "0.1em", padding: 0, textTransform: "uppercase", textAlign: "left", lineHeight: 1.6 }}
+                >
+                  JD ALIGNMENT SCORE REQUIRES A JOB DESCRIPTION.{"\n"}
+                  ADD ONE IN ANALYZE RESUME FOR A FULL SCORE. →
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div style={{ flex: "2 1 400px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0", borderTop: "1px solid #333333", borderLeft: "1px solid #333333", paddingBottom: "80px" }}>
+            {engineScores.map((engine) => (
+              <div key={engine.name} style={{ borderBottom: "1px solid #333333", borderRight: "1px solid #333333", padding: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#FFFFFF", textTransform: "uppercase" }}>{engine.name}</div>
+                  <div style={{ fontFamily: "inherit", fontSize: "20px", color: engine.score === -1 ? '#E0E0E0' : getScoreColor(engine.score) }}>
+                    {engine.score === -1 ? 'N/A' : engine.score}
+                  </div>
+                </div>
+                <div style={{ width: '100%', height: '2px', background: '#1A1A1A' }}>
+                  <div style={{ width: engine.score === -1 ? '0%' : `${engine.score}%`, height: '100%', background: engine.score === -1 ? '#2A2A2A' : getScoreColor(engine.score), transition: 'width 0.4s ease' }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
 
 
         {data?.careerStage?.stage === 'student' && (
-          <div style={{ background: '#0D0D0D', border: '1px solid #3A3A3A', borderLeft: '3px solid #F59E0B', padding: '12px 16px', marginTop: '12px', fontSize: '11px', color: '#9A9A9A', lineHeight: 1.7 }}>
+          <div style={{ background: '#0D0D0D', border: '1px solid #3A3A3A', borderLeft: '3px solid #F59E0B', padding: '12px 16px', marginTop: '12px', fontSize: '11px', color: '#F0F0F0', lineHeight: 1.7 }}>
             <span style={{ color: '#F59E0B', fontWeight: 'bold' }}>STUDENT CONTEXT: </span>
             Skill gap scores below 40% are normal for first-year students. These scores show your growth runway, not your current value. Focus on the Action Plan to close gaps systematically.
           </div>

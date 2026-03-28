@@ -224,7 +224,11 @@ async function _analyzeGitHubPortfolioInternal(
         const repoAnalysis = await Promise.all(
             filteredRepos.slice(0, 6).map(async (repo: any) => {
                 try {
-                    const [languagesRes, commitsRes] = await Promise.all([
+                    // Fetch languages, commits, and README all concurrently —
+                    // the original code awaited languages+commits first and then
+                    // made a separate sequential call for the README, adding
+                    // unnecessary round-trip latency for each repo.
+                    const [languagesRes, commitsRes, readmeResult] = await Promise.allSettled([
                         octokit.rest.repos.listLanguages({
                             owner: username,
                             repo: repo.name,
@@ -237,29 +241,31 @@ async function _analyzeGitHubPortfolioInternal(
                                 Date.now() - 365 * 24 * 60 * 60 * 1000
                             ).toISOString(),
                         }),
+                        octokit.rest.repos.getReadme({
+                            owner: username,
+                            repo: repo.name,
+                        }),
                     ]);
 
                     // Aggregate language distribution
-                    Object.entries(languagesRes.data).forEach(([lang, bytes]) => {
-                        languageDistribution[lang] = (languageDistribution[lang] ?? 0) + bytes;
-                    });
+                    if (languagesRes.status === 'fulfilled') {
+                        Object.entries(languagesRes.value.data).forEach(([lang, bytes]) => {
+                            languageDistribution[lang] = (languageDistribution[lang] ?? 0) + bytes;
+                        });
+                    }
 
-                    totalCommits += commitsRes.data.length;
-                    reposWithCommits++;
+                    if (commitsRes.status === 'fulfilled') {
+                        totalCommits += commitsRes.value.data.length;
+                        reposWithCommits++;
+                    }
 
                     let hasReadme = false;
                     let readmeLength = 0;
-                    try {
-                        const readmeRes = await octokit.rest.repos.getReadme({
-                            owner: username,
-                            repo: repo.name,
-                        });
+                    if (readmeResult.status === 'fulfilled') {
                         readmeLength = atob(
-                            readmeRes.data.content.replace(/\n/g, '')
+                            readmeResult.value.data.content.replace(/\n/g, '')
                         ).length;
                         hasReadme = true;
-                    } catch {
-                        // No README is fine
                     }
 
                     return {

@@ -54,16 +54,26 @@ export function analyzeKeywordGaps(
     const skillFrequency = new Map<string, number>();
     const skillContexts = new Map<string, string[]>();
 
+    // Pre-split JD into sentences once so we don't run a new regex per skill.
+    // Splitting on sentence-ending punctuation is O(n) in the JD length and
+    // happens only once; per-skill context lookup is then a simple O(sentences)
+    // linear scan using String.prototype.includes() instead of a full regex pass.
+    const jdSentences = jdText.match(/[^.?!]*[.?!]/g) || [jdText];
+
     jdSkills.normalizedSkills.forEach(skill => {
         const canonical = skill.canonical.toLowerCase();
         skillFrequency.set(canonical, (skillFrequency.get(canonical) || 0) + 1);
 
-        // Find context (simple sentence extraction)
-        // In a real app, we'd use the source indices to extract sentences
-        const regex = new RegExp(`[^.?!]*\\b${escapeRegExp(skill.canonical)}\\b[^.?!]*[.?!]`, 'gi');
-        const matches = jdText.match(regex) || [];
+        // Find context sentences that mention this skill (case-insensitive)
         const existing = skillContexts.get(canonical) || [];
-        skillContexts.set(canonical, [...existing, ...matches].slice(0, 3)); // Keep top 3 contexts
+        const newContexts: string[] = [];
+        for (const sentence of jdSentences) {
+            if (sentence.toLowerCase().includes(canonical)) {
+                newContexts.push(sentence.trim());
+                if (existing.length + newContexts.length >= 3) break;
+            }
+        }
+        skillContexts.set(canonical, [...existing, ...newContexts].slice(0, 3));
     });
 
     // 3. Identification of Missing Skills
@@ -142,10 +152,6 @@ export function analyzeKeywordGaps(
         genuineGaps: gaps.filter(g => g.gapType === 'genuine-gap'),
         mentionGaps: gaps.filter(g => g.gapType === 'mention-gap'),
     };
-}
-
-function escapeRegExp(string: string) {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 /**

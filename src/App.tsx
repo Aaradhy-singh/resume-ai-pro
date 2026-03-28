@@ -9,9 +9,10 @@ import Results from "./pages/Results";
 import ActionPlan from "./pages/ActionPlan";
 import CareerExplorer from "./pages/CareerExplorer";
 import NotFound from "./pages/NotFound";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
 
 import { SafeErrorBoundary } from "@/components/common/SafeErrorBoundary";
-import { DebugObservabilityPanel } from "@/components/debug/DebugObservabilityPanel";
 
 const queryClient = new QueryClient();
 
@@ -46,12 +47,11 @@ const App = () => {
                   <CareerExplorer />
                 </SafeErrorBoundary>
               } />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<Terms />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
-          {import.meta.env.DEV && (
-            <DebugObservabilityPanel />
-          )}
         </TooltipProvider>
       </SafeErrorBoundary>
     </QueryClientProvider>

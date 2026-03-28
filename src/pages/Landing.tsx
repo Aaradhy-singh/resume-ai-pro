@@ -646,9 +646,9 @@ const Landing = () => {
             ResumeAI
           </div>
           <div className="flex gap-6 text-[10px] text-[#E0E0E0] uppercase tracking-widest font-sans">
-            <a href="#faq" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#faq" className="hover:text-white transition-colors">Terms</a>
-            <a href="#faq" className="hover:text-white transition-colors">Contact</a>
+            <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
+            <a href="/terms" className="hover:text-white transition-colors">Terms</a>
+            <a href="mailto:contact@resumeaipro.com" className="hover:text-white transition-colors">Contact</a>
           </div>
           <div style={{ fontSize: '10px', color: '#FFFFFF !important', letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: "inherit", opacity: 1 }}>© 2026 Aaradhy Singh. All rights reserved.</div>
         </div>

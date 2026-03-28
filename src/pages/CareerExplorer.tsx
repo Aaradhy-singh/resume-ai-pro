@@ -5,6 +5,8 @@ import { searchOccupations } from '@/lib/occupation-data';
 import type { Occupation } from '@/lib/occupation-types';
 import type { AnalysisResult } from '@/lib/engines/analysis-orchestrator';
 import { safeStorage } from '@/lib/storage-safe';
+import { weightedOccupations } from '@/lib/engines/occupation-data-weighted';
+import { getAdjacentRoles } from '@/lib/engines/career-adjacency';
 
 const CareerExplorer = () => {
   const navigate = useNavigate();
@@ -29,15 +31,57 @@ const CareerExplorer = () => {
     }
   }, []);
 
-  const currentTitle = (analysisData?.roles?.topRoles?.[0] as any)?.role || 'Engineer';
-  const suggestedRoles = [
-    `Senior ${currentTitle.replace(/^Senior\s+/i, '')}`,
-    'Staff Engineer',
-    'ML Engineer',
-    'AI Product Manager',
-    'Technical Lead',
-    'Prompt Engineer'
-  ];
+  // Build dynamic suggested roles from the full 338-occupation database
+  const suggestedRoles = useMemo(() => {
+    if (!analysisData) return [];
+
+    // Find the best-matching weighted occupation for the user's top role
+    const topRoleTitle: string = (analysisData.roles?.topRoles?.[0] as { role?: string })?.role || '';
+    const currentStage: string = (analysisData.careerStage?.stage as string) || 'mid';
+
+    // Try to match user's top role to a weighted occupation
+    const matchedOcc = weightedOccupations.find(
+      o => o.title.toLowerCase() === topRoleTitle.toLowerCase()
+    ) || weightedOccupations.find(
+      o => topRoleTitle && o.title.toLowerCase().includes(topRoleTitle.toLowerCase().split(' ')[0])
+    );
+
+    if (matchedOcc) {
+      // Use career adjacency engine to get adjacent roles from all 338 occupations
+      const adjacent = getAdjacentRoles(matchedOcc, weightedOccupations, 20);
+      const titles = adjacent.slice(0, 8).map(a => a.occupation.title);
+      if (titles.length > 0) return titles;
+    }
+
+    // Fallback: derive from career stage and detected skills
+    const detectedSkills: string[] = (() => {
+      const rawSkills = analysisData.parsedProfile?.skills as string[] | { normalizedSkills?: { canonical: string }[] } | undefined;
+      if (Array.isArray(rawSkills)) return rawSkills;
+      return (rawSkills as { normalizedSkills?: { canonical: string }[] })?.normalizedSkills?.map(s => s.canonical) || [];
+    })();
+    const skillSet = new Set(detectedSkills.map(s => s.toLowerCase()));
+
+    // Score all occupations by skill overlap
+    const scored = weightedOccupations
+      .filter(o => {
+        if (!topRoleTitle) return true;
+        return o.title.toLowerCase() !== topRoleTitle.toLowerCase();
+      })
+      .map(o => {
+        const coreMatches = o.coreSkills.filter(s => skillSet.has(s.toLowerCase())).length;
+        const secMatches = o.secondarySkills.filter(s => skillSet.has(s.toLowerCase())).length;
+        const stageBonus = o.level === currentStage ? 2 : 0;
+        return { title: o.title, score: coreMatches * 3 + secMatches + stageBonus };
+      })
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 8)
+      .map(o => o.title);
+
+    return scored.length > 0 ? scored : [
+      `Senior ${topRoleTitle.replace(/^Senior\s+/i, '') || 'Engineer'}`,
+      'Staff Engineer', 'ML Engineer', 'AI Product Manager', 'Technical Lead', 'Prompt Engineer'
+    ];
+  }, [analysisData]);
 
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) return [];
@@ -70,10 +114,10 @@ const CareerExplorer = () => {
     const presentSupporting = role.secondarySkills.filter(s => userSkills.has(s.toLowerCase()));
     const present = [...presentCore, ...presentSupporting];
 
-    const totalWeight = (role.coreSkills.length * 2) + role.secondarySkills.length;
+    const totalWeight = (role.coreSkills.length * 3) + role.secondarySkills.length;
     if (totalWeight === 0) return { matchPercent: 100, missingCore, missingSupporting, present };
 
-    const earnedWeight = (presentCore.length * 2) + presentSupporting.length;
+    const earnedWeight = (presentCore.length * 3) + presentSupporting.length;
     const matchPercent = Math.round((earnedWeight / totalWeight) * 100);
 
     return { matchPercent, missingCore, missingSupporting, present };
@@ -343,7 +387,7 @@ const CareerExplorer = () => {
                                 <span style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF" }}>{skill}</span>
                                 <span style={{ border: "1px solid #EF4444", color: "#EF4444", fontFamily: "inherit", fontSize: "10px", padding: "2px 6px", borderRadius: "0px" }}>MISSING</span>
                               </div>
-                              <span style={{ fontFamily: "inherit", fontSize: "10px", color: "#E0E0E0" }}>2X WEIGHT</span>
+                              <span style={{ fontFamily: "inherit", fontSize: "10px", color: "#E0E0E0" }}>3X WEIGHT</span>
                             </div>
                           ))}
                         </div>

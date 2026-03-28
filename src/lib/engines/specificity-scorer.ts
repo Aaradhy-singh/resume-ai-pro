@@ -53,7 +53,15 @@ const NAMED_TECHNOLOGIES = [
     'embeddings', 'ibm watson', 'aws bedrock', 'sagemaker',
     'genai', 'genai tools', 'generative ai tools', 'ai-assisted',
     'no-code', 'llm', 'large language model', 'predictive modeling',
-    'data analysis', 'cloud computing'
+    'data analysis', 'cloud computing',
+    // AI-specific terms mapped in the ontology
+    'local inference', 'inference pipeline', 'system prompt',
+    'prompt engineering', 'llm pipeline', 'rag pipeline',
+    'vector store', 'fine-tuning', 'fine tuning', 'quantization',
+    'retrieval augmented generation', 'local model', 'on-device llm',
+    'chain of thought', 'few-shot', 'zero-shot', 'model inference',
+    'token optimization', 'context window', 'prompt design',
+    'prompt optimization', 'grounding', 'rag'
 ];
 
 const VAGUE_OPENERS = [

@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { type AnalysisResult } from "@/lib/engines/analysis-orchestrator";
 import { FeedbackModal } from '@/components/FeedbackModal';
 import { ShareModal } from "@/components/results/ShareModal";
+import { rewriteBullet, generateInterviewQuestions, generateResumeSummary } from "@/lib/integrations/geminiClient";
+import { isSupabaseConfigured, getCurrentUser, signInWithGoogle, signOut, saveAnalysisToCloud, loadAnalysisHistory, type AnalysisHistoryEntry } from "@/lib/integrations/supabaseClient";
+import type { AuthUser } from "@supabase/supabase-js";
 
 import { safeStorage } from "@/lib/storage-safe";
 import { toast } from "sonner";
@@ -19,6 +22,18 @@ const Results = () => {
   const [showFeedback, setShowFeedback] = useState(false);
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [scoreDetailsOpen, setScoreDetailsOpen] = useState(false);
+  const [barsAnimated, setBarsAnimated] = useState(false);
+  // Gemini AI state (Issues 6, 7, 8)
+  const [rewrittenBullets, setRewrittenBullets] = useState<Record<number, string>>({});
+  const [rewritingIdx, setRewritingIdx] = useState<number | null>(null);
+  const [interviewQuestions, setInterviewQuestions] = useState<string[]>([]);
+  const [isGeneratingQuestions, setIsGeneratingQuestions] = useState(false);
+  const [generatedSummary, setGeneratedSummary] = useState<string>('');
+  const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
+  // Supabase auth state (Issue 10)
+  const [supabaseUser, setSupabaseUser] = useState<AuthUser | null>(null);
+  const [analysisHistory, setAnalysisHistory] = useState<AnalysisHistoryEntry[]>([]);
+  const [isSavingToCloud, setIsSavingToCloud] = useState(false);
 
 
   useEffect(() => {
@@ -40,6 +55,110 @@ const Results = () => {
       setLoading(false);
     }
   }, [navigate]);
+
+  // Trigger bar animation shortly after data is set
+  useEffect(() => {
+    if (data) {
+      const t = setTimeout(() => setBarsAnimated(true), 80);
+      return () => clearTimeout(t);
+    }
+  }, [data]);
+
+  // Issue 10: Init Supabase auth state and load cloud history
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    getCurrentUser().then(user => {
+      if (user) {
+        setSupabaseUser(user);
+        loadAnalysisHistory(user.id).then(setAnalysisHistory).catch(() => {});
+      }
+    });
+  }, []);
+
+  const handleCloudSave = async () => {
+    if (!data || !supabaseUser) return;
+    setIsSavingToCloud(true);
+    try {
+      await saveAnalysisToCloud({
+        user_id: supabaseUser.id,
+        job_title: (data as any).jobTitle || null,
+        overall_score: data.scores?.overall ?? 0,
+        analysis_json: JSON.stringify(data),
+      });
+      const history = await loadAnalysisHistory(supabaseUser.id);
+      setAnalysisHistory(history);
+      toast.success('Analysis saved to your cloud history.');
+    } catch (e) {
+      toast.error('Failed to save analysis: ' + (e instanceof Error ? e.message : 'Unknown error'));
+    } finally {
+      setIsSavingToCloud(false);
+    }
+  };
+
+  // Issue 6: Rewrite a bullet with Gemini
+  const handleRewriteBullet = async (bulletText: string, idx: number) => {
+    setRewritingIdx(idx);
+    try {
+      const rewritten = await rewriteBullet(bulletText);
+      setRewrittenBullets(prev => ({ ...prev, [idx]: rewritten }));
+    } catch (e) {
+      toast.error('Bullet rewrite failed: ' + (e instanceof Error ? e.message : 'Unknown error'));
+    } finally {
+      setRewritingIdx(null);
+    }
+  };
+
+  // Issue 7: Generate interview questions with Gemini
+  const handleGenerateQuestions = async () => {
+    if (!data) return;
+    setIsGeneratingQuestions(true);
+    try {
+      const missingSkills = data.gaps?.genuineGaps?.map((g: any) => g.keyword || String(g)) ?? [];
+      const existingSkills: string[] = (() => {
+        const raw = (data.parsedProfile?.skills as any);
+        if (Array.isArray(raw)) return raw;
+        return raw?.normalizedSkills?.map((s: any) => s.canonical) ?? [];
+      })();
+      const targetRole = (data.roles?.topRoles?.[0] as any)?.role || 'Software Engineer';
+      const questions = await generateInterviewQuestions(targetRole, missingSkills, existingSkills);
+      setInterviewQuestions(questions);
+    } catch (e) {
+      toast.error('Question generation failed: ' + (e instanceof Error ? e.message : 'Unknown error'));
+    } finally {
+      setIsGeneratingQuestions(false);
+    }
+  };
+
+  // Issue 8: Generate resume summary with Gemini
+  const handleGenerateSummary = async () => {
+    if (!data) return;
+    setIsGeneratingSummary(true);
+    try {
+      const skills: string[] = (() => {
+        const raw = (data.parsedProfile?.skills as any);
+        if (Array.isArray(raw)) return raw;
+        return raw?.normalizedSkills?.map((s: any) => s.canonical) ?? [];
+      })();
+      const careerStage = (data.careerStage?.stage as string) || 'mid';
+      const topRole = (data.roles?.topRoles?.[0] as any)?.role || 'Software Engineer';
+      const years = data.careerStage?.signals?.totalExperienceYears ?? 0;
+      const summary = await generateResumeSummary(skills, careerStage, topRole, years);
+      setGeneratedSummary(summary);
+    } catch (e) {
+      toast.error('Summary generation failed: ' + (e instanceof Error ? e.message : 'Unknown error'));
+    } finally {
+      setIsGeneratingSummary(false);
+    }
+  };
+  useEffect(() => {
+    if (!data) return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, [data]);
 
   // FIX 2: Real export logic (ported from ResultsHeader.tsx)
   const handleExport = () => {
@@ -561,6 +680,25 @@ const Results = () => {
             <div style={{ fontSize: "20px", color: "#FFFFFF", fontWeight: "normal", lineHeight: 1 }}>Results</div>
           </div>
           <div style={{ display: "flex", gap: "12px" }}>
+            {/* Issue 10: Supabase cloud sync button */}
+            {isSupabaseConfigured && (
+              supabaseUser ? (
+                <button
+                  onClick={handleCloudSave}
+                  disabled={isSavingToCloud}
+                  style={{ background: "transparent", border: "1px solid #10B981", color: "#10B981", fontFamily: "inherit", fontSize: "11px", textTransform: "uppercase", padding: "8px 16px", borderRadius: "0px", cursor: isSavingToCloud ? "not-allowed" : "pointer", letterSpacing: "0.08em", opacity: isSavingToCloud ? 0.5 : 1 }}
+                >
+                  {isSavingToCloud ? "SAVING..." : "☁ SAVE TO CLOUD"}
+                </button>
+              ) : (
+                <button
+                  onClick={() => signInWithGoogle().catch(e => toast.error(e.message))}
+                  style={{ background: "transparent", border: "1px solid #555555", color: "#E0E0E0", fontFamily: "inherit", fontSize: "11px", textTransform: "uppercase", padding: "8px 16px", borderRadius: "0px", cursor: "pointer", letterSpacing: "0.08em" }}
+                >
+                  SIGN IN TO SYNC
+                </button>
+              )
+            )}
             <button
               onClick={handleExport}
               style={{ background: "transparent", border: "1px solid #2A2A2A", color: "#FFFFFF", fontFamily: "inherit", fontSize: "11px", textTransform: "uppercase", padding: "8px 16px", borderRadius: "0px", cursor: "pointer", letterSpacing: "0.08em" }}
@@ -639,7 +777,7 @@ const Results = () => {
               <span style={{ fontFamily: "inherit", fontSize: "18px", color: "#F3F4F6" }}>/100</span>
             </div>
             <div style={{ width: '120px', height: '2px', background: '#1A1A1A', marginTop: '12px' }}>
-              <div style={{ width: `${overallScore}%`, height: '100%', background: scoreColor, transition: 'width 0.6s ease' }} />
+              <div style={{ width: barsAnimated ? `${overallScore}%` : '0%', height: '100%', background: scoreColor, transition: 'width 0.8s ease' }} />
             </div>
             <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#FFFFFF", textTransform: "uppercase", marginTop: "12px", letterSpacing: "0.1em" }}>
               OVERALL RESUME SCORE
@@ -670,7 +808,7 @@ const Results = () => {
                   </div>
                 </div>
                 <div style={{ width: '100%', height: '2px', background: '#1A1A1A' }}>
-                  <div style={{ width: engine.score === -1 ? '0%' : `${engine.score}%`, height: '100%', background: engine.score === -1 ? '#2A2A2A' : getScoreColor(engine.score), transition: 'width 0.4s ease' }} />
+                  <div style={{ width: engine.score === -1 ? '0%' : barsAnimated ? `${engine.score}%` : '0%', height: '100%', background: engine.score === -1 ? '#2A2A2A' : getScoreColor(engine.score), transition: 'width 0.6s ease' }} />
                 </div>
               </div>
             ))}
@@ -976,15 +1114,92 @@ const Results = () => {
                       {details.map((bullet, idx) => (
                         <div key={idx} style={{ background: "#0D0D0D", border: "1px solid #3A3A3A", borderLeft: `4px solid ${(bullet.score ?? 0) < 3 ? "#EF4444" : "#10B981"}`, boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)", padding: "16px" }}>
                           <div style={{ fontFamily: "inherit", fontSize: "11px", color: "#FFFFFF", lineHeight: 1.5 }}>
-                            {bullet.text}
+                            {rewrittenBullets[idx] ? (
+                              <span style={{ color: "#10B981" }}>{rewrittenBullets[idx]}</span>
+                            ) : bullet.text}
                           </div>
-                          {(bullet.score ?? 0) < 3 && bullet.reasons?.length > 0 && (
+                          {(bullet.score ?? 0) < 3 && bullet.reasons?.length > 0 && !rewrittenBullets[idx] && (
                             <div style={{ fontFamily: "inherit", fontSize: '10px', color: '#F59E0B', marginTop: '4px', lineHeight: 1.7 }}>
                               → {bullet.reasons[0]}
                             </div>
                           )}
+                          {/* Issue 6: Gemini bullet rewriter */}
+                          {(bullet.score ?? 0) < 3 && (
+                            <div style={{ marginTop: '8px', display: 'flex', gap: '8px', alignItems: 'center' }}>
+                              {rewrittenBullets[idx] ? (
+                                <button
+                                  onClick={() => setRewrittenBullets(prev => { const n = {...prev}; delete n[idx]; return n; })}
+                                  style={{ fontFamily: "inherit", fontSize: "9px", color: "#888888", background: "none", border: "1px solid #333333", padding: "3px 8px", cursor: "pointer", textTransform: "uppercase", letterSpacing: "0.08em" }}
+                                >
+                                  REVERT
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => handleRewriteBullet(bullet.text, idx)}
+                                  disabled={rewritingIdx === idx}
+                                  style={{ fontFamily: "inherit", fontSize: "9px", color: rewritingIdx === idx ? "#444" : "#0EA5E9", background: "none", border: "1px solid #0EA5E9", padding: "3px 8px", cursor: rewritingIdx === idx ? "not-allowed" : "pointer", textTransform: "uppercase", letterSpacing: "0.08em", opacity: rewritingIdx === idx ? 0.5 : 1 }}
+                                >
+                                  {rewritingIdx === idx ? "REWRITING..." : "✦ REWRITE WITH AI"}
+                                </button>
+                              )}
+                            </div>
+                          )}
                         </div>
                       ))}
+                    </div>
+
+                    {/* Issue 7: Interview Question Generator */}
+                    <div style={{ background: "#0D0D0D", border: "1px solid #3A3A3A", padding: "24px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                        <div>
+                          <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", textTransform: "uppercase", letterSpacing: "0.08em" }}>✦ AI INTERVIEW PREP</div>
+                          <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#888888", marginTop: "4px" }}>Generate 10 interview questions based on your skill gaps</div>
+                        </div>
+                        <button
+                          onClick={handleGenerateQuestions}
+                          disabled={isGeneratingQuestions}
+                          style={{ fontFamily: "inherit", fontSize: "10px", background: isGeneratingQuestions ? "#1A1A1A" : "#0EA5E9", color: isGeneratingQuestions ? "#444" : "#000", border: "none", padding: "8px 16px", cursor: isGeneratingQuestions ? "not-allowed" : "pointer", textTransform: "uppercase", letterSpacing: "0.08em" }}
+                        >
+                          {isGeneratingQuestions ? "GENERATING..." : "GENERATE QUESTIONS"}
+                        </button>
+                      </div>
+                      {interviewQuestions.length > 0 && (
+                        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                          {interviewQuestions.map((q, i) => (
+                            <div key={i} style={{ padding: "10px 12px", background: "#111111", border: "1px solid #2A2A2A", fontFamily: "inherit", fontSize: "11px", color: "#F0F0F0", lineHeight: 1.6 }}>
+                              <span style={{ color: "#0EA5E9", marginRight: "8px" }}>{i + 1}.</span>{q}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Issue 8: Resume Summary Generator */}
+                    <div style={{ background: "#0D0D0D", border: "1px solid #3A3A3A", padding: "24px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                        <div>
+                          <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", textTransform: "uppercase", letterSpacing: "0.08em" }}>✦ AI RESUME SUMMARY</div>
+                          <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#888888", marginTop: "4px" }}>Write a professional summary based on your skills and career stage</div>
+                        </div>
+                        <button
+                          onClick={handleGenerateSummary}
+                          disabled={isGeneratingSummary}
+                          style={{ fontFamily: "inherit", fontSize: "10px", background: isGeneratingSummary ? "#1A1A1A" : "#0EA5E9", color: isGeneratingSummary ? "#444" : "#000", border: "none", padding: "8px 16px", cursor: isGeneratingSummary ? "not-allowed" : "pointer", textTransform: "uppercase", letterSpacing: "0.08em" }}
+                        >
+                          {isGeneratingSummary ? "GENERATING..." : "GENERATE SUMMARY"}
+                        </button>
+                      </div>
+                      {generatedSummary && (
+                        <div style={{ padding: "16px", background: "#111111", border: "1px solid #10B981", fontFamily: "inherit", fontSize: "12px", color: "#F0F0F0", lineHeight: 1.8 }}>
+                          {generatedSummary}
+                          <button
+                            onClick={() => navigator.clipboard.writeText(generatedSummary).then(() => toast.success('Summary copied!'))}
+                            style={{ display: "block", marginTop: "12px", fontFamily: "inherit", fontSize: "9px", color: "#888888", background: "none", border: "1px solid #333333", padding: "4px 10px", cursor: "pointer", textTransform: "uppercase", letterSpacing: "0.08em" }}
+                          >
+                            COPY
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </>
                 ) : (

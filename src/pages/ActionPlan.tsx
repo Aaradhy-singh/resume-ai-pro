@@ -138,6 +138,7 @@ const ActionPlan = () => {
 
   // Total effort estimate for current filtered view
   const effortToMinutes: Record<string, number> = {
+    '5 minutes': 5,
     '15-30 minutes': 22.5,
     '30-60 minutes': 45,
     '30 minutes': 30,
@@ -153,9 +154,9 @@ const ActionPlan = () => {
   };
 
   const totalEffortMinutes = filteredItems.filter(i => !i.completed).reduce((sum, item) => {
-    let effort = item.estimatedEffort?.toLowerCase().trim();
+    const effort = item.estimatedEffort?.toLowerCase().trim();
     if (effort === 'ongoing') return sum;
-    let minutes = effortToMinutes[effort] || 90; // Defaulting to 90 min if unknown
+    const minutes = effortToMinutes[effort] || 90; // Defaulting to 90 min if unknown
     return sum + minutes;
   }, 0);
 

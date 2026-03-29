@@ -191,17 +191,6 @@ export function GitHubInput({ onValidUsername }: GitHubInputProps) {
                         ))}
                     </div>
                 )}
-
-                {/* Rate limit note */}
-                <p style={{
-                    fontFamily: "'DM Mono', monospace",
-                    fontSize: '10px',
-                    color: '#E0E0E0',
-                    marginTop: '14px',
-                    lineHeight: 1.6
-                }}>
-                    Rate limit: 60 requests/hour without token.
-                </p>
             </div>
         </div>
     );

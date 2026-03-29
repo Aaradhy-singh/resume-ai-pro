@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, FileText, Briefcase, Github, ArrowRight } from "lucide-react";
 import { analyzeResume, type AnalysisResult } from "@/lib/engines/analysis-orchestrator";
 import { safeStorage } from "@/lib/storage-safe";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
@@ -72,7 +67,7 @@ export default function AnalyzeResume() {
 
             // Inject target job title into results if we need it later, though the orchestrator might not explicitly expect it here unless we pass it
             if (targetJobTitle.trim()) {
-                (results as any).jobTitle = targetJobTitle;
+                (results as Record<string, unknown>).jobTitle = targetJobTitle;
             }
 
             const success = safeStorage.setItem("resumeAnalysis", JSON.stringify(results));
@@ -103,30 +98,30 @@ export default function AnalyzeResume() {
 
     return (
         <DashboardLayout>
-            <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 24px", paddingBottom: "80px", fontFamily: "'DM Mono', monospace" }}>
+            <div className="max-w-[1100px] mx-auto px-6 pb-20 font-mono">
 
                 {/* Header Block */}
-                <div style={{ marginBottom: "40px", paddingTop: "24px" }}>
-                    <div style={{ color: "#0EA5E9", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "12px" }}>
+                <div className="mb-10 pt-6">
+                    <div className="text-[#0EA5E9] text-[10px] uppercase tracking-widest mb-3">
                         RESUME ANALYSIS
                     </div>
-                    <h1 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "36px", color: "#FFFFFF", margin: "0 0 12px 0", fontWeight: "normal" }}>
+                    <h1 className="font-serif text-[36px] text-white mb-3 font-normal">
                         Analyze Your Resume
                     </h1>
-                    <p style={{ color: "#888888", fontSize: "13px", margin: 0 }}>
+                    <p className="text-[#888888] text-[13px]">
                         Paste your resume text below. All 8 diagnostic engines will run simultaneously.
                     </p>
                 </div>
 
                 {/* Main Layout */}
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "24px" }}>
+                <div className="flex flex-wrap gap-6">
 
                     {/* LEFT COLUMN */}
-                    <div style={{ flex: "1 1 60%", minWidth: "300px", display: "flex", flexDirection: "column", gap: "24px" }}>
+                    <div className="flex-[1_1_60%] min-w-[300px] flex flex-col gap-6">
 
                         {/* Resume Text Input */}
                         <div>
-                            <label style={{ display: "block", color: "#0EA5E9", fontSize: "10px", textTransform: "uppercase", marginBottom: "8px" }}>
+                            <label className="block text-[#0EA5E9] text-[10px] uppercase tracking-widest mb-2">
                                 RESUME TEXT
                             </label>
                             <textarea
@@ -136,65 +131,35 @@ export default function AnalyzeResume() {
                                     if (showEmptyError) setShowEmptyError(false);
                                 }}
                                 placeholder="Paste your full resume text here. Plain text works best. Include all sections: experience, skills, education, projects."
-                                style={{
-                                    width: "100%",
-                                    minHeight: "320px",
-                                    background: "#0D0D0D",
-                                    border: `1px solid ${showEmptyError ? "#EF4444" : "#3A3A3A"} `,
-                                    color: "#FFFFFF",
-                                    fontFamily: "'DM Mono', monospace",
-                                    fontSize: "12px",
-                                    padding: "16px",
-                                    borderRadius: "0px",
-                                    resize: "vertical",
-                                    outline: "none",
-                                    transition: "border-color 0.2s"
-                                }}
-                                onFocus={(e) => { if (!showEmptyError) e.target.style.borderColor = "#0EA5E9"; }}
-                                onBlur={(e) => { if (!showEmptyError) e.target.style.borderColor = "#3A3A3A"; }}
+                                className={`w-full min-h-[320px] bg-[#0D0D0D] text-white font-mono text-[12px] p-4 resize-y outline-none transition-colors rounded-none ${showEmptyError ? 'border border-[#EF4444]' : 'border border-[#3A3A3A] focus:border-[#0EA5E9]'}`}
                             />
                             {showEmptyError && (
-                                <div style={{ color: "#EF4444", fontSize: "11px", marginTop: "4px" }}>
+                                <div className="text-[#EF4444] text-[11px] mt-1">
                                     Resume text is required to run analysis.
                                 </div>
                             )}
-                            <div style={{ color: "#444444", fontSize: "10px", textAlign: "right", marginTop: "4px", fontFeatureSettings: '"zero" 0, "ss01" 0, "ss02" 0', fontVariantNumeric: "normal" }}>
+                            <div className="text-[#444444] text-[10px] text-right mt-1">
                                 {resumeText.length} characters
                             </div>
                         </div>
 
                         {/* Job Description Input */}
                         <div>
-                            <label style={{ display: "block", marginBottom: "8px" }}>
-                                <span style={{ color: "#0EA5E9", fontSize: "10px", textTransform: "uppercase" }}>JOB DESCRIPTION</span>
-                                <span style={{ color: "#444444", fontSize: "10px", marginLeft: "8px" }}>OPTIONAL</span>
+                            <label className="block mb-2">
+                                <span className="text-[#0EA5E9] text-[10px] uppercase tracking-widest">JOB DESCRIPTION</span>
+                                <span className="text-[#444444] text-[10px] ml-2">OPTIONAL</span>
                             </label>
                             <textarea
                                 value={jobDescription}
                                 onChange={(e) => setJobDescription(e.target.value)}
                                 placeholder="Paste the job description to enable keyword alignment and skill gap analysis against this specific role."
-                                style={{
-                                    width: "100%",
-                                    height: "160px",
-                                    background: "#0D0D0D",
-                                    border: "1px solid #3A3A3A",
-                                    color: "#FFFFFF",
-                                    fontFamily: "'DM Mono', monospace",
-                                    fontSize: "12px",
-                                    padding: "16px",
-                                    borderRadius: "0px",
-                                    resize: "vertical",
-                                    outline: "none",
-                                    transition: "border-color 0.2s"
-                                }}
-                                onFocus={(e) => e.target.style.borderColor = "#0EA5E9"}
-                                onBlur={(e) => e.target.style.borderColor = "#3A3A3A"}
+                                className="w-full h-40 bg-[#0D0D0D] border border-[#3A3A3A] focus:border-[#0EA5E9] text-white font-mono text-[12px] p-4 resize-y outline-none transition-colors rounded-none"
                             />
                         </div>
 
                         {/* Target Job Title Input */}
                         <div>
-                            <label style={{ display: "block", color: "#0EA5E9", fontSize: "10px", textTransform: "uppercase", marginBottom: "8px" }}>
+                            <label className="block text-[#0EA5E9] text-[10px] uppercase tracking-widest mb-2">
                                 TARGET JOB TITLE
                             </label>
                             <input
@@ -202,45 +167,20 @@ export default function AnalyzeResume() {
                                 value={targetJobTitle}
                                 onChange={(e) => setTargetJobTitle(e.target.value)}
                                 placeholder="e.g. Senior Software Engineer, Prompt Engineer, Data Scientist"
-                                style={{
-                                    width: "100%",
-                                    background: "#0D0D0D",
-                                    border: "1px solid #3A3A3A",
-                                    color: "#FFFFFF",
-                                    fontFamily: "'DM Mono', monospace",
-                                    fontSize: "13px",
-                                    padding: "12px 16px",
-                                    borderRadius: "0px",
-                                    outline: "none",
-                                    transition: "border-color 0.2s"
-                                }}
-                                onFocus={(e) => e.target.style.borderColor = "#0EA5E9"}
-                                onBlur={(e) => e.target.style.borderColor = "#3A3A3A"}
+                                className="w-full bg-[#0D0D0D] border border-[#3A3A3A] focus:border-[#0EA5E9] text-white font-mono text-[13px] px-4 py-3 outline-none transition-colors rounded-none"
                             />
                             {!targetJobTitle.trim() && resumeText.trim() && (
-                                <div style={{ color: "#F59E0B", fontSize: "11px", marginTop: "4px" }}>
+                                <div className="text-[#F59E0B] text-[11px] mt-1">
                                     No job title entered. Analysis will use generic scoring.
                                 </div>
                             )}
 
-                            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "12px" }}>
+                            <div className="flex flex-wrap gap-2 mt-3">
                                 {["Software Engineer", "Product Manager", "Data Scientist", "ML Engineer", "Prompt Engineer"].map((title) => (
                                     <button
                                         key={title}
                                         onClick={() => handleTitleSuggestionClick(title)}
-                                        style={{
-                                            background: "#111111",
-                                            border: "1px solid #3A3A3A",
-                                            color: "#FFFFFF",
-                                            fontFamily: "'DM Mono', monospace",
-                                            fontSize: "10px",
-                                            padding: "4px 10px",
-                                            borderRadius: "0px",
-                                            cursor: "pointer",
-                                            transition: "border-color 0.2s"
-                                        }}
-                                        onMouseEnter={(e) => e.currentTarget.style.borderColor = "#0EA5E9"}
-                                        onMouseLeave={(e) => e.currentTarget.style.borderColor = "#3A3A3A"}
+                                        className="bg-[#111111] border border-[#3A3A3A] hover:border-[#0EA5E9] text-white font-mono text-[10px] px-[10px] py-1 cursor-pointer transition-colors rounded-none"
                                     >
                                         {title}
                                     </button>
@@ -249,32 +189,19 @@ export default function AnalyzeResume() {
                         </div>
 
                         {/* Analyze Button */}
-                        <div style={{ marginTop: "16px" }}>
+                        <div className="mt-4">
                             <button
                                 onClick={handleAnalyze}
                                 disabled={!resumeText.trim() || isAnalyzing}
-                                style={{
-                                    width: "100%",
-                                    background: (!resumeText.trim() || isAnalyzing) ? "#1A1A1A" : "#0EA5E9",
-                                    color: (!resumeText.trim() || isAnalyzing) ? "#444444" : "#000000",
-                                    fontFamily: "'DM Mono', monospace",
-                                    fontSize: "12px",
-                                    textTransform: "uppercase",
-                                    padding: "14px",
-                                    borderRadius: "0px",
-                                    letterSpacing: "0.1em",
-                                    border: "none",
-                                    cursor: (!resumeText.trim() || isAnalyzing) ? "not-allowed" : "pointer",
-                                    fontWeight: "bold"
-                                }}
+                                className={`w-full font-mono text-[12px] uppercase py-[14px] tracking-widest font-bold transition-colors rounded-none border-none ${!resumeText.trim() || isAnalyzing ? 'bg-[#1A1A1A] text-[#444444] cursor-not-allowed' : 'bg-[#0EA5E9] text-black cursor-pointer'}`}
                             >
                                 {isAnalyzing ? (
-                                    <span style={{ animation: "pulse 1.5s infinite" }}>ANALYZING...</span>
+                                    <span className="animate-pulse">ANALYZING...</span>
                                 ) : (
                                     "RUN FULL DIAGNOSTIC →"
                                 )}
                             </button>
-                            <div style={{ color: "#444444", fontSize: "10px", textAlign: "center", marginTop: "12px" }}>
+                            <div className="text-[#444444] text-[10px] text-center mt-3">
                                 8 engines · Results in under 10 seconds · No account required
                             </div>
                         </div>
@@ -282,15 +209,15 @@ export default function AnalyzeResume() {
                     </div>
 
                     {/* RIGHT COLUMN */}
-                    <div style={{ flex: "1 1 38%", minWidth: "300px", display: "flex", flexDirection: "column" }}>
+                    <div className="flex-[1_1_38%] min-w-[300px] flex flex-col">
 
                         {/* What Gets Analyzed card */}
-                        <div style={{ background: "#0D0D0D", border: "1px solid #3A3A3A", padding: "24px" }}>
-                            <div style={{ color: "#0EA5E9", fontSize: "10px", textTransform: "uppercase", marginBottom: "16px", letterSpacing: "0.1em" }}>
+                        <div className="bg-[#0D0D0D] border border-[#3A3A3A] p-6">
+                            <div className="text-[#0EA5E9] text-[10px] uppercase tracking-widest mb-4">
                                 WHAT GETS ANALYZED
                             </div>
 
-                            <div style={{ display: "flex", flexDirection: "column" }}>
+                            <div className="flex flex-col">
                                 {[
                                     { name: "ATS COMPATIBILITY", desc: "Keyword density, formatting, parsability" },
                                     { name: "SKILL GAP ANALYSIS", desc: "Missing core and supporting skills by role" },
@@ -301,55 +228,47 @@ export default function AnalyzeResume() {
                                     { name: "PORTFOLIO SIGNALS", desc: "GitHub, projects, portfolio detection" },
                                     { name: "CAREER TRAJECTORY", desc: "Role progression and gap analysis" },
                                 ].map((engine, i, arr) => (
-                                    <div key={engine.name} style={{
-                                        padding: "12px 0",
-                                        borderBottom: i === arr.length - 1 ? "none" : "1px solid #1A1A1A",
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        gap: "4px"
-                                    }}>
-                                        <div style={{ color: "#FFFFFF", fontSize: "11px" }}>{engine.name}</div>
-                                        <div style={{ color: "#666666", fontSize: "11px" }}>{engine.desc}</div>
+                                    <div key={engine.name} className={`py-3 flex flex-col gap-1 ${i < arr.length - 1 ? 'border-b border-[#1A1A1A]' : ''}`}>
+                                        <div className="text-white text-[11px]">{engine.name}</div>
+                                        <div className="text-[#666666] text-[11px]">{engine.desc}</div>
                                     </div>
                                 ))}
                             </div>
                         </div>
 
                         {/* Tips card */}
-                        <div style={{ background: "#0D0D0D", border: "1px solid #2A2A2A", padding: "24px", marginTop: "16px" }}>
-                            <div style={{ color: "#0EA5E9", fontSize: "10px", textTransform: "uppercase", marginBottom: "16px", letterSpacing: "0.1em" }}>
+                        <div className="bg-[#0D0D0D] border border-[#2A2A2A] p-6 mt-4">
+                            <div className="text-[#0EA5E9] text-[10px] uppercase tracking-widest mb-4">
                                 FOR BEST RESULTS
                             </div>
-                            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                                <div style={{ display: "flex", gap: "8px", color: "#666666", fontSize: "11px", lineHeight: "1.5" }}>
-                                    <span style={{ color: "#0EA5E9" }}>→</span>
-                                    Include your full resume — all sections, not just experience
-                                </div>
-                                <div style={{ display: "flex", gap: "8px", color: "#666666", fontSize: "11px", lineHeight: "1.5" }}>
-                                    <span style={{ color: "#0EA5E9" }}>→</span>
-                                    Paste the actual job description if you have one — not just the title
-                                </div>
-                                <div style={{ display: "flex", gap: "8px", color: "#666666", fontSize: "11px", lineHeight: "1.5" }}>
-                                    <span style={{ color: "#0EA5E9" }}>→</span>
-                                    Plain text is better than formatted text copied from a PDF
-                                </div>
+                            <div className="flex flex-col gap-3">
+                                {[
+                                    "Include your full resume — all sections, not just experience",
+                                    "Paste the actual job description if you have one — not just the title",
+                                    "Plain text is better than formatted text copied from a PDF",
+                                ].map((tip, i) => (
+                                    <div key={i} className="flex gap-2 text-[#666666] text-[11px] leading-relaxed">
+                                        <span className="text-[#0EA5E9]">→</span>
+                                        {tip}
+                                    </div>
+                                ))}
                             </div>
                         </div>
 
                         {/* Previous Analysis card */}
                         {lastAnalysis && (
-                            <div style={{ background: "#0D0D0D", border: "1px solid #2A2A2A", padding: "24px", marginTop: "16px" }}>
-                                <div style={{ color: "#0EA5E9", fontSize: "10px", textTransform: "uppercase", marginBottom: "16px", letterSpacing: "0.1em" }}>
+                            <div className="bg-[#0D0D0D] border border-[#2A2A2A] p-6 mt-4">
+                                <div className="text-[#0EA5E9] text-[10px] uppercase tracking-widest mb-4">
                                     LAST ANALYSIS
                                 </div>
-                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                <div className="flex justify-between items-center">
                                     <div>
-                                        <div style={{ color: "#FFFFFF", fontSize: "13px", marginBottom: "4px" }}>{lastAnalysis.title}</div>
-                                        <div style={{ color: "#666666", fontSize: "11px", fontFeatureSettings: '"zero" 0, "ss01" 0, "ss02" 0', fontVariantNumeric: "normal" }}>{lastAnalysis.date} • Score: {lastAnalysis.score}</div>
+                                        <div className="text-white text-[13px] mb-1">{lastAnalysis.title}</div>
+                                        <div className="text-[#666666] text-[11px]">{lastAnalysis.date} • Score: {lastAnalysis.score}</div>
                                     </div>
                                     <button
                                         onClick={() => navigate("/results")}
-                                        style={{ background: "transparent", border: "none", color: "#0EA5E9", fontSize: "11px", cursor: "pointer", padding: 0, fontFamily: "'DM Mono', monospace" }}
+                                        className="bg-transparent border-none text-[#0EA5E9] text-[11px] cursor-pointer p-0 font-mono"
                                     >
                                         VIEW RESULTS →
                                     </button>
@@ -364,4 +283,3 @@ export default function AnalyzeResume() {
         </DashboardLayout>
     );
 };
-

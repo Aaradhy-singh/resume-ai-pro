@@ -104,9 +104,9 @@ export function computeRoleAdjacency(
 }
 
 /**
- * Get adjacent roles for a given occupation
+ * Get adjacent roles for a given occupation (exported for use in Career Explorer)
  */
-function getAdjacentRoles(
+export function getAdjacentRoles(
     currentRole: WeightedOccupation,
     allRoles: WeightedOccupation[] = weightedOccupations,
     minAdjacencyScore = MATCH_THRESHOLDS.MIN_ADJACENCY_SCORE

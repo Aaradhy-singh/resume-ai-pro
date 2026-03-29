@@ -9,9 +9,12 @@ import Results from "./pages/Results";
 import ActionPlan from "./pages/ActionPlan";
 import CareerExplorer from "./pages/CareerExplorer";
 import NotFound from "./pages/NotFound";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
+import InterviewPrep from "./pages/InterviewPrep";
+import ResumeCompare from "./pages/ResumeCompare";
 
 import { SafeErrorBoundary } from "@/components/common/SafeErrorBoundary";
-import { DebugObservabilityPanel } from "@/components/debug/DebugObservabilityPanel";
 
 const queryClient = new QueryClient();
 
@@ -46,12 +49,21 @@ const App = () => {
                   <CareerExplorer />
                 </SafeErrorBoundary>
               } />
+              <Route path="/interview-prep" element={
+                <SafeErrorBoundary source="InterviewPrepRoute">
+                  <InterviewPrep />
+                </SafeErrorBoundary>
+              } />
+              <Route path="/resume-compare" element={
+                <SafeErrorBoundary source="ResumeCompareRoute">
+                  <ResumeCompare />
+                </SafeErrorBoundary>
+              } />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<Terms />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
-          {import.meta.env.DEV && (
-            <DebugObservabilityPanel />
-          )}
         </TooltipProvider>
       </SafeErrorBoundary>
     </QueryClientProvider>

@@ -1,4 +1,3 @@
-import { useCountUp } from '@/hooks/useCountUp';
 import type { PortfolioAnalysis } from '@/lib/integrations/githubClient';
 import {
   BarChart, Bar, XAxis, YAxis, ResponsiveContainer,
@@ -10,7 +9,7 @@ interface PortfolioAnalyzerProps {
 }
 
 export function PortfolioAnalyzer({ data }: PortfolioAnalyzerProps) {
-  const animatedRating = useCountUp(data?.portfolioScore ?? 0, 1200);
+  const portfolioScore = data?.portfolioScore ?? 0;
 
   if (!data) return null;
 
@@ -68,12 +67,12 @@ export function PortfolioAnalyzer({ data }: PortfolioAnalyzerProps) {
           <p style={{
             fontFamily: 'DM Mono, monospace',
             fontSize: '36px',
-            color: animatedRating >= 70
-              ? '#10B981' : animatedRating >= 40
+            color: portfolioScore >= 70
+              ? '#10B981' : portfolioScore >= 40
                 ? '#F59E0B' : '#EF4444',
             fontWeight: 300,
             lineHeight: 1
-          }}>{animatedRating}</p>
+          }}>{portfolioScore}</p>
           <p style={{
             fontFamily: 'DM Mono, monospace',
             fontSize: '10px',

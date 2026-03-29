@@ -1,4 +1,4 @@
-import { FileText, BarChart3, CheckSquare, Compass } from "lucide-react";
+import { FileText, BarChart3, CheckSquare, Compass, MessageSquare, GitCompare } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
   Sidebar,
@@ -14,6 +14,8 @@ const menuItems = [
   { title: "Results", url: "/results", icon: BarChart3 },
   { title: "Action Plan", url: "/action-plan", icon: CheckSquare },
   { title: "Career Explorer", url: "/career-explorer", icon: Compass },
+  { title: "Interview Prep", url: "/interview-prep", icon: MessageSquare },
+  { title: "Compare Resumes", url: "/resume-compare", icon: GitCompare },
 ];
 
 export function AppSidebar() {

@@ -3,7 +3,6 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Shield, Info, CheckCircle2, AlertTriangle } from "lucide-react";
-import { useCountUp } from "@/hooks/useCountUp";
 import type { TransparentJDAlignmentScore } from "@/lib/engines/ats-scoring-engine";
 
 interface JDAlignmentScoreCardProps {
@@ -20,7 +19,7 @@ const getScoreColorHex = (score: number) => {
 export function JDAlignmentScoreCard({ score }: JDAlignmentScoreCardProps) {
   // score.overall is null when no JD provided — 
   // default to 0 so the animation starts correctly
-  const animatedScore = useCountUp(score?.overallScore ?? 0, 1400);
+  const overallScore = score?.overallScore ?? 0;
 
   // Handle loading/null state
   if (!score) return null;
@@ -75,7 +74,7 @@ export function JDAlignmentScoreCard({ score }: JDAlignmentScoreCardProps) {
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="8"
-                strokeDasharray={`${(animatedScore / 100) * 352} 352`}
+                strokeDasharray={`${(overallScore / 100) * 352} 352`}
                 strokeLinecap="round"
                 className="transition-all duration-1000 ease-out"
                 style={{ color: getScoreColorHex(score.overallScore) }}
@@ -83,7 +82,7 @@ export function JDAlignmentScoreCard({ score }: JDAlignmentScoreCardProps) {
             </svg>
             <div className="absolute text-center">
               <span className="text-2xl font-bold" style={{ color: getScoreColorHex(score.overallScore) }}>
-                {animatedScore}
+                {overallScore}
               </span>
               <span className="block text-[10px] text-muted-foreground">/100</span>
             </div>

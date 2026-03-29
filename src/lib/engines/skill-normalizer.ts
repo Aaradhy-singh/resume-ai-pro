@@ -232,17 +232,10 @@ export function extractAndNormalizeSkills(text: string): SkillExtractionResult {
             }
         } else {
             unrecognizedTerms.push(skill);
-            // Passthrough: treat unrecognized terms as their own canonical skill
-            // This prevents penalizing skills that exist in both resume and JD
-            // but are not yet in the ontology
-            if (lowerSkill.length >= 3) {
-                normalizedSkills.push({
-                    canonical: skill,
-                    rawVariants: [skill],
-                    category: 'tool' as any,
-                    confidence: 60,
-                });
-            }
+            // Do NOT add passthrough/unrecognized terms to normalizedSkills.
+            // Passthrough caused personal names, city names, and generic words
+            // extracted from resume text to appear as detected skills in the ATS tab,
+            // and inflated the JD skill denominator making the match rate artificially low.
         }
 
     });

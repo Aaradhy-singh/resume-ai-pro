@@ -413,7 +413,7 @@ export function buildIntrinsicDeficiencies(input: RecommendationInput): CausalRe
     }
 
     // CHECK 7: Word Count
-    if (input.totalWords < 150) {
+    if (input.totalWords < 100) {
         results.push({
             id: `intrinsic-wordcount-${idx++}`,
             category: 'resume',
@@ -422,7 +422,7 @@ export function buildIntrinsicDeficiencies(input: RecommendationInput): CausalRe
             priorityLevel: 'high',
             estimatedEffort: '2-3 hours',
             estimatedImpact: 10,
-            causalContext: `${input.totalWords} words detected (target: 150+). Aim for 400-600 words total.`,
+            causalContext: `${input.totalWords} words detected. Minimum threshold: 100 words; recommended target: 400-600 words total.`,
         });
     }
 

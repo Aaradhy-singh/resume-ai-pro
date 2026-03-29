@@ -62,8 +62,10 @@ export function detectTables(resumeText: string): boolean {
         // 3. ASCII borders: +----+----+ or ========
         const asciiBorders = /^[\s\+]*[-=]{3,}[\s\+]*[-=]{3,}/.test(line);
 
-        // 4. Hidden Grid: Dates or locations perfectly tabbed out in a table format
-        const hiddenGrid = /^(\s*\w+\s+){3,}\s*$/.test(line) && line.includes("   ");
+        // 4. Hidden Grid: Three or more tab-separated columns (actual tab character)
+        //    Intentionally excludes lines with only spaces to avoid flagging
+        //    normal date-aligned resume content (e.g., "Engineer    Jan 2020").
+        const hiddenGrid = (line.match(/\t/g) || []).length >= 2;
 
         if (pipeBorders || tabGrids || asciiBorders || hiddenGrid) {
             tableLines++;

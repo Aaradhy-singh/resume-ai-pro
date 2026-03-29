@@ -79,7 +79,11 @@ const DIMENSION_PATTERNS = {
 };
 
 /**
- * Score a single complexity dimension
+ * Score a single complexity dimension.
+ *
+ * Optimization: evidence deduplication now uses a `Set` for O(1) membership
+ * checks instead of `Array.includes()` (O(n)), which was called for every
+ * regex match across multiple patterns.
  */
 function scoreDimension(
     name: string,
@@ -88,18 +92,16 @@ function scoreDimension(
     weight: number,
     maxEvidence: number = 6
 ): ProjectComplexityDimension {
-    const evidence: string[] = [];
+    const evidenceSet = new Set<string>();
 
     patterns.forEach(pattern => {
         const matches = text.match(pattern) || [];
         matches.forEach(m => {
-            const normalized = m.trim().toLowerCase();
-            if (!evidence.includes(normalized)) {
-                evidence.push(normalized);
-            }
+            evidenceSet.add(m.trim().toLowerCase());
         });
     });
 
+    const evidence = Array.from(evidenceSet);
     const uniqueCount = Math.min(evidence.length, maxEvidence);
     const score = Math.min(100, Math.round((uniqueCount / maxEvidence) * 100));
 

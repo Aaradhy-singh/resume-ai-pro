@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useCountUp } from "@/hooks/useCountUp";
 import { useNavigate } from "react-router-dom";
 import { type AnalysisResult } from "@/lib/engines/analysis-orchestrator";
 import { FeedbackModal } from '@/components/FeedbackModal';
@@ -11,6 +12,12 @@ import { safeStorage } from "@/lib/storage-safe";
 import { toast } from "sonner";
 import jsPDF from 'jspdf';
 import posthog from 'posthog-js';
+
+/** Renders a number with a count-up animation triggered by `trigger`. */
+const AnimatedScore = ({ target, trigger, color }: { target: number; trigger: boolean; color: string }) => {
+  const displayed = useCountUp(target, 900, trigger);
+  return <span style={{ color }}>{displayed}</span>;
+};
 
 const Results = () => {
   const navigate = useNavigate();
@@ -773,7 +780,9 @@ const Results = () => {
         <div className="ui-box-override" style={{ background: "#2A2A2A", border: "2px solid #737373", boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)", padding: "32px", display: "flex", flexWrap: "wrap", gap: "40px" }}>
           <div style={{ flex: "1 1 300px", borderRight: "1px solid #333333", paddingRight: "40px" }}>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', marginBottom: '8px' }}>
-              <span style={{ fontFamily: "inherit", fontSize: "80px", color: scoreColor, lineHeight: 1, letterSpacing: '-0.02em' }}>{overallScore}</span>
+              <span style={{ fontFamily: "inherit", fontSize: "80px", lineHeight: 1, letterSpacing: '-0.02em' }}>
+                <AnimatedScore target={overallScore} trigger={barsAnimated} color={scoreColor} />
+              </span>
               <span style={{ fontFamily: "inherit", fontSize: "18px", color: "#F3F4F6" }}>/100</span>
             </div>
             <div style={{ width: '120px', height: '2px', background: '#1A1A1A', marginTop: '12px' }}>
@@ -803,8 +812,8 @@ const Results = () => {
               <div key={engine.name} style={{ borderBottom: "1px solid #333333", borderRight: "1px solid #333333", padding: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#FFFFFF", textTransform: "uppercase" }}>{engine.name}</div>
-                  <div style={{ fontFamily: "inherit", fontSize: "20px", color: engine.score === -1 ? '#E0E0E0' : getScoreColor(engine.score) }}>
-                    {engine.score === -1 ? 'N/A' : engine.score}
+                  <div style={{ fontFamily: "inherit", fontSize: "20px", color: engine.score === -1 ? '#E0E0E0' : 'inherit' }}>
+                    {engine.score === -1 ? 'N/A' : <AnimatedScore target={engine.score} trigger={barsAnimated} color={getScoreColor(engine.score)} />}
                   </div>
                 </div>
                 <div style={{ width: '100%', height: '2px', background: '#1A1A1A' }}>

@@ -5,6 +5,7 @@ import { FeedbackModal } from '@/components/FeedbackModal';
 import { ShareModal } from "@/components/results/ShareModal";
 import { rewriteBullet, generateInterviewQuestions, generateResumeSummary } from "@/lib/integrations/geminiClient";
 import { isSupabaseConfigured, getCurrentUser, signInWithGoogle, signOut, saveAnalysisToCloud, loadAnalysisHistory, type AnalysisHistoryEntry } from "@/lib/integrations/supabaseClient";
+import type { AuthUser } from "@supabase/supabase-js";
 
 import { safeStorage } from "@/lib/storage-safe";
 import { toast } from "sonner";
@@ -30,7 +31,7 @@ const Results = () => {
   const [generatedSummary, setGeneratedSummary] = useState<string>('');
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
   // Supabase auth state (Issue 10)
-  const [supabaseUser, setSupabaseUser] = useState<any>(null);
+  const [supabaseUser, setSupabaseUser] = useState<AuthUser | null>(null);
   const [analysisHistory, setAnalysisHistory] = useState<AnalysisHistoryEntry[]>([]);
   const [isSavingToCloud, setIsSavingToCloud] = useState(false);
 

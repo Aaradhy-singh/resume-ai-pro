@@ -20,6 +20,7 @@ export default defineConfig(({ mode }) => ({
   },
   optimizeDeps: {
     exclude: ['pdfjs-dist'],
+    include: ['three', '@react-three/fiber', '@react-three/drei'],
   },
   build: {
     rollupOptions: {

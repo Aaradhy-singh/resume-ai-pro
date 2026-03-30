@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import * as THREE from 'three';
 
 
 const Landing = () => {
@@ -7,11 +8,138 @@ const Landing = () => {
   const [scrolled, setScrolled] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const canvasRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (!canvasRef.current) return;
+    const container = canvasRef.current;
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+    container.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(35, width / height, 0.1, 100);
+    camera.position.set(0, 0, 6);
+
+    // Resume card
+    const cardGeo = new THREE.BoxGeometry(1.6, 2.26, 0.05);
+    const cardMat = new THREE.MeshPhysicalMaterial({
+      color: 0x0d0d0d,
+      metalness: 0.9,
+      roughness: 0.1,
+      reflectivity: 1,
+      clearcoat: 1,
+      clearcoatRoughness: 0.1,
+    });
+    const card = new THREE.Mesh(cardGeo, cardMat);
+    scene.add(card);
+
+    // Lines on card
+    const lineMat = new THREE.MeshBasicMaterial({ color: 0x252525 });
+    const accentMat = new THREE.MeshBasicMaterial({ color: 0xcccccc });
+
+    const lines = [
+      { y: 0.85, w: 0.9, h: 0.045, mat: accentMat },
+      { y: 0.68, w: 0.6, h: 0.02, mat: lineMat },
+      { y: 0.48, w: 1.1, h: 0.018, mat: lineMat },
+      { y: 0.32, w: 1.1, h: 0.018, mat: lineMat },
+      { y: 0.16, w: 0.85, h: 0.018, mat: lineMat },
+      { y: -0.02, w: 1.1, h: 0.018, mat: lineMat },
+      { y: -0.18, w: 1.1, h: 0.018, mat: lineMat },
+      { y: -0.34, w: 0.9, h: 0.018, mat: lineMat },
+      { y: -0.54, w: 1.1, h: 0.018, mat: lineMat },
+      { y: -0.70, w: 0.8, h: 0.018, mat: lineMat },
+      { y: -0.86, w: 1.1, h: 0.018, mat: lineMat },
+    ];
+
+    lines.forEach(l => {
+      const mesh = new THREE.Mesh(new THREE.BoxGeometry(l.w, l.h, 0.01), l.mat);
+      mesh.position.set(0, l.y, 0.03);
+      card.add(mesh);
+    });
+
+    // Edge glow
+    const edgeMat = new THREE.LineBasicMaterial({ color: 0x222222 });
+    const edges = new THREE.LineSegments(new THREE.EdgesGeometry(cardGeo), edgeMat);
+    card.add(edges);
+
+    // Lights — key from top right, fill from left, rim from behind
+    const ambient = new THREE.AmbientLight(0xffffff, 0.15);
+    scene.add(ambient);
+
+    const key = new THREE.SpotLight(0xffffff, 8);
+    key.position.set(4, 5, 4);
+    key.angle = 0.4;
+    key.penumbra = 0.5;
+    scene.add(key);
+
+    const fill = new THREE.DirectionalLight(0xffffff, 0.5);
+    fill.position.set(-4, 0, 3);
+    scene.add(fill);
+
+    const rim = new THREE.DirectionalLight(0xffffff, 1.5);
+    rim.position.set(0, -4, -2);
+    scene.add(rim);
+
+    // Subtle particles
+    const pGeo = new THREE.BufferGeometry();
+    const pCount = 60;
+    const pPos = new Float32Array(pCount * 3);
+    for (let i = 0; i < pCount; i++) {
+      pPos[i * 3] = (Math.random() - 0.5) * 10;
+      pPos[i * 3 + 1] = (Math.random() - 0.5) * 10;
+      pPos[i * 3 + 2] = (Math.random() - 0.5) * 5;
+    }
+    pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+    const pMat = new THREE.PointsMaterial({ color: 0x333333, size: 0.015 });
+    scene.add(new THREE.Points(pGeo, pMat));
+
+    let f = 0;
+    let animId: number;
+    const animate = () => {
+      f++;
+      const t = f * 0.003;
+      card.rotation.y = Math.sin(t * 0.6) * 0.18;
+      card.rotation.x = Math.sin(t * 0.4) * 0.06;
+      card.position.y = Math.sin(t * 0.5) * 0.1;
+      renderer.render(scene, camera);
+      animId = requestAnimationFrame(animate);
+    };
+    animate();
+
+    const handleResize = () => {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      renderer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    };
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('resize', handleResize);
+      cardGeo.dispose();
+      cardMat.dispose();
+      lineMat.dispose();
+      accentMat.dispose();
+      edgeMat.dispose();
+      pGeo.dispose();
+      pMat.dispose();
+      renderer.dispose();
+      if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
+    };
   }, []);
 
   const handleAnalyzeClick = () => {
@@ -162,6 +290,35 @@ const Landing = () => {
             }}
           />
 
+          {/* Background typography watermark */}
+          <div
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              pointerEvents: 'none',
+              overflow: 'hidden',
+              zIndex: 0,
+            }}
+          >
+            <div style={{
+              fontSize: 'clamp(32px, 8vw, 96px)',
+              color: 'rgba(255,255,255,0.03)',
+              fontWeight: 900,
+              letterSpacing: '0.12em',
+              textAlign: 'center',
+              lineHeight: 1.15,
+              userSelect: 'none',
+              textTransform: 'uppercase',
+              fontFamily: 'inherit',
+            }}>
+              KNOW EXACTLY<br />WHY YOU&apos;RE<br />GETTING REJECTED
+            </div>
+          </div>
+
           {/* Decorative rule above heading */}
           <div style={{
             width: '32px',
@@ -258,6 +415,18 @@ const Landing = () => {
             </div>
           </div>
           </div>
+
+          {/* Three.js Canvas */}
+          <div
+            ref={canvasRef}
+            style={{
+              width: '100%',
+              maxWidth: '500px',
+              height: '420px',
+              margin: '0 auto',
+              position: 'relative',
+            }}
+          />
 
           {/* 3. SOCIAL PROOF BAR */}
           <div className="relative z-40 max-w-[1100px] mx-auto px-6 w-full mt-10">

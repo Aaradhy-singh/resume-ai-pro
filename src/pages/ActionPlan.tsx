@@ -7,6 +7,7 @@ import { safeStorage } from "@/lib/storage-safe";
 import posthog from 'posthog-js';
 
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
+import { motion } from 'framer-motion';
 
 type PriorityFilter = 'all' | 'critical' | 'high' | 'medium' | 'low';
 
@@ -480,7 +481,7 @@ const ActionPlan = () => {
 
       <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 24px" }}>
         {/* Progress Card */}
-        <div style={{ background: "#0D0D0D", border: "1px solid #3A3A3A", borderTop: "2px solid #0EA5E9", padding: "24px", marginTop: "24px", borderRadius: "0px", boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)" }}>
+        <div className="card-glow" style={{ background: "#0D0D0D", border: "1px solid #3A3A3A", borderTop: "2px solid #0EA5E9", padding: "24px", marginTop: "24px", borderRadius: "0px", boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
             <div style={{ fontSize: "28px", color: "#FFFFFF", lineHeight: 1 }}>
               {completedCount} <span style={{ color: "#FFFFFF" }}>/ {totalCount}</span>
@@ -674,13 +675,25 @@ const ActionPlan = () => {
             </div>
           ) : (
             (["priority", "skills", "certifications", "portfolio"] as const).map((cat, idx) => (
-              <ActionCategoryCard
+              <motion.div
                 key={cat}
-                cat={cat}
-                categoryItems={filteredItems.filter(i => i.category === cat)}
-                catIdx={idx}
-                toggleItem={toggleItem}
-              />
+                variants={{
+                    hidden: { opacity: 0, y: 24 },
+                    visible: (i: number) => ({
+                        opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.4, ease: 'easeOut' }
+                    })
+                }}
+                initial="hidden"
+                animate="visible"
+                custom={idx}
+              >
+                <ActionCategoryCard
+                  cat={cat}
+                  categoryItems={filteredItems.filter(i => i.category === cat)}
+                  catIdx={idx}
+                  toggleItem={toggleItem}
+                />
+              </motion.div>
             ))
           )}
         </div>

@@ -4,10 +4,15 @@ import { type AnalysisResult } from "@/lib/engines/analysis-orchestrator";
 import { FeedbackModal } from '@/components/FeedbackModal';
 import { ShareModal } from "@/components/results/ShareModal";
 
+
 import { safeStorage } from "@/lib/storage-safe";
 import { toast } from "sonner";
 import jsPDF from 'jspdf';
 import posthog from 'posthog-js';
+import { useCountUp } from '@/hooks/useCountUp';
+import { ScoreRing } from '@/components/common/ScoreRing';
+import { Skeleton } from '@/components/common/Skeleton';
+import { motion } from 'framer-motion';
 
 const Results = () => {
   const navigate = useNavigate();
@@ -416,20 +421,70 @@ const Results = () => {
     `}</style>
   );
 
+  const engineScores = data ? [
+    { name: "ATS COMPATIBILITY", score: data.scores.format?.parsingReliabilityScore || 65 },
+    { name: "SKILL GAP ANALYSIS", score: data.roles.topRoles[0]?.matchScore || 45 },
+    { name: "EXPERIENCE DEPTH", score: (() => {
+        const years = data?.careerStage?.signals?.totalExperienceYears ?? 0;
+        const stage = data?.careerStage?.stage;
+        if (stage === 'student') return Math.round(Math.min(60, 30 + (data?.projectComplexity?.overallScore ?? 0) * 0.3));
+        if (stage === 'fresher') return Math.round(Math.min(65, 35 + years * 10));
+        return Math.round(Math.min(100, 40 + years * 8));
+      })() },
+    { name: "EDUCATION MATCH", score: (() => {
+        const stage = data?.careerStage?.stage;
+        const certCount = data?.careerStage?.signals?.certificationCount ?? 0;
+        if (stage === 'student') return Math.round(Math.min(70, 40 + certCount * 5));
+        if (stage === 'fresher') return Math.round(Math.min(75, 45 + certCount * 4));
+        return Math.round(Math.min(90, 55 + certCount * 3));
+      })() },
+    { name: "IMPACT SCORING", score: data.specificityReport?.overallGrade === 'A' ? 90 : data.specificityReport?.overallGrade === 'B' ? 75 : 50 },
+    { name: "KEYWORD ALIGNMENT", score: data.scores.keywordCoverage ? (data.scores.keywordCoverage?.overallScore ?? 0) : -1 },
+    { name: "PORTFOLIO SIGNALS", score: data.scores.portfolio?.portfolioScore || 0 },
+    { name: "CAREER TRAJECTORY", score: data.projectComplexity?.overallScore || 55 },
+  ] : [];
+
+  const overallScore = engineScores.length > 0
+    ? Math.round(engineScores.reduce((sum, e) => sum + (e.score === -1 ? 0 : e.score), 0) / engineScores.length)
+    : 0;
+
+  useCountUp(overallScore, 1500);
+
   if (loading) {
     return (
-      <div style={{ minHeight: "100vh", backgroundColor: "#000000", color: "#FFFFFF" }}>
-        <GlobalStyles />
-        <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "40px" }}>
-          <div style={{ width: "200px", height: "30px", backgroundColor: "#1A1A1A", marginBottom: "40px" }} />
-          <div style={{ width: "100%", height: "200px", backgroundColor: "#1A1A1A", marginBottom: "20px" }} />
-          <div style={{ display: "flex", gap: "20px" }}>
-            {[1, 2, 3, 4, 5, 6].map(i => (
-              <div key={i} style={{ width: "100px", height: "20px", backgroundColor: "#1A1A1A" }} />
-            ))}
-          </div>
+        <div style={{ 
+            minHeight: "100vh", 
+            backgroundColor: "#000000",
+            padding: "40px 24px"
+        }}>
+            <div style={{ 
+                maxWidth: "1100px", 
+                margin: "0 auto" 
+            }}>
+                <Skeleton 
+                    width={200} 
+                    height={30} 
+                    style={{ marginBottom: 40 }} 
+                />
+                <Skeleton 
+                    width="100%" 
+                    height={200} 
+                    style={{ marginBottom: 20 }} 
+                />
+                <div style={{ 
+                    display: "flex", 
+                    gap: 16 
+                }}>
+                    {[1,2,3,4,5,6,7,8].map(i => (
+                        <Skeleton 
+                            key={i} 
+                            width={100} 
+                            height={20} 
+                        />
+                    ))}
+                </div>
+            </div>
         </div>
-      </div>
     );
   }
 
@@ -466,36 +521,10 @@ const Results = () => {
     return "#10B981";
   };
 
-  const engineScores = [
-    { name: "ATS COMPATIBILITY", score: data.scores.format?.parsingReliabilityScore || 65 },
-    { name: "SKILL GAP ANALYSIS", score: data.roles.topRoles[0]?.matchScore || 45 },
-    { name: "EXPERIENCE DEPTH", score: (() => {
-        const years = data?.careerStage?.signals?.totalExperienceYears ?? 0;
-        const stage = data?.careerStage?.stage;
-        if (stage === 'student') return Math.round(Math.min(60, 30 + (data?.projectComplexity?.overallScore ?? 0) * 0.3));
-        if (stage === 'fresher') return Math.round(Math.min(65, 35 + years * 10));
-        return Math.round(Math.min(100, 40 + years * 8));
-      })() },
-    { name: "EDUCATION MATCH", score: (() => {
-        const stage = data?.careerStage?.stage;
-        const certCount = data?.careerStage?.signals?.certificationCount ?? 0;
-        if (stage === 'student') return Math.round(Math.min(70, 40 + certCount * 5));
-        if (stage === 'fresher') return Math.round(Math.min(75, 45 + certCount * 4));
-        return Math.round(Math.min(90, 55 + certCount * 3));
-      })() },
-    { name: "IMPACT SCORING", score: data.specificityReport?.overallGrade === 'A' ? 90 : data.specificityReport?.overallGrade === 'B' ? 75 : 50 },
-    { name: "KEYWORD ALIGNMENT", score: hasJD ? (data.scores.keywordCoverage?.overallScore ?? 0) : -1 },
-    { name: "PORTFOLIO SIGNALS", score: data.scores.portfolio?.portfolioScore || 0 },
-    { name: "CAREER TRAJECTORY", score: data.projectComplexity?.overallScore || 55 },
-  ];
-
-  const overallScore = Math.round(
-    engineScores.reduce((sum, e) => sum + e.score, 0) / engineScores.length
-  );
-
   let scoreColor = "#EF4444";
   if (overallScore >= 70) scoreColor = "#10B981";
   else if (overallScore >= 40) scoreColor = "#F59E0B";
+
 
   const scoreLabel = hasJD
     ? (overallScore >= 70
@@ -632,14 +661,37 @@ const Results = () => {
         </button>
 
         {/* Overall Score Banner */}
-        <div className="ui-box-override" style={{ background: "#2A2A2A", border: "2px solid #737373", boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)", padding: "32px", display: "flex", flexWrap: "wrap", gap: "40px" }}>
+        <motion.div 
+            variants={{
+                hidden: { opacity: 0, y: 24 },
+                visible: (i: number) => ({
+                    opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.4, ease: 'easeOut' }
+                })
+            }}
+            initial="hidden"
+            animate="visible"
+            custom={0}
+            className="ui-box-override" 
+            style={{ background: "#2A2A2A", border: "2px solid #737373", padding: "32px", display: "flex", flexWrap: "wrap", gap: "40px" }}
+        >
           <div style={{ flex: "1 1 300px", borderRight: "1px solid #333333", paddingRight: "40px" }}>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', marginBottom: '8px' }}>
-              <span style={{ fontFamily: "inherit", fontSize: "80px", color: scoreColor, lineHeight: 1, letterSpacing: '-0.02em' }}>{overallScore}</span>
-              <span style={{ fontFamily: "inherit", fontSize: "18px", color: "#F3F4F6" }}>/100</span>
+            <div>
+              <ScoreRing
+                  score={overallScore}
+                  color={scoreColor}
+                  size={180}
+                  delay={0}
+              />
             </div>
             <div style={{ width: '120px', height: '2px', background: '#1A1A1A', marginTop: '12px' }}>
-              <div style={{ width: `${overallScore}%`, height: '100%', background: scoreColor, transition: 'width 0.6s ease' }} />
+              <div style={{ 
+                  '--target-width': `${overallScore}%`,
+                  height: '100%', 
+                  background: scoreColor,
+                  animationDelay: '0.3s',
+              } as React.CSSProperties}
+                  className="score-bar"
+              />
             </div>
             <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#FFFFFF", textTransform: "uppercase", marginTop: "12px", letterSpacing: "0.1em" }}>
               OVERALL RESUME SCORE
@@ -661,21 +713,37 @@ const Results = () => {
           </div>
 
           <div style={{ flex: "2 1 400px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0", borderTop: "1px solid #333333", borderLeft: "1px solid #333333", paddingBottom: "80px" }}>
-            {engineScores.map((engine) => (
+            {engineScores.map((engine, index) => (
               <div key={engine.name} style={{ borderBottom: "1px solid #333333", borderRight: "1px solid #333333", padding: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#FFFFFF", textTransform: "uppercase" }}>{engine.name}</div>
-                  <div style={{ fontFamily: "inherit", fontSize: "20px", color: engine.score === -1 ? '#E0E0E0' : getScoreColor(engine.score) }}>
-                    {engine.score === -1 ? 'N/A' : engine.score}
-                  </div>
+                  <ScoreRing
+                      score={engine.score === -1 ? 0 : engine.score}
+                      color={engine.score === -1 ? '#333333' : getScoreColor(engine.score)}
+                      size={64}
+                      strokeWidth={4}
+                      delay={index * 80}
+                  />
                 </div>
                 <div style={{ width: '100%', height: '2px', background: '#1A1A1A' }}>
-                  <div style={{ width: engine.score === -1 ? '0%' : `${engine.score}%`, height: '100%', background: engine.score === -1 ? '#2A2A2A' : getScoreColor(engine.score), transition: 'width 0.4s ease' }} />
+                  <div
+                      style={{
+                          '--target-width': engine.score === -1 
+                              ? '0%' 
+                              : `${engine.score}%`,
+                          height: '100%',
+                          background: engine.score === -1 
+                              ? '#2A2A2A' 
+                              : getScoreColor(engine.score),
+                          animationDelay: `${index * 0.08}s`,
+                      } as React.CSSProperties}
+                      className="score-bar"
+                  />
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
 
         {data?.careerStage?.stage === 'student' && (
@@ -713,7 +781,7 @@ const Results = () => {
                     padding: "16px 20px",
                     cursor: "pointer",
                     whiteSpace: "nowrap",
-                    transition: "color 0.2s",
+                    transition: "border-color 0.2s ease, color 0.2s",
                     letterSpacing: "0.08em",
                     display: "flex",
                     alignItems: "center",
@@ -740,7 +808,13 @@ const Results = () => {
           );
         })()}
 
-        <div style={{ marginTop: "40px" }}>
+        <motion.div 
+            key={activeTab}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            style={{ marginTop: "40px" }}
+        >
 
           {/* OVERVIEW TAB */}
           {activeTab === "OVERVIEW" && (
@@ -1354,7 +1428,7 @@ const Results = () => {
             </div>
           )}
 
-        </div>
+        </motion.div>
       </div>
       {/* Floating Feedback Button */}
       <button

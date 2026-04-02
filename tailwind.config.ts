@@ -15,7 +15,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["'Plus Jakarta Sans'", "system-ui", "-apple-system", "sans-serif"],
+        sans: ["'General Sans'", "'Plus Jakarta Sans'", "system-ui", "-apple-system", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -73,6 +73,22 @@ export default {
           "3": "hsl(var(--chart-3))",
           "4": "hsl(var(--chart-4))",
           "5": "hsl(var(--chart-5))",
+        },
+        obsidian: {
+          surface: "#131313",
+          "surface-container": "#1f1f1f",
+          "surface-container-low": "#1b1b1b",
+          "surface-container-lowest": "#0e0e0e",
+          "surface-container-high": "#2a2a2a",
+          "surface-container-highest": "#353535",
+          "surface-bright": "#2c2c2c",
+          "on-surface": "#ffffff",
+          "on-surface-variant": "#c6c6c6",
+          primary: "#ffffff",
+          "on-primary": "#1a1c1c",
+          "primary-container": "#d4d4d4",
+          outline: "#919191",
+          "outline-variant": "#474747",
         },
       },
       borderRadius: {

@@ -111,13 +111,13 @@ const CareerExplorer = () => {
     return (
       <DashboardLayout>
         <GlobalStyles />
-        <div style={{ minHeight: "100vh", backgroundColor: "#000000", color: "#FFFFFF", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ fontFamily: "inherit", fontSize: "13px", color: "#666666", textAlign: "center" }}>
+        <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
+          <div style={{ fontFamily: "inherit", fontSize: "15px", color: "#666666", textAlign: "center" }}>
             <div style={{ fontSize: "16px", color: "#FFFFFF", marginBottom: "8px" }}>NO RESUME DATA</div>
             Run an analysis first to enable career path comparison.
             <button
               onClick={() => navigate("/upload")}
-              style={{ display: "block", margin: "24px auto 0", background: "#0EA5E9", color: "#000000", border: "none", cursor: "pointer", fontSize: "11px", fontFamily: "inherit", textTransform: "uppercase", padding: "10px 20px", borderRadius: "0px" }}
+              style={{ display: "block", margin: "24px auto 0", background: "#ffffff", fontWeight: "bold", color: "#000000", border: "none", cursor: "pointer", fontSize: "13px", fontFamily: "'DM Mono', monospace", textTransform: "uppercase", padding: "10px 20px", borderRadius: "0px" }}
             >
               → ANALYZE RESUME
             </button>
@@ -140,25 +140,18 @@ const CareerExplorer = () => {
   return (
     <DashboardLayout>
       <GlobalStyles />
-      <div style={{ minHeight: "100vh", backgroundColor: "#000000", color: "#FFFFFF", paddingBottom: "100px" }}>
+      <div className="min-h-screen bg-black text-white pb-[100px]">
 
         {/* Sticky Page Header */}
-        <div style={{
-          position: "sticky",
-          top: 0,
-          backgroundColor: "#000000",
-          borderBottom: "1px solid #1A1A1A",
-          zIndex: 10,
-          padding: "16px 24px"
-        }}>
+        <div className="sticky top-0 bg-black border-b border-[#444444] z-10 px-6 py-4">
           <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-            <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#0EA5E9", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "12px", color: "#ffffff", textTransform: "uppercase", letterSpacing: "0.1em" }}>
               CAREER PATHS
             </div>
-            <h1 style={{ fontFamily: "inherit", fontSize: "28px", color: "#FFFFFF", margin: "4px 0 8px 0", fontWeight: "normal" }}>
+            <h1 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "28px", color: "#FFFFFF", margin: "4px 0 8px 0", fontWeight: "normal" }}>
               Career Explorer
             </h1>
-            <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#E0E0E0" }}>
+            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "14px", color: "#666666" }}>
               Compare your resume profile against target roles. See exactly what gaps you need to close.
             </div>
           </div>
@@ -184,12 +177,11 @@ const CareerExplorer = () => {
                 onBlur={() => setIsInputFocused(false)}
                 style={{
                   width: "100%",
-                  background: "#2A2A2A",
-                  border: isInputFocused ? "2px solid #0EA5E9" : "2px solid #737373",
-                  boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)",
+                  background: "#050505",
+                  border: isInputFocused ? "1px solid #ffffff" : "1px solid #333333",
                   color: "#FFFFFF",
-                  fontFamily: "inherit",
-                  fontSize: "13px",
+                  fontFamily: "'DM Mono', monospace",
+                  fontSize: "15px",
                   padding: "12px 16px 12px 40px",
                   borderRadius: "0px",
                   outline: "none",
@@ -197,14 +189,14 @@ const CareerExplorer = () => {
                 }}
               />
             </div>
-            <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#E0E0E0", marginTop: "8px" }}>
+            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "12px", color: "#666666", marginTop: "8px" }}>
               Results update as you type
             </div>
           </div>
 
           {/* Suggested Roles Section */}
           <div style={{ marginTop: "32px", overflow: "hidden" }}>
-            <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#E0E0E0", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "12px" }}>
+            <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#E0E0E0", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "12px" }}>
               SUGGESTED BASED ON YOUR RESUME
             </div>
             <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "8px" }}>
@@ -212,15 +204,14 @@ const CareerExplorer = () => {
                 <button
                   key={i}
                   onClick={() => setSearchQuery(roleStr)}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = "#0EA5E9"; e.currentTarget.style.color = "#000000"; e.currentTarget.style.backgroundColor = "#0EA5E9"; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = "#737373"; e.currentTarget.style.color = "#E0E0E0"; e.currentTarget.style.backgroundColor = "#2A2A2A"; }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = "#ffffff"; e.currentTarget.style.color = "#000000"; e.currentTarget.style.backgroundColor = "#ffffff"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "#222222"; e.currentTarget.style.color = "#ffffff"; e.currentTarget.style.backgroundColor = "#050505"; }}
                   style={{
-                    background: "#2A2A2A",
-                    border: "2px solid #737373",
-                    boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)",
-                    color: "#E0E0E0",
-                    fontFamily: "inherit",
-                    fontSize: "11px",
+                    background: "#050505",
+                    border: "1px solid #444444",
+                    color: "#ffffff",
+                    fontFamily: "'DM Mono', monospace",
+                    fontSize: "13px",
                     padding: "8px 14px",
                     borderRadius: "0px",
                     cursor: "pointer",
@@ -239,12 +230,12 @@ const CareerExplorer = () => {
 
             {/* LEFT COLUMN - Role List */}
             <div style={{ width: "35%" }}>
-              <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#E0E0E0", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "12px" }}>
+              <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#E0E0E0", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "12px" }}>
                 ROLES
               </div>
               <div style={{ display: "flex", flexDirection: "column" }}>
                 {displayedRoles.length === 0 ? (
-                  <div className="surface-card" style={{ fontFamily: "inherit", fontSize: "11px", color: "#E0E0E0", padding: "16px", textAlign: "center" }}>
+                  <div className="bg-[#111111] border border-white/20 rounded-xl shadow-lg font-inherit text-[13px] text-[#E0E0E0] p-4 text-center">
                     Select a suggested role above to reveal your skill gaps.
                   </div>
                 ) : (
@@ -257,32 +248,24 @@ const CareerExplorer = () => {
                       <div
                         key={role.id}
                         onClick={() => handleRoleSelect(role)}
-                        className={`surface-card ${isActive ? 'active-role' : ''}`}
-                        style={{
-                          borderColor: isActive ? "#0EA5E9" : undefined,
-                          padding: "14px 16px",
-                          marginTop: idx > 0 ? "8px" : "0",
-                          cursor: "pointer",
-                          position: "relative",
-                          zIndex: isActive ? 2 : 1
-                        }}
+                        className={`bg-[#111111] border p-4 cursor-pointer relative rounded-xl shadow-lg transition-all duration-200 ${isActive ? 'border-white z-10' : 'border-white/20 z-0 hover:border-white/40'} ${idx > 0 ? 'mt-2' : ''}`}
                       >
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
-                          <span style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", paddingRight: "12px" }}>
+                          <span style={{ fontFamily: "inherit", fontSize: "14px", color: "#FFFFFF", paddingRight: "12px" }}>
                             {role.title}
                           </span>
                           <span style={{
                             background: badgeStyle.bg,
                             color: badgeStyle.color,
                             fontFamily: "inherit",
-                            fontSize: "10px",
+                            fontSize: "12px",
                             padding: "2px 6px",
                             borderRadius: "0px"
                           }}>
                             {gaps.matchPercent}%
                           </span>
                         </div>
-                        <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#E0E0E0" }}>
+                        <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#E0E0E0" }}>
                           {gaps.missingCore.length + gaps.missingSupporting.length} gaps to close
                         </div>
                       </div>
@@ -295,30 +278,30 @@ const CareerExplorer = () => {
             {/* RIGHT COLUMN - Role Detail Panel */}
             <div style={{ width: "63%", minHeight: "300px" }}>
               {!selectedRole ? (
-                <div className="surface-card" style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <span style={{ fontFamily: "inherit", fontSize: "12px", color: "#E0E0E0" }}>
+                <div className="bg-[#111111] border border-white/20 rounded-xl shadow-lg h-full flex items-center justify-center p-6">
+                  <span style={{ fontFamily: "inherit", fontSize: "14px", color: "#E0E0E0" }}>
                     SELECT A ROLE TO SEE GAP ANALYSIS
                   </span>
                 </div>
               ) : (
-                <div className="surface-card" style={{ padding: "24px", height: "100%" }}>
+                  <div className="bg-[#111111] border border-white/20 rounded-xl shadow-lg p-6 h-full">
                   {/* Role Header */}
                   <div>
-                    <h2 style={{ fontFamily: "inherit", fontSize: "16px", color: "#FFFFFF", textTransform: "uppercase", margin: "0 0 16px 0" }}>
+                    <h2 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "24px", color: "#FFFFFF", textTransform: "uppercase", margin: "0 0 16px 0", fontWeight: "normal" }}>
                       {selectedRole.title}
                     </h2>
                     {selectedGaps && (
                       <div style={{ marginBottom: "32px", display: "flex", gap: "24px", alignItems: "center" }}>
                         <div>
-                          <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#E0E0E0", textTransform: "uppercase", marginBottom: "4px" }}>
+                          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "12px", color: "#666666", textTransform: "uppercase", marginBottom: "4px" }}>
                             MATCH SCORE
                           </div>
-                          <div style={{ fontFamily: "inherit", fontSize: "48px", color: getBadgeStyle(selectedGaps.matchPercent).bg, lineHeight: 1 }}>
+                          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "48px", color: getBadgeStyle(selectedGaps.matchPercent).bg, lineHeight: 1 }}>
                             {selectedGaps.matchPercent}<span style={{ fontSize: "24px" }}>%</span>
                           </div>
                         </div>
                         <div style={{ alignSelf: "flex-end", paddingBottom: "8px" }}>
-                          <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#888888" }}>
+                          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "14px", color: "#666666" }}>
                             {selectedGaps.matchPercent >= 70
                               ? `Strong alignment with ${selectedGaps.missingCore.length + selectedGaps.missingSupporting.length} minor gaps to close`
                               : `Major skill gaps detected — ${selectedGaps.missingCore.length + selectedGaps.missingSupporting.length} skills missing`}
@@ -334,16 +317,16 @@ const CareerExplorer = () => {
                       {/* Core Skills Missing */}
                       {selectedGaps.missingCore.length > 0 && (
                         <div style={{ marginBottom: "24px" }}>
-                          <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#E0E0E0", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "12px" }}>
+                          <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#E0E0E0", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "12px" }}>
                             CORE SKILLS — MISSING
                           </div>
                           {selectedGaps.missingCore.map(skill => (
-                            <div key={skill} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: "1px solid #555555" }}>
+                            <div key={skill} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: "1px solid #737373" }}>
                               <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                                <span style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF" }}>{skill}</span>
-                                <span style={{ border: "1px solid #EF4444", color: "#EF4444", fontFamily: "inherit", fontSize: "10px", padding: "2px 6px", borderRadius: "0px" }}>MISSING</span>
+                                <span style={{ fontFamily: "inherit", fontSize: "14px", color: "#FFFFFF" }}>{skill}</span>
+                                <span style={{ border: "1px solid #EF4444", color: "#EF4444", fontFamily: "inherit", fontSize: "12px", padding: "2px 6px", borderRadius: "0px" }}>MISSING</span>
                               </div>
-                              <span style={{ fontFamily: "inherit", fontSize: "10px", color: "#E0E0E0" }}>2X WEIGHT</span>
+                              <span style={{ fontFamily: "inherit", fontSize: "12px", color: "#E0E0E0" }}>2X WEIGHT</span>
                             </div>
                           ))}
                         </div>
@@ -352,16 +335,16 @@ const CareerExplorer = () => {
                       {/* Supporting Skills Missing */}
                       {selectedGaps.missingSupporting.length > 0 && (
                         <div style={{ marginBottom: "24px" }}>
-                          <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#E0E0E0", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "12px" }}>
+                          <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#E0E0E0", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "12px" }}>
                             SUPPORTING SKILLS — MISSING
                           </div>
                           {selectedGaps.missingSupporting.map(skill => (
-                            <div key={skill} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: "1px solid #555555" }}>
+                            <div key={skill} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: "1px solid #737373" }}>
                               <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                                <span style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF" }}>{skill}</span>
-                                <span style={{ border: "1px solid #F59E0B", color: "#F59E0B", fontFamily: "inherit", fontSize: "10px", padding: "2px 6px", borderRadius: "0px" }}>MISSING</span>
+                                <span style={{ fontFamily: "inherit", fontSize: "14px", color: "#FFFFFF" }}>{skill}</span>
+                                <span style={{ border: "1px solid #F59E0B", color: "#F59E0B", fontFamily: "inherit", fontSize: "12px", padding: "2px 6px", borderRadius: "0px" }}>MISSING</span>
                               </div>
-                              <span style={{ fontFamily: "inherit", fontSize: "10px", color: "#E0E0E0" }}>1X WEIGHT</span>
+                              <span style={{ fontFamily: "inherit", fontSize: "12px", color: "#E0E0E0" }}>1X WEIGHT</span>
                             </div>
                           ))}
                         </div>
@@ -370,14 +353,14 @@ const CareerExplorer = () => {
                       {/* Skills Present */}
                       {selectedGaps.present.length > 0 && (
                         <div style={{ marginBottom: "24px" }}>
-                          <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#10B981", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "12px" }}>
+                          <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#10B981", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "12px" }}>
                             SKILLS YOU ALREADY HAVE
                           </div>
                           {selectedGaps.present.map(skill => (
-                            <div key={skill} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: "1px solid #555555" }}>
+                            <div key={skill} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: "1px solid #737373" }}>
                               <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                                <span style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", opacity: 0.6 }}>{skill}</span>
-                                <span style={{ border: "1px solid #10B981", color: "#10B981", fontFamily: "inherit", fontSize: "10px", padding: "2px 6px", borderRadius: "0px" }}>PRESENT</span>
+                                <span style={{ fontFamily: "inherit", fontSize: "14px", color: "#FFFFFF", opacity: 0.6 }}>{skill}</span>
+                                <span style={{ border: "1px solid #10B981", color: "#10B981", fontFamily: "inherit", fontSize: "12px", padding: "2px 6px", borderRadius: "0px" }}>PRESENT</span>
                               </div>
                             </div>
                           ))}
@@ -385,14 +368,14 @@ const CareerExplorer = () => {
                       )}
 
                       {/* Effort Estimate Block */}
-                      <div style={{ background: "#333333", border: "2px solid #737373", boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)", padding: "20px", marginTop: "16px", borderRadius: "0px" }}>
-                        <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#E0E0E0", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "8px" }}>
+                      <div className="bg-[#1A1A1A] border border-gray-500 p-5 mt-4 rounded-xl shadow-lg">
+                        <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#E0E0E0", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "8px" }}>
                           ESTIMATED GAP CLOSE TIME
                         </div>
                         <div style={{ fontFamily: "inherit", fontSize: "24px", color: "#FFFFFF", marginBottom: "8px" }}>
                           {formatTime(timeToClose)}
                         </div>
-                        <div style={{ fontFamily: "inherit", fontSize: "11px", color: "#E0E0E0" }}>
+                        <div style={{ fontFamily: "inherit", fontSize: "13px", color: "#E0E0E0" }}>
                           Based on {selectedGaps.missingCore.length + selectedGaps.missingSupporting.length} skill gaps at average learning time of 40 hours per skill
                         </div>
                       </div>
@@ -410,15 +393,17 @@ const CareerExplorer = () => {
                               estimatedHours: timeToClose,
                             };
                             safeStorage.setItem('careerExplorerTarget', JSON.stringify(roleActionData));
+                            navigate('/action-plan', { state: { careerExplorerTarget: roleActionData } });
+                          } else {
+                            navigate('/action-plan');
                           }
-                          navigate('/action-plan');
                         }}
                         style={{
                           width: "100%",
-                          marginTop: "16px",
-                          background: "#0EA5E9",
+                          marginTop: "24px",
+                          background: "#ffffff",
                           color: "#000000",
-                          fontFamily: "inherit",
+                          fontFamily: "'DM Mono', monospace",
                           fontSize: "12px",
                           textTransform: "uppercase",
                           padding: "14px",
@@ -442,18 +427,18 @@ const CareerExplorer = () => {
           {/* Comparison Mode (Bottom Section) */}
           {comparisonRoles.length > 0 && (
             <div style={{ marginTop: "64px", marginBottom: "40px" }}>
-              <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#E0E0E0", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "16px" }}>
+              <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#E0E0E0", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "16px" }}>
                 ROLE COMPARISON
               </div>
-              <div className="surface-card">
+              <div className="bg-[#111111] border border-white/20 rounded-xl shadow-lg overflow-hidden">
                 <table style={{ width: "100%", borderCollapse: "collapse", background: "transparent" }}>
                   <thead>
                     <tr>
-                      <th style={{ fontFamily: "inherit", fontSize: "10px", color: "#E0E0E0", textTransform: "uppercase", textAlign: "left", padding: "16px", borderBottom: "2px solid #737373" }}>Role Name</th>
-                      <th style={{ fontFamily: "inherit", fontSize: "10px", color: "#E0E0E0", textTransform: "uppercase", textAlign: "center", padding: "16px", borderBottom: "2px solid #737373" }}>Match %</th>
-                      <th style={{ fontFamily: "inherit", fontSize: "10px", color: "#E0E0E0", textTransform: "uppercase", textAlign: "center", padding: "16px", borderBottom: "2px solid #737373" }}>Core Gaps</th>
-                      <th style={{ fontFamily: "inherit", fontSize: "10px", color: "#E0E0E0", textTransform: "uppercase", textAlign: "center", padding: "16px", borderBottom: "2px solid #737373" }}>Supporting Gaps</th>
-                      <th style={{ fontFamily: "inherit", fontSize: "10px", color: "#E0E0E0", textTransform: "uppercase", textAlign: "right", padding: "16px", borderBottom: "2px solid #737373" }}>Est. Time</th>
+                      <th style={{ fontFamily: "inherit", fontSize: "12px", color: "#E0E0E0", textTransform: "uppercase", textAlign: "left", padding: "16px", borderBottom: "2px solid #737373" }}>Role Name</th>
+                      <th style={{ fontFamily: "inherit", fontSize: "12px", color: "#E0E0E0", textTransform: "uppercase", textAlign: "center", padding: "16px", borderBottom: "2px solid #737373" }}>Match %</th>
+                      <th style={{ fontFamily: "inherit", fontSize: "12px", color: "#E0E0E0", textTransform: "uppercase", textAlign: "center", padding: "16px", borderBottom: "2px solid #737373" }}>Core Gaps</th>
+                      <th style={{ fontFamily: "inherit", fontSize: "12px", color: "#E0E0E0", textTransform: "uppercase", textAlign: "center", padding: "16px", borderBottom: "2px solid #737373" }}>Supporting Gaps</th>
+                      <th style={{ fontFamily: "inherit", fontSize: "12px", color: "#E0E0E0", textTransform: "uppercase", textAlign: "right", padding: "16px", borderBottom: "2px solid #737373" }}>Est. Time</th>
                     </tr>
                   </thead>
                 <tbody>
@@ -461,11 +446,11 @@ const CareerExplorer = () => {
                     const gaps = calculateGaps(role);
                     return (
                       <tr key={role.id}>
-                        <td style={{ fontFamily: "inherit", fontSize: "11px", color: "#FFFFFF", padding: "16px", borderBottom: "1px solid #737373" }}>{role.title}</td>
-                        <td style={{ fontFamily: "inherit", fontSize: "11px", color: "#E0E0E0", padding: "16px", borderBottom: "1px solid #737373", textAlign: "center" }}>{gaps.matchPercent}%</td>
-                        <td style={{ fontFamily: "inherit", fontSize: "11px", color: "#EF4444", padding: "16px", borderBottom: "1px solid #737373", textAlign: "center" }}>{gaps.missingCore.length}</td>
-                        <td style={{ fontFamily: "inherit", fontSize: "11px", color: "#F59E0B", padding: "16px", borderBottom: "1px solid #737373", textAlign: "center" }}>{gaps.missingSupporting.length}</td>
-                        <td style={{ fontFamily: "inherit", fontSize: "11px", color: "#E0E0E0", padding: "16px", borderBottom: "1px solid #737373", textAlign: "right" }}>
+                        <td style={{ fontFamily: "inherit", fontSize: "13px", color: "#FFFFFF", padding: "16px", borderBottom: "1px solid #737373" }}>{role.title}</td>
+                        <td style={{ fontFamily: "inherit", fontSize: "13px", color: "#E0E0E0", padding: "16px", borderBottom: "1px solid #737373", textAlign: "center" }}>{gaps.matchPercent}%</td>
+                        <td style={{ fontFamily: "inherit", fontSize: "13px", color: "#EF4444", padding: "16px", borderBottom: "1px solid #737373", textAlign: "center" }}>{gaps.missingCore.length}</td>
+                        <td style={{ fontFamily: "inherit", fontSize: "13px", color: "#F59E0B", padding: "16px", borderBottom: "1px solid #737373", textAlign: "center" }}>{gaps.missingSupporting.length}</td>
+                        <td style={{ fontFamily: "inherit", fontSize: "13px", color: "#E0E0E0", padding: "16px", borderBottom: "1px solid #737373", textAlign: "right" }}>
                           {formatTime((gaps.missingCore.length + gaps.missingSupporting.length) * 40)}
                         </td>
                       </tr>

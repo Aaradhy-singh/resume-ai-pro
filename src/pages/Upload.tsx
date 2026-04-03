@@ -106,78 +106,32 @@ const UploadPage = () => {
   return (
     <DashboardLayout>
       <div className="max-w-4xl mx-auto space-y-8 pb-12">
-        <div style={{ borderBottom: '1px solid #1A1A1A', paddingBottom: '24px', marginBottom: '32px' }}>
-          <p style={{
-          }}>ANALYZE RESUME</p>
-          <h1 style={{
-            fontFamily: "'DM Serif Display', serif",
-            fontSize: '32px',
-            color: '#FFFFFF',
-            fontWeight: 'normal',
-            margin: '0 0 8px 0',
-            lineHeight: 1.1
-          }}>Upload Your Resume</h1>
-          <p style={{
-            fontSize: '11px',
-            color: '#FFFFFF',
-            margin: 0,
-            lineHeight: 1.7
-          }}>
+        <div className="pb-6 mb-8 text-white">
+          <p className="font-mono text-[11px] text-gray-300 tracking-[0.2em] uppercase mb-2">ANALYZE RESUME</p>
+          <h1 className="font-serif text-[32px] font-normal m-0 mb-2 leading-[1.1] text-white">Upload Your Resume</h1>
+          <p className="font-mono text-[14px] text-gray-300 m-0 leading-[1.7]">
             Upload PDF or DOCX. Analysis runs entirely in your browser.
           </p>
         </div>
 
         {/* --- WIZARD STEP 1 --- */}
-        <div className="surface-card p-6">
-          <h2 style={{
-            fontSize: '14px',
-            color: '#0EA5E9',
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            marginBottom: '16px',
-            borderBottom: '1px solid #333333',
-            paddingBottom: '8px'
-          }}>Step 1: Your Resume</h2>
+        <div className="bg-[#111111] border border-white/20 rounded-xl shadow-lg p-6">
+          <h2 className="text-[11px] text-white tracking-[0.2em] uppercase mb-4 font-mono">Step 1: Your Resume</h2>
           
           <ResumeUpload onParsed={setParsedResume} />
           
           {/* Empty State Hint Block moved inside Step 1 or kept outside, let's keep it here for now if no resume string */}
           {!parsedResume && (
-            <div style={{
-              marginTop: '24px',
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr 1fr',
-              gap: '16px'
-            }}>
+            <div className="mt-6 grid grid-cols-3 gap-4">
               {[
                 { num: '01', label: 'WHAT HAPPENS NEXT', text: 'Your resume is parsed locally. No data is sent to any server.' },
                 { num: '02', label: 'THEN', text: 'Paste a job description to get a keyword alignment score and gap analysis.' },
                 { num: '03', label: 'FINALLY', text: 'Get a prioritized action plan, role matches, and bullet rewrites.' },
               ].map((item) => (
-                <div key={item.label} className="ui-box-override" style={{
-                  background: '#0D0D0D',
-                  border: '1px solid #555555',
-                  borderRadius: '6px',
-                  padding: '16px'
-                }}>
-                  <div style={{
-                    fontSize: '24px',
-                    color: '#555555',
-                    lineHeight: 1,
-                    marginBottom: '8px'
-                  }}>{item.num}</div>
-                  <p style={{
-                    fontSize: '9px',
-                    color: '#0EA5E9',
-                    letterSpacing: '0.2em',
-                    textTransform: 'uppercase',
-                    marginBottom: '8px'
-                  }}>{item.label}</p>
-                  <p style={{
-                    fontSize: '11px',
-                    color: '#FFFFFF',
-                    lineHeight: 1.6
-                  }}>{item.text}</p>
+                <div key={item.label} className="bg-[#111111] border border-white/20 rounded-xl shadow-lg p-4">
+                  <div className="font-serif text-[24px] text-white leading-none mb-2">{item.num}</div>
+                  <p className="font-mono text-[11px] text-gray-300 tracking-[0.2em] uppercase mb-2">{item.label}</p>
+                  <p className="font-mono text-[14px] text-gray-300 leading-[1.6]">{item.text}</p>
                 </div>
               ))}
             </div>
@@ -188,16 +142,8 @@ const UploadPage = () => {
         {parsedResume && (
           <>
             {/* --- WIZARD STEP 2 --- */}
-            <div className="surface-card p-6">
-              <h2 style={{
-                fontSize: '14px',
-                color: '#0EA5E9',
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                marginBottom: '16px',
-                borderBottom: '1px solid #333333',
-                paddingBottom: '8px'
-              }}>Step 2: Target Role & JD</h2>
+            <div className="bg-[#111111] border border-white/20 rounded-xl shadow-lg p-6">
+              <h2 className="text-[11px] text-white tracking-[0.2em] uppercase mb-4 font-mono">Step 2: Target Role & JD</h2>
               
               <div className="space-y-6">
                 <JobDescriptionInput onJobDescriptionChange={setJobDescription} />
@@ -219,16 +165,9 @@ const UploadPage = () => {
               initial={{ opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
-              className="surface-card"
-              style={{
-                padding: '24px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginTop: '32px'
-              }}
+              className="bg-[#111111] border border-white/20 rounded-xl shadow-lg p-6 flex items-center justify-between mt-8"
             >
-              <div style={{ color: '#FFFFFF', fontSize: '11px' }}>
+              <div className="text-gray-300 text-[14px] font-mono">
                 {!hasRequiredInput && "Upload a resume to continue"}
                 {hasRequiredInput && !hasJobDescription && "Add job description for keyword coverage analysis"}
                 {hasRequiredInput && hasJobDescription && "✓ Ready for complete analysis"}
@@ -238,15 +177,16 @@ const UploadPage = () => {
                   onClick={handleAnalyze}
                   disabled={!hasRequiredInput || isAnalyzing}
                   style={{
-                    background: isAnalyzing ? '#0284C7' : (hasRequiredInput ? '#0EA5E9' : '#0369A1'),
-                    color: '#000000',
+                    background: isAnalyzing ? '#ffffff' : (hasRequiredInput ? '#ffffff' : '#444444'),
+                    color: (hasRequiredInput && !isAnalyzing) ? '#000000' : '#888888',
+                    fontFamily: "'DM Mono', monospace",
                     fontSize: '11px',
                     fontWeight: 'bold',
-                    letterSpacing: '0.15em',
+                    letterSpacing: '0.2em',
                     textTransform: 'uppercase',
                     padding: '12px 32px',
                     border: 'none',
-                    borderRadius: '4px',
+                    borderRadius: '0px',
                     cursor: (!hasRequiredInput || isAnalyzing) ? 'not-allowed' : 'pointer',
                     minWidth: '240px',
                     transition: 'all 200ms ease',

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import type { AnalysisResult } from "@/lib/engines/analysis-orchestrator";
 import { ActionItem, categoryConfig, ActionCategoryCard } from "@/components/action-plan/ActionCategoryCard";
 import { FeedbackModal } from '@/components/FeedbackModal';
@@ -13,6 +13,7 @@ type PriorityFilter = 'all' | 'critical' | 'high' | 'medium' | 'low';
 
 const ActionPlan = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [items, setItems] = useState<ActionItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [analysisHasBeenRun, setAnalysisHasBeenRun] = useState(false);
@@ -26,55 +27,68 @@ const ActionPlan = () => {
     const savedRoleName = safeStorage.getItem('explorerRoleName');
     if (savedRoleName) setExplorerRoleName(savedRoleName);
 
+    // ── PRIORITY 1: career explorer navigation (router state, most reliable) ──
+    const stateTarget = (location.state as any)?.careerExplorerTarget;
+
+    // ── PRIORITY 2: career explorer navigation (storage fallback) ──
+    const storedExplorerRaw = safeStorage.getItem('careerExplorerTarget');
+    let explorerData: any = null;
+    if (stateTarget?.fromCareerExplorer) {
+      explorerData = stateTarget;
+    } else if (storedExplorerRaw) {
+      try {
+        const parsed = JSON.parse(storedExplorerRaw);
+        if (parsed?.fromCareerExplorer) explorerData = parsed;
+      } catch { /* pass */ }
+    }
+
+    if (explorerData) {
+      // Clear the storage key so navigating back doesn't re-trigger
+      safeStorage.setItem('careerExplorerTarget', '');
+
+      const explorerItems: ActionItem[] = [];
+      explorerData.missingCore.forEach((skill: string, i: number) => {
+        explorerItems.push({
+          id: `explorer-core-${i}`,
+          category: 'skills',
+          title: `Acquire Core Skill: ${skill}`,
+          description: `${skill} is a core requirement for ${explorerData.roleName}. This skill carries 2× weight in matching.`,
+          completed: false,
+          priorityLevel: 'critical',
+          estimatedEffort: '2-4 weeks',
+          recruiterImpact: 9,
+          triggerReason: `Missing core skill for ${explorerData.roleName}`,
+        });
+      });
+      explorerData.missingSupporting.forEach((skill: string, i: number) => {
+        explorerItems.push({
+          id: `explorer-supporting-${i}`,
+          category: 'skills',
+          title: `Add Supporting Skill: ${skill}`,
+          description: `${skill} is a supporting requirement for ${explorerData.roleName}.`,
+          completed: false,
+          priorityLevel: 'high',
+          estimatedEffort: '1-2 weeks',
+          recruiterImpact: 6,
+          triggerReason: `Missing supporting skill for ${explorerData.roleName}`,
+        });
+      });
+
+      if (explorerData.roleName) {
+        safeStorage.setItem('explorerRoleName', explorerData.roleName);
+        setExplorerRoleName(explorerData.roleName);
+      }
+
+      setItems(explorerItems);
+      setAnalysisHasBeenRun(true);
+      setLoading(false);
+      return;
+    }
+
+    // ── PRIORITY 3: standard resume analysis ──
     const storedData = safeStorage.getItem("resumeAnalysis");
 
     if (!storedData) {
-      // No resume analysis — check if coming from Career Explorer before giving up
-      const explorerRaw = safeStorage.getItem('careerExplorerTarget');
-      if (explorerRaw) {
-        try {
-          const explorerData = JSON.parse(explorerRaw);
-          if (explorerData?.fromCareerExplorer) {
-            const explorerItems: ActionItem[] = [];
-            explorerData.missingCore.forEach((skill: string, i: number) => {
-              explorerItems.push({
-                id: `explorer-core-${i}`,
-                category: 'skills',
-                title: `Acquire Core Skill: ${skill}`,
-                description: `${skill} is a core requirement for ${explorerData.roleName}. This is a 2x weighted gap.`,
-                completed: false,
-                priorityLevel: 'critical',
-                estimatedEffort: '2-4 weeks',
-                recruiterImpact: 9,
-                triggerReason: `Missing core skill for ${explorerData.roleName}`,
-              });
-            });
-            explorerData.missingSupporting.forEach((skill: string, i: number) => {
-              explorerItems.push({
-                id: `explorer-supporting-${i}`,
-                category: 'skills',
-                title: `Add Supporting Skill: ${skill}`,
-                description: `${skill} is a supporting requirement for ${explorerData.roleName}.`,
-                completed: false,
-                priorityLevel: 'high',
-                estimatedEffort: '1-2 weeks',
-                recruiterImpact: 6,
-                triggerReason: `Missing supporting skill for ${explorerData.roleName}`,
-              });
-            });
-            if (explorerItems.length > 0) {
-              setItems(explorerItems);
-              setAnalysisHasBeenRun(true);
-            }
-            if (explorerData?.roleName) {
-              safeStorage.setItem('explorerRoleName', explorerData.roleName);
-            }
-            safeStorage.setItem('careerExplorerTarget', '');
-          }
-        } catch {
-          // pass
-        }
-      }
       setLoading(false);
       return;
     }
@@ -115,16 +129,20 @@ const ActionPlan = () => {
       setLoading(false);
     }
 
-
-  }, []);
+  }, [location.state]);
 
   const toggleItem = (id: string) => {
     setItems(prev => prev.map(item => item.id === id ? { ...item, completed: !item.completed } : item));
   };
 
-  const filteredItems: ActionItem[] = activeFilter === 'all'
+  const filteredItems: ActionItem[] = [...(activeFilter === 'all'
     ? items
-    : items.filter(item => item.priorityLevel === activeFilter.toLowerCase());
+    : items.filter(item => item.priorityLevel === activeFilter.toLowerCase()))].sort((a, b) => {
+      const priorityOrder: Record<string, number> = { critical: 0, high: 1, medium: 2, low: 3 };
+      const scoreA = priorityOrder[(a.priorityLevel || '').toLowerCase()] ?? 99;
+      const scoreB = priorityOrder[(b.priorityLevel || '').toLowerCase()] ?? 99;
+      return scoreA - scoreB;
+    });
 
   const completedCount = items.filter(i => i.completed).length;
   const totalCount = items.length;
@@ -418,19 +436,19 @@ const ActionPlan = () => {
   };
 
   if (loading) {
-    return <div style={{ minHeight: "100vh", backgroundColor: "#000000" }} />;
+    return <div className="min-h-screen bg-black" />;
   }
 
   if (!analysisHasBeenRun) {
     return (
       <DashboardLayout>
-        <div style={{ minHeight: "100vh", backgroundColor: "#000000", color: "#FFFFFF", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
+        <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center text-center">
           <GlobalStyles />
           <div style={{ fontSize: "16px", color: "#FFFFFF", marginBottom: "8px" }}>NO ANALYSIS DATA</div>
-          <p style={{ color: '#FFFFFF', fontSize: '13px' }}>Run an analysis from the Analyze Resume page to see results.</p>
+          <p style={{ color: '#FFFFFF', fontSize: '15px' }}>Run an analysis from the Analyze Resume page to see results.</p>
           <button
             onClick={() => navigate("/upload")}
-            style={{ display: "block", margin: "24px auto 0", color: "#0EA5E9", background: "transparent", border: "none", cursor: "pointer", fontSize: "13px" }}
+            style={{ display: "block", margin: "24px auto 0", color: "#0EA5E9", background: "transparent", border: "none", cursor: "pointer", fontSize: "15px" }}
           >
             → ANALYZE RESUME
           </button>
@@ -441,38 +459,31 @@ const ActionPlan = () => {
 
   return (
     <DashboardLayout>
-    <div style={{ backgroundColor: "#000000", color: "#FFFFFF", paddingBottom: "100px" }}>
+    <div className="bg-black text-white pb-[100px]">
       <GlobalStyles />
 
       {/* Sticky Page Header */}
-      <div style={{
-        position: "sticky",
-        top: 0,
-        backgroundColor: "#000000",
-        borderBottom: "1px solid #1A1A1A",
-        zIndex: 10,
-        padding: "16px 24px"
-      }}>
+      <div className="sticky top-0 bg-black border-b border-[#444444] z-10 px-6 py-4">
         <div style={{ maxWidth: "1100px", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
-            <div style={{ fontSize: "8px", color: "#0EA5E9", textTransform: "uppercase", letterSpacing: "0.25em", marginBottom: "6px" }}>
+            <div style={{ fontSize: "12px", fontFamily: "'DM Mono', monospace", color: "#ffffff", textTransform: "uppercase", letterSpacing: "0.25em", marginBottom: "6px" }}>
               RESUME OPTIMIZATION
             </div>
-            <h1 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "22px", color: "#FFFFFF", margin: 0, fontWeight: "normal", lineHeight: 1 }}>
+            <h1 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "28px", color: "#FFFFFF", margin: 0, fontWeight: "normal", lineHeight: 1 }}>
               Action Plan
             </h1>
             {explorerRoleName && (
-              <div style={{ fontSize: '11px', color: '#0EA5E9', letterSpacing: '0.1em', textTransform: 'uppercase', marginTop: '4px' }}>
+              <div style={{ fontSize: '13px', fontFamily: "'DM Mono', monospace", color: '#ffffff', letterSpacing: '0.1em', textTransform: 'uppercase', marginTop: '8px' }}>
                 PLAN FOR: {explorerRoleName}
               </div>
             )}
-            <div style={{ fontSize: "12px", color: "#FFFFFF", marginTop: "8px" }}>
+            <div style={{ fontSize: "14px", fontFamily: "'DM Mono', monospace", color: "#666666", marginTop: "8px" }}>
               Every recommendation is traceable to a specific resume deficiency.
             </div>
           </div>
           <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
             <button onClick={handleExport}
-              style={{ background: "transparent", border: "1px solid #3A3A3A", color: "#FFFFFF", fontSize: "11px", textTransform: "uppercase", padding: "8px 16px", borderRadius: "0px", cursor: "pointer", letterSpacing: "0.08em" }}>
+              style={{ background: "transparent", border: "1px solid #444444", color: "#FFFFFF", fontFamily: "'DM Mono', monospace", fontSize: "13px", textTransform: "uppercase", padding: "8px 16px", borderRadius: "0px", cursor: "pointer", letterSpacing: "0.08em" }}>
               {exporting ? "EXPORTING..." : "↓ EXPORT PLAN"}
             </button>
           </div>
@@ -481,38 +492,31 @@ const ActionPlan = () => {
 
       <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 24px" }}>
         {/* Progress Card */}
-        <div className="card-glow" style={{ background: "#0D0D0D", border: "1px solid #3A3A3A", borderTop: "2px solid #0EA5E9", padding: "24px", marginTop: "24px", borderRadius: "0px", boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)" }}>
+        <div className="bg-[#111111] border border-white/20 rounded-xl shadow-lg border-t-2 border-t-white p-6 mt-6">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-            <div style={{ fontSize: "28px", color: "#FFFFFF", lineHeight: 1 }}>
-              {completedCount} <span style={{ color: "#FFFFFF" }}>/ {totalCount}</span>
-              <span style={{ fontSize: "12px", color: "#FFFFFF", marginLeft: "12px" }}>items resolved</span>
+            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "28px", color: "#FFFFFF", lineHeight: 1 }}>
+              {completedCount} <span style={{ color: "#666666" }}>/ {totalCount}</span>
+              <span style={{ fontSize: "14px", color: "#666666", marginLeft: "12px", textTransform: "uppercase", letterSpacing: "0.1em" }}>items resolved</span>
             </div>
-            <div style={{ fontFamily: "inherit", fontSize: "32px", color: "#0EA5E9", lineHeight: 1 }}>
+            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "32px", color: "#ffffff", lineHeight: 1 }}>
               {percentage}%
             </div>
           </div>
 
-          <div style={{ width: "100%", height: "3px", background: "#1A1A1A", marginTop: "16px" }}>
-            <div style={{ width: `${percentage}%`, height: "100%", background: "#0EA5E9", transition: "width 0.3s ease" }} />
+          <div style={{ width: "100%", height: "2px", background: "#1A1A1A", marginTop: "16px" }}>
+            <div style={{ width: `${percentage}%`, height: "100%", background: "#ffffff", transition: "width 0.3s ease" }} />
           </div>
 
           <div style={{ display: "flex", gap: "32px", marginTop: "24px" }}>
             {criticalOverallCount > 0 && (
-              <div style={{
-                textAlign: 'center',
-                padding: '16px 24px',
-                background: '#0D0D0D',
-                border: '1px solid #3A3A3A',
-                borderTop: '2px solid #EF4444',
-                boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)"
-              }}>
+              <div className="text-center px-6 py-4 bg-[#111111] border border-white/20 rounded-xl shadow-lg border-t-[2px] border-t-[#EF4444]">
                 <div style={{
                   fontSize: '28px',
                   color: '#EF4444',
                   lineHeight: 1,
                 }}>{criticalOverallCount}</div>
                 <div style={{
-                  fontSize: '9px',
+                  fontSize: '11px',
                   color: '#FFFFFF',
                   letterSpacing: '0.15em',
                   marginTop: '6px',
@@ -520,14 +524,7 @@ const ActionPlan = () => {
                 }}>CRITICAL</div>
               </div>
             )}
-            <div style={{
-              textAlign: 'center',
-              padding: '16px 24px',
-              background: '#0D0D0D',
-              border: '1px solid #3A3A3A',
-              borderTop: '2px solid #F59E0B',
-              boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)"
-            }}>
+            <div className="text-center px-6 py-4 bg-[#111111] border border-white/20 rounded-xl shadow-lg border-t-[2px] border-t-[#F59E0B]">
               <div style={{
                 fontSize: '28px',
                 color: '#F59E0B',
@@ -536,7 +533,7 @@ const ActionPlan = () => {
                 {filteredItems.filter(i => i.priorityLevel === 'high').length}
               </div>
               <div style={{
-                fontSize: '9px',
+                fontSize: '11px',
                 color: '#FFFFFF',
                 letterSpacing: '0.15em',
                 marginTop: '6px',
@@ -544,14 +541,7 @@ const ActionPlan = () => {
               }}>HIGH</div>
             </div>
 
-            <div style={{
-              textAlign: 'center',
-              padding: '16px 24px',
-              background: '#0D0D0D',
-              border: '1px solid #3A3A3A',
-              borderTop: '2px solid #0EA5E9',
-              boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)"
-            }}>
+            <div className="text-center px-6 py-4 bg-[#111111] border border-white/20 rounded-xl shadow-lg border-t-[2px] border-t-[#0EA5E9]">
               <div style={{
                 fontSize: '28px',
                 color: '#0EA5E9',
@@ -560,7 +550,7 @@ const ActionPlan = () => {
                 {filteredItems.filter(i => i.priorityLevel === 'medium').length}
               </div>
               <div style={{
-                fontSize: '9px',
+                fontSize: '11px',
                 color: '#FFFFFF',
                 letterSpacing: '0.15em',
                 marginTop: '6px',
@@ -568,14 +558,7 @@ const ActionPlan = () => {
               }}>MEDIUM</div>
             </div>
 
-            <div style={{
-              textAlign: 'center',
-              padding: '16px 24px',
-              background: '#0D0D0D',
-              border: '1px solid #3A3A3A',
-              borderTop: '2px solid #10B981',
-              boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)"
-            }}>
+            <div className="text-center px-6 py-4 bg-[#111111] border border-white/20 rounded-xl shadow-lg border-t-[2px] border-t-[#10B981]">
               <div style={{
                 fontSize: '28px',
                 color: '#10B981',
@@ -584,7 +567,7 @@ const ActionPlan = () => {
                 {filteredItems.filter(i => i.priorityLevel === 'low').length}
               </div>
               <div style={{
-                fontSize: '9px',
+                fontSize: '11px',
                 color: '#FFFFFF',
                 letterSpacing: '0.15em',
                 marginTop: '6px',
@@ -614,9 +597,10 @@ const ActionPlan = () => {
                 style={{
                   background: "transparent",
                   border: "none",
-                  borderBottom: isActive ? "2px solid #0EA5E9" : "2px solid transparent",
-                  color: isActive ? "#FFFFFF" : "#E0E0E0",
-                  fontSize: "11px",
+                  borderBottom: isActive ? "2px solid #ffffff" : "2px solid transparent",
+                  color: isActive ? "#FFFFFF" : "#666666",
+                  fontFamily: "'DM Mono', monospace",
+                  fontSize: "13px",
                   padding: "16px 20px",
                   cursor: "pointer",
                   whiteSpace: "nowrap",
@@ -626,13 +610,14 @@ const ActionPlan = () => {
                   gap: "8px"
                 }}
                 onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.color = "#FFFFFF" }}
-                onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.color = "#E0E0E0" }}
+                onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.color = "#666666" }}
               >
                 {tab}
                 <span style={{
-                  background: "#0EA5E9",
-                  color: "#000000",
-                  fontSize: "10px",
+                  background: isActive ? "#ffffff" : "#222222",
+                  color: isActive ? "#000000" : "#ffffff",
+                  fontFamily: "'DM Mono', monospace",
+                  fontSize: "12px",
                   padding: "2px 6px",
                   borderRadius: "0px"
                 }}>
@@ -645,23 +630,15 @@ const ActionPlan = () => {
 
         {/* Estimated Time Bar */}
         <div style={{ marginTop: "16px" }}>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            background: '#0D0D0D',
-            border: '1px solid #3A3A3A',
-            boxShadow: '0 4px 12px rgba(255, 255, 255, 0.05)',
-            padding: '8px 16px',
-          }}>
+          <div className="bg-[#111111] border border-white/20 rounded-full shadow-lg inline-flex items-center gap-2 px-4 py-2 font-['DM_Mono']">
             <span style={{
-              fontSize: '9px',
-              color: '#FFFFFF',
+              fontSize: '12px',
+              color: '#666666',
               letterSpacing: '0.15em',
               textTransform: 'uppercase'
             }}>EST. TIME</span>
             <span style={{
-              fontSize: '13px',
+              fontSize: '15px',
               color: '#FFFFFF'
             }}>{formatTotalEffort(totalEffortMinutes)}</span>
           </div>
@@ -670,7 +647,7 @@ const ActionPlan = () => {
         {/* Action Items List */}
         <div style={{ marginTop: "32px" }}>
           {filteredItems.length === 0 ? (
-            <div style={{ fontSize: "12px", color: "#FFFFFF", textAlign: "center", padding: "40px" }}>
+            <div style={{ fontSize: "14px", color: "#FFFFFF", textAlign: "center", padding: "40px" }}>
               NO ITEMS IN THIS CATEGORY.
             </div>
           ) : (
@@ -698,11 +675,11 @@ const ActionPlan = () => {
           )}
         </div>
       </div>
-      <div style={{ maxWidth: "1100px", margin: "32px auto 0", padding: "0 24px 40px 24px" }}>
+      <div style={{ maxWidth: "1100px", margin: "32px auto 0", padding: "0 24px 40px 24px", display: "flex", justifyContent: "center" }}>
         <button onClick={() => navigate("/career-explorer")}
-          style={{ background: "transparent", border: "1px solid #0EA5E9", color: "#0EA5E9", fontSize: "11px", textTransform: "uppercase", padding: "12px 24px", borderRadius: "0px", cursor: "pointer", letterSpacing: "0.1em", display: "flex", alignItems: "center", gap: "8px" }}
-          onMouseEnter={e => { e.currentTarget.style.background = "#0EA5E9"; e.currentTarget.style.color = "#000000"; }}
-          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#0EA5E9"; }}>
+          style={{ background: "#ffffff", border: "1px solid #ffffff", color: "#000000", fontFamily: "'DM Mono', monospace", fontSize: "13px", fontWeight: "bold", textTransform: "uppercase", padding: "12px 24px", borderRadius: "0px", cursor: "pointer", letterSpacing: "0.1em", display: "flex", alignItems: "center", gap: "8px" }}
+          onMouseEnter={e => { e.currentTarget.style.background = "#e0e0e0"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "#ffffff"; }}>
           ⊕ EXPLORE CAREER PATHS
         </button>
       </div>
@@ -710,17 +687,8 @@ const ActionPlan = () => {
       {/* Floating Feedback Button */}
       <button
         onClick={() => setShowFeedback(true)}
-        style={{
-          position: 'fixed', bottom: '24px', right: '24px',
-          background: '#0D0D0D', border: '1px solid #3A3A3A',
-          color: '#9A9A9A', fontFamily: "'DM Mono', monospace",
-          fontSize: '10px', textTransform: 'uppercase',
-          padding: '10px 16px', cursor: 'pointer',
-          letterSpacing: '0.1em', zIndex: 50,
-          transition: 'all 0.2s',
-        }}
-        onMouseEnter={e => { e.currentTarget.style.borderColor = '#0EA5E9'; e.currentTarget.style.color = '#0EA5E9'; }}
-        onMouseLeave={e => { e.currentTarget.style.borderColor = '#3A3A3A'; e.currentTarget.style.color = '#9A9A9A'; }}
+        className="fixed bottom-6 right-6 bg-[#111111] border border-white/20 text-[#9A9A9A] px-4 py-2 hover:border-[#0EA5E9] hover:text-[#0EA5E9] transition-all duration-200 z-50 uppercase tracking-[0.1em]"
+        style={{ fontFamily: "'DM Mono', monospace", fontSize: '12px' }}
       >
         ✦ FEEDBACK
       </button>

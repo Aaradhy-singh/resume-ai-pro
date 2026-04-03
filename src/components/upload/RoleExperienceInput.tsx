@@ -96,98 +96,28 @@ export function RoleExperienceInput({
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const box: React.CSSProperties = {
-        border: '1px solid #555555',
-        background: '#0D0D0D',
-        boxShadow: '0 4px 12px rgba(255, 255, 255, 0.05)',
-        padding: '24px',
-        marginBottom: '0',
-    };
 
-    const label: React.CSSProperties = {
-        fontFamily: "inherit",
-        fontSize: '9px',
-        color: '#0EA5E9',
-        letterSpacing: '0.2em',
-        textTransform: 'uppercase' as const,
-        marginBottom: '12px',
-        display: 'block',
-    };
-
-    const inputStyle: React.CSSProperties = {
-        fontFamily: "inherit",
-        fontSize: '12px',
-        color: '#F0F0F0',
-        background: '#121212',
-        border: '1px solid #555555',
-        padding: '10px 14px',
-        width: '100%',
-        outline: 'none',
-        cursor: 'pointer',
-        letterSpacing: '0.05em',
-    };
-
-    const dropdownStyle: React.CSSProperties = {
-        position: 'absolute' as const,
-        top: '100%',
-        left: 0,
-        right: 0,
-        background: '#1A1A1A',
-        border: '1px solid #333333',
-        borderTop: 'none',
-        maxHeight: '220px',
-        overflowY: 'auto' as const,
-        zIndex: 100,
-    };
-
-    const optionStyle: React.CSSProperties = {
-        fontFamily: "inherit",
-        fontSize: '11px',
-        color: '#E0E0E0',
-        padding: '10px 14px',
-        cursor: 'pointer',
-        letterSpacing: '0.05em',
-        borderBottom: '1px solid #333333',
-    };
 
     return (
-        <div style={box} className="ui-box-override">
+        <div className="bg-transparent border-none">
             {/* Section header */}
-            <p style={{
-                fontFamily: "inherit",
-                fontSize: '9px',
-                color: '#0EA5E9',
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                marginBottom: '4px',
-            }}>
+            <p className="font-mono text-[9px] text-white tracking-[0.2em] uppercase mb-1">
                 TARGET ROLE & EXPERIENCE
             </p>
-            <p style={{
-                fontFamily: "inherit",
-                fontSize: '11px',
-                color: '#E0E0E0',
-                marginBottom: '24px',
-                lineHeight: 1.7,
-            }}>
+            <p className="font-mono text-[13px] text-gray-300 mb-6 leading-[1.7]">
                 Optional. Helps calibrate scoring to your specific situation.
             </p>
 
-            <div style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '20px',
-            }}>
-
+            <div className="grid grid-cols-2 gap-5">
                 {/* TARGET ROLE */}
                 <div>
-                    <span style={label}>TARGET JOB ROLE</span>
-                    <div ref={roleRef} style={{ position: 'relative' }}>
+                    <span className="font-mono text-[9px] text-white tracking-[0.2em] uppercase mb-3 px-1 block">TARGET JOB ROLE</span>
+                    <div ref={roleRef} className="relative">
                         <input
                             type="text"
                             placeholder="e.g. Prompt Engineer"
                             value={roleQuery || selectedRole}
-                            style={inputStyle}
+                            className="bg-[#1A1A1A] border border-gray-500 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-[#00e5ff] focus:ring-1 focus:ring-[#00e5ff] w-full cursor-pointer font-mono text-[14px] tracking-[0.05em]"
                             onChange={e => {
                                 setRoleQuery(e.target.value);
                                 setSelectedRole("");
@@ -197,19 +127,11 @@ export function RoleExperienceInput({
                             onFocus={() => setRoleDropdownOpen(true)}
                         />
                         {roleDropdownOpen && filteredTitles.length > 0 && (
-                            <div style={dropdownStyle}>
+                            <div className="absolute top-full left-0 right-0 bg-[#1A1A1A] border border-gray-700 border-t-0 max-h-[220px] overflow-y-auto z-[100] rounded-b-lg">
                                 {filteredTitles.map(title => (
                                     <div
                                         key={title}
-                                        style={optionStyle}
-                                        onMouseEnter={e => {
-                                            (e.target as HTMLDivElement).style.color = '#FFFFFF';
-                                            (e.target as HTMLDivElement).style.background = '#3A3A3A';
-                                        }}
-                                        onMouseLeave={e => {
-                                            (e.target as HTMLDivElement).style.color = '#E0E0E0';
-                                            (e.target as HTMLDivElement).style.background = 'transparent';
-                                        }}
+                                        className="font-mono text-[13px] text-gray-300 px-4 py-2 hover:bg-white/10 hover:text-white cursor-pointer tracking-[0.05em] border-b border-gray-600 last:border-b-0"
                                         onMouseDown={() => {
                                             setSelectedRole(title);
                                             setRoleQuery(title);
@@ -227,39 +149,25 @@ export function RoleExperienceInput({
 
                 {/* EXPERIENCE YEARS */}
                 <div>
-                    <span style={label}>YEARS OF EXPERIENCE</span>
-                    <div ref={expRef} style={{ position: 'relative' }}>
+                    <span className="font-mono text-[9px] text-white tracking-[0.2em] uppercase mb-3 px-1 block">YEARS OF EXPERIENCE</span>
+                    <div ref={expRef} className="relative">
                         <div
-                            style={{
-                                ...inputStyle,
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                userSelect: 'none',
-                            }}
+                            className="bg-[#1A1A1A] border border-gray-500 flex justify-between items-center text-white rounded-lg px-4 py-3 cursor-pointer font-mono text-[14px] tracking-[0.05em] select-none hover:border-[#00e5ff] transition-colors"
                             onClick={() => setExpDropdownOpen(!expDropdownOpen)}
                         >
-                            <span style={{ color: selectedExp === null ? '#E0E0E0' : '#FFFFFF' }}>
+                            <span className={selectedExp === null ? 'text-gray-300' : 'text-white'}>
                                 {selectedExp === null
                                     ? 'Select years'
                                     : EXPERIENCE_OPTIONS.find(o => o.value === selectedExp)?.label ?? 'Select years'}
                             </span>
-                            <span style={{ color: '#E0E0E0', fontSize: '10px' }}>▾</span>
+                            <span className="text-gray-300 text-[10px]">▾</span>
                         </div>
                         {expDropdownOpen && (
-                            <div style={dropdownStyle}>
+                            <div className="absolute top-full left-0 right-0 bg-[#1A1A1A] border border-gray-700 border-t-0 max-h-[220px] overflow-y-auto z-[100] rounded-b-lg">
                                 {EXPERIENCE_OPTIONS.map(opt => (
                                     <div
                                         key={opt.value}
-                                        style={optionStyle}
-                                        onMouseEnter={e => {
-                                            (e.target as HTMLDivElement).style.color = '#FFFFFF';
-                                            (e.target as HTMLDivElement).style.background = '#3A3A3A';
-                                        }}
-                                        onMouseLeave={e => {
-                                            (e.target as HTMLDivElement).style.color = '#E0E0E0';
-                                            (e.target as HTMLDivElement).style.background = 'transparent';
-                                        }}
+                                        className="font-mono text-[13px] text-gray-300 px-4 py-2 hover:bg-white/10 hover:text-white cursor-pointer tracking-[0.05em] border-b border-gray-600 last:border-b-0"
                                         onMouseDown={() => {
                                             setSelectedExp(opt.value);
                                             onExperienceChange(opt.value);
@@ -274,14 +182,7 @@ export function RoleExperienceInput({
                     </div>
                     {/* WARNING */}
                     {selectedExp !== null && (
-                        <p style={{
-                            fontFamily: "inherit",
-                            fontSize: '9px',
-                            color: '#F59E0B',
-                            letterSpacing: '0.08em',
-                            marginTop: '8px',
-                            lineHeight: 1.7,
-                        }}>
+                        <p className="font-mono text-[9px] text-[#F59E0B] tracking-[0.08em] mt-2 leading-[1.7]">
                             ⚠ ENTER THE SAME EXPERIENCE AS WRITTEN IN YOUR RESUME FOR ACCURATE RESULTS.
                         </p>
                     )}

@@ -71,10 +71,10 @@ export function ResumeUpload({ onParsed }: ResumeUploadProps) {
 
     return (
         <div className="space-y-4">
-            <Card className="rounded-none shadow-none" style={{ background: '#0D0D0D', border: '1px solid #555555' }}>
+            <Card className="rounded-none shadow-none border-none bg-transparent">
                 <CardHeader>
-                    <CardTitle style={{ fontFamily: "'DM Mono', monospace", fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#F0F0F0', fontWeight: 'normal' }}>Upload Your Resume</CardTitle>
-                    <CardDescription style={{ fontFamily: "'DM Mono', monospace", fontSize: '11px', color: '#9A9A9A' }}>Supports PDF, Word (.docx), and Text (.txt) files up to 5MB</CardDescription>
+                    <CardTitle className="font-mono text-[13px] uppercase tracking-[0.08em] text-white font-normal">Upload Your Resume</CardTitle>
+                    <CardDescription className="font-mono text-[13px] text-gray-300">Supports PDF, Word (.docx), and Text (.txt) files up to 5MB</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div
@@ -83,9 +83,8 @@ export function ResumeUpload({ onParsed }: ResumeUploadProps) {
                         onDragLeave={handleDragLeave}
                         onClick={handleClick}
                         className={cn(
-                            'dropzone-container rounded-none p-12 text-center cursor-pointer',
-                            'text-[var(--text-muted)]',
-                            (isDragging || parsedResume) && 'is-active',
+                            'w-full flex flex-col items-center justify-center p-8 bg-[#111111] border-2 border-dashed border-gray-500 hover:border-[#00e5ff] hover:bg-white/5 transition-all duration-200 rounded-xl cursor-pointer',
+                            (isDragging || parsedResume) && 'border-[#00e5ff] bg-white/5',
                             isProcessing && 'opacity-50 pointer-events-none'
                         )}
                         tabIndex={0}
@@ -102,31 +101,22 @@ export function ResumeUpload({ onParsed }: ResumeUploadProps) {
                         />
                         {isProcessing ? (
                             <div className="flex flex-col items-center gap-3">
-                                <Loader2 className="w-12 h-12 animate-spin text-[var(--accent)]" />
-                                <p className="font-[var(--font-body)] text-[11px] text-[var(--text-muted)] uppercase tracking-[0.1em]">Parsing resume...</p>
+                                <Loader2 className="w-12 h-12 animate-spin text-[#00e5ff]" />
+                                <p className="font-mono text-[11px] text-gray-300 uppercase tracking-[0.1em]">Parsing resume...</p>
                             </div>
                         ) : parsedResume ? (
                             <div className="flex flex-col items-center gap-3">
-                                <div style={{
-                                    width: '40px', height: '40px',
-                                    border: '2px solid #0EA5E9',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    color: '#0EA5E9', fontSize: '18px',
-                                    margin: '0 auto 12px auto'
-                                }}>✓</div>
-                                <p style={{ color: '#0EA5E9', fontSize: '15px', fontWeight: 500 }}
-                                    className="font-[var(--font-body)]">
+                                <div className="w-10 h-10 border-2 border-[#00e5ff] flex items-center justify-center text-[#00e5ff] text-lg mx-auto mb-3">✓</div>
+                                <p className="text-[#00e5ff] text-[16px] font-medium font-mono">
                                     ✓ {parsedResume.metadata.fileName}
                                 </p>
-                                <p style={{ color: '#6B6B6B', fontSize: '12px' }}
-                                    className="font-[var(--font-body)]">
+                                <p className="text-gray-300 text-[14px] font-mono">
                                     Parsed via {parsedResume.metadata.parsingMethod.toUpperCase()} • {' '}
                                     Confidence: {parsedResume.parsingConfidence}%
                                 </p>
                                 <Button
                                     variant="outline"
-                                    style={{ borderColor: '#3A3A3A', color: '#A0A0A0', transition: 'border-color 150ms ease, color 150ms ease' }}
-                                    className="bg-transparent text-[11px] uppercase tracking-[0.08em] rounded-none hover:border-[#0EA5E9] hover:text-[#F0F0F0] hover:bg-transparent h-auto py-2 px-4 shadow-none mt-2"
+                                    className="bg-transparent text-gray-300 border-gray-600 border text-[11px] uppercase tracking-[0.08em] hover:border-white hover:text-white rounded-md mt-2 shadow-sm py-2 px-4 h-auto"
                                     onClick={(e) => { e.stopPropagation(); setParsedResume(null); }}
                                 >
                                     Upload Different File
@@ -134,23 +124,18 @@ export function ResumeUpload({ onParsed }: ResumeUploadProps) {
                             </div>
                         ) : isDragging ? (
                             <div className="flex flex-col items-center gap-3">
-                                <p style={{
-                                    color: '#0EA5E9',
-                                    fontFamily: 'DM Mono, monospace',
-                                    fontSize: '12px',
-                                    letterSpacing: '0.15em',
-                                    textTransform: 'uppercase' as const,
-                                    fontWeight: 600,
-                                }}>DROP TO UPLOAD</p>
+                                <p className="text-white font-mono text-[12px] tracking-[0.15em] uppercase font-semibold">
+                                    DROP TO UPLOAD
+                                </p>
                             </div>
                         ) : (
                             <div className="flex flex-col items-center gap-3">
-                                <div className="font-[var(--font-body)] text-[11px] tracking-[0.15em] text-[#E0E0E0] mb-2">
+                                <div className="font-mono text-[11px] tracking-[0.15em] text-white mb-2">
                                     [ DROP FILE ]
                                 </div>
-                                <div className="flex flex-col gap-1">
-                                    <p className="font-[var(--font-body)] text-[13px] text-[#E0E0E0]">Drop your resume here or click to browse</p>
-                                    <p className="font-[var(--font-body)] text-[11px] text-[#E0E0E0]">
+                                <div className="flex flex-col gap-1 items-center">
+                                    <p className="font-mono text-[15px] text-white">Drop your resume here or click to browse</p>
+                                    <p className="font-mono text-[13px] text-gray-300">
                                         PDF, DOCX, or TXT • Max 5MB
                                     </p>
                                 </div>

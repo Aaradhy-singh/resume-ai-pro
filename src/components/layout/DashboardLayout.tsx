@@ -8,14 +8,25 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-[var(--bg-primary)]">
+      <div className="min-h-screen flex w-full" style={{ background: '#000000' }}>
         <AppSidebar />
-        <main className="flex-1 flex flex-col min-w-0 bg-[var(--bg-primary)]">
-          <header className="h-14 flex items-center border-b border-[var(--border)] bg-[var(--bg-primary)] px-4 shrink-0 sticky top-0 z-10">
-            <SidebarTrigger className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-transparent" />
-            <span className="md:hidden ml-3 font-serif text-[14px] text-white">ResumeAI</span>
+        <main className="flex-1 flex flex-col min-w-0" style={{ background: '#000000' }}>
+          <header style={{
+            height: '52px',
+            display: 'flex',
+            alignItems: 'center',
+            borderBottom: '1px solid #1a1a1a',
+            background: '#000000',
+            padding: '0 20px',
+            position: 'sticky',
+            top: 0,
+            zIndex: 10,
+            flexShrink: 0,
+          }}>
+            <SidebarTrigger style={{ color: '#555555' }} />
+            <span className="md:hidden" style={{ fontFamily: "'DM Serif Display', serif", fontSize: '14px', color: '#ffffff', marginLeft: '12px' }}>ResumeAI</span>
           </header>
-          <div className="flex-1 p-3 md:p-6 overflow-auto">
+          <div style={{ flex: 1, padding: '32px', overflowAuto: true }} className="p-4 md:p-8 overflow-auto">
             {children}
           </div>
         </main>

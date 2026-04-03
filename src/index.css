@@ -133,14 +133,13 @@
   }
 
   .dropzone-container:focus, .dropzone-container:hover {
-    border-color: #00A8FF;
+    border: 1px dashed #ffffff;
     outline: none;
-    box-shadow: 0 0 0 1px #00A8FF;
   }
 
   .dropzone-container.is-active {
-    border-color: #00A8FF;
-    background-color: rgba(0, 168, 255, 0.05);
+    border: 1px dashed #ffffff;
+    background-color: rgba(255, 255, 255, 0.05);
   }
 
   body.debug-render * {
@@ -271,13 +270,7 @@
     }
 }
 
-.score-glow {
-    /* animation: glow-pulse 2s ease-in-out infinite; */
-}
 
-.card-glow {
-    /* animation: border-glow 3s ease-in-out infinite; */
-}
 
 @keyframes tubePulse {
     0%, 100% {

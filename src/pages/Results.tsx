@@ -452,15 +452,8 @@ const Results = () => {
 
   if (loading) {
     return (
-        <div style={{ 
-            minHeight: "100vh", 
-            backgroundColor: "#000000",
-            padding: "40px 24px"
-        }}>
-            <div style={{ 
-                maxWidth: "1100px", 
-                margin: "0 auto" 
-            }}>
+        <div className="min-h-screen bg-black px-6 py-10">
+            <div className="max-w-[1100px] mx-auto">
                 <Skeleton 
                     width={200} 
                     height={30} 
@@ -490,7 +483,7 @@ const Results = () => {
 
   if (!data) {
     return (
-      <div style={{ minHeight: "100vh", backgroundColor: "#000000", color: "#FFFFFF", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+      <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
         <GlobalStyles />
         <div style={{ fontFamily: "inherit", fontSize: "13px", color: "#FFFFFF", textAlign: "center" }}>
           <div style={{ fontSize: "16px", color: "#FFFFFF", marginBottom: "8px" }}>NO ANALYSIS DATA</div>
@@ -569,30 +562,23 @@ const Results = () => {
 
   return (
     // FIX 1: No box-shadow, no glow, flat #000000 background
-    <div style={{ minHeight: "100vh", backgroundColor: "#000000", color: "#FFFFFF", paddingBottom: "100px", overflowX: 'hidden', maxWidth: '100vw' }}>
+    <div className="min-h-screen bg-black text-white pb-[100px] overflow-x-hidden max-w-[100vw]">
       <GlobalStyles />
       <ShareModal open={shareModalOpen} onClose={setShareModalOpen} score={overallScore} role={topRoleForShare} />
 
       {/* Sticky Page Header */}
-      <div style={{
-        position: "sticky",
-        top: 0,
-        backgroundColor: "#000000",
-        borderBottom: "1px solid #1A1A1A",
-        zIndex: 10,
-        padding: "16px 24px"
-      }}>
+      <div className="sticky top-0 bg-black border-b border-[#222222] z-10 px-6 py-4">
         <div style={{ maxWidth: "1100px", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
-            <div style={{ fontFamily: "inherit", fontSize: "8px", color: "#0EA5E9", textTransform: "uppercase", letterSpacing: "0.25em", marginBottom: "4px" }}>
+            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "12px", color: "#ffffff", textTransform: "uppercase", letterSpacing: "0.25em", marginBottom: "4px" }}>
               DIAGNOSTIC RESULTS
             </div>
-            <div style={{ fontSize: "20px", color: "#FFFFFF", fontWeight: "normal", lineHeight: 1 }}>Results</div>
+            <h1 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "28px", color: "#FFFFFF", margin: 0, fontWeight: "normal", lineHeight: 1 }}>Results</h1>
           </div>
           <div style={{ display: "flex", gap: "12px" }}>
             <button
               onClick={handleExport}
-              style={{ background: "transparent", border: "1px solid #2A2A2A", color: "#FFFFFF", fontFamily: "inherit", fontSize: "11px", textTransform: "uppercase", padding: "8px 16px", borderRadius: "0px", cursor: "pointer", letterSpacing: "0.08em" }}
+              style={{ background: "transparent", border: "1px solid #444444", color: "#FFFFFF", fontFamily: "'DM Mono', monospace", fontSize: "13px", textTransform: "uppercase", padding: "8px 16px", borderRadius: "0px", cursor: "pointer", letterSpacing: "0.08em" }}
             >
               ↓ EXPORT REPORT
             </button>
@@ -603,10 +589,10 @@ const Results = () => {
               }}
               style={{
                 background: 'transparent',
-                border: '1px solid #0EA5E9',
-                color: '#0EA5E9',
+                border: '1px solid #444444',
+                color: '#ffffff',
                 fontFamily: "'DM Mono', monospace",
-                fontSize: '11px',
+                fontSize: '13px',
                 fontWeight: 600,
                 letterSpacing: '0.1em',
                 textTransform: 'uppercase',
@@ -616,7 +602,7 @@ const Results = () => {
                 alignItems: 'center',
                 gap: '8px'
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(14,165,233,0.1)'; }}
+              onMouseEnter={e => { e.currentTarget.style.background = '#111111'; }}
               onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
             >
               SHARE
@@ -626,7 +612,7 @@ const Results = () => {
                 posthog.capture('action_plan_viewed');
                 navigate("/action-plan");
               }}
-              style={{ background: "#0EA5E9", border: "none", color: "#000000", fontFamily: "inherit", fontSize: "11px", textTransform: "uppercase", padding: "8px 16px", borderRadius: "0px", cursor: "pointer", fontWeight: "bold", letterSpacing: "0.08em" }}
+              style={{ background: "#ffffff", border: "none", color: "#000000", fontFamily: "'DM Mono', monospace", fontSize: "11px", textTransform: "uppercase", padding: "8px 16px", borderRadius: "0px", cursor: "pointer", fontWeight: "bold", letterSpacing: "0.08em" }}
             >
               → VIEW ACTION PLAN
             </button>
@@ -640,9 +626,9 @@ const Results = () => {
         <button
           onClick={() => navigate('/upload')}
           style={{
-            fontFamily: "inherit",
-            fontSize: '11px',
-            color: '#E0E0E0',
+            fontFamily: "'DM Mono', monospace",
+            fontSize: '13px',
+            color: '#666666',
             background: 'none',
             border: 'none',
             cursor: 'pointer',
@@ -655,7 +641,7 @@ const Results = () => {
             gap: '6px'
           }}
           onMouseEnter={e => (e.currentTarget.style.color = '#FFFFFF')}
-          onMouseLeave={e => (e.currentTarget.style.color = '#E0E0E0')}
+          onMouseLeave={e => (e.currentTarget.style.color = '#666666')}
         >
           ← ANALYZE ANOTHER RESUME
         </button>
@@ -671,10 +657,9 @@ const Results = () => {
             initial="hidden"
             animate="visible"
             custom={0}
-            className="ui-box-override" 
-            style={{ background: "#2A2A2A", border: "2px solid #737373", padding: "32px", display: "flex", flexWrap: "wrap", gap: "40px" }}
+            className="bg-[#111111] border border-white/20 rounded-xl shadow-lg p-8 flex flex-wrap gap-10"
         >
-          <div style={{ flex: "1 1 300px", borderRight: "1px solid #333333", paddingRight: "40px" }}>
+          <div style={{ flex: "1 1 300px", borderRight: "1px solid #1a1a1a", paddingRight: "40px" }}>
             <div>
               <ScoreRing
                   score={overallScore}
@@ -693,10 +678,10 @@ const Results = () => {
                   className="score-bar"
               />
             </div>
-            <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#FFFFFF", textTransform: "uppercase", marginTop: "12px", letterSpacing: "0.1em" }}>
+            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "12px", color: "#666666", textTransform: "uppercase", marginTop: "12px", letterSpacing: "0.1em" }}>
               OVERALL RESUME SCORE
             </div>
-            <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", marginTop: "4px" }}>
+            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "14px", color: "#FFFFFF", marginTop: "4px" }}>
               {scoreLabel}
             </div>
             {!hasJD && (
@@ -716,7 +701,7 @@ const Results = () => {
             {engineScores.map((engine, index) => (
               <div key={engine.name} style={{ borderBottom: "1px solid #333333", borderRight: "1px solid #333333", padding: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#FFFFFF", textTransform: "uppercase" }}>{engine.name}</div>
+                  <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "12px", color: "#666666", textTransform: "uppercase", letterSpacing: "0.05em" }}>{engine.name}</div>
                   <ScoreRing
                       score={engine.score === -1 ? 0 : engine.score}
                       color={engine.score === -1 ? '#333333' : getScoreColor(engine.score)}
@@ -747,7 +732,7 @@ const Results = () => {
 
 
         {data?.careerStage?.stage === 'student' && (
-          <div style={{ background: '#0D0D0D', border: '1px solid #3A3A3A', borderLeft: '3px solid #F59E0B', padding: '12px 16px', marginTop: '12px', fontSize: '11px', color: '#F0F0F0', lineHeight: 1.7 }}>
+          <div className="bg-[#111111] border border-white/20 border-l-[3px] border-l-[#F59E0B] rounded-xl shadow-lg px-4 py-3 mt-3 text-[13px] text-[#F0F0F0] leading-[1.7]">
             <span style={{ color: '#F59E0B', fontWeight: 'bold' }}>STUDENT CONTEXT: </span>
             Skill gap scores below 40% are normal for first-year students. These scores show your growth runway, not your current value. Focus on the Action Plan to close gaps systematically.
           </div>
@@ -766,7 +751,7 @@ const Results = () => {
             'PORTFOLIO': null,
           };
           return (
-            <div style={{ display: "flex", borderBottom: "1px solid #3A3A3A", marginTop: "48px", overflowX: "auto", whiteSpace: "nowrap", WebkitOverflowScrolling: "touch" }}>
+            <div style={{ display: "flex", borderBottom: "1px solid #333333", marginTop: "48px", overflowX: "auto", whiteSpace: "nowrap", WebkitOverflowScrolling: "touch" }}>
               {(["OVERVIEW", "SKILL GAPS", "ATS", "IMPACT", "KEYWORDS", "EXPERIENCE", "EDUCATION", "PORTFOLIO"] as const).map(tab => (
                 <button
                   key={tab}
@@ -774,10 +759,10 @@ const Results = () => {
                   style={{
                     background: "transparent",
                     border: "none",
-                    borderBottom: activeTab === tab ? "2px solid #0EA5E9" : "2px solid transparent",
-                    color: activeTab === tab ? "#FFFFFF" : "#E0E0E0",
-                    fontFamily: "inherit",
-                    fontSize: "11px",
+                    borderBottom: activeTab === tab ? "2px solid #ffffff" : "2px solid transparent",
+                    color: activeTab === tab ? "#FFFFFF" : "#666666",
+                    fontFamily: "'DM Mono', monospace",
+                    fontSize: "13px",
                     padding: "16px 20px",
                     cursor: "pointer",
                     whiteSpace: "nowrap",
@@ -788,15 +773,15 @@ const Results = () => {
                     gap: "6px"
                   }}
                   onMouseEnter={(e) => { if (activeTab !== tab) e.currentTarget.style.color = "#FFFFFF" }}
-                  onMouseLeave={(e) => { if (activeTab !== tab) e.currentTarget.style.color = "#E0E0E0" }}
+                  onMouseLeave={(e) => { if (activeTab !== tab) e.currentTarget.style.color = "#666666" }}
                 >
                   {tab}
                   {tabCounts[tab] !== null && (tabCounts[tab] as number) > 0 && (
                     <span style={{
-                      fontFamily: "inherit",
-                      fontSize: '9px',
-                      background: activeTab === tab ? '#0EA5E9' : '#333333',
-                      color: activeTab === tab ? '#000000' : '#E0E0E0',
+                      fontFamily: "'DM Mono', monospace",
+                      fontSize: '11px',
+                      background: activeTab === tab ? '#ffffff' : '#333333',
+                      color: activeTab === tab ? '#000000' : '#ffffff',
                       padding: '1px 5px',
                     }}>
                       {tabCounts[tab]}
@@ -823,21 +808,21 @@ const Results = () => {
               {/* FIX 3: Top Deficiencies — deduped from Quick Wins */}
               {topDeficiencies.length > 0 && (
                 <section>
-                  <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#0EA5E9", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "20px" }}>
+                  <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#0EA5E9", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "20px" }}>
                     TOP DEFICIENCIES
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                     {topDeficiencies.map((def, i) => (
-                      <div key={i} style={{ background: "#0D0D0D", border: "1px solid #3A3A3A", borderLeft: `4px solid ${getPriorityColor(def.priorityLevel)}`, boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)", padding: "16px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                      <div key={i} className="bg-[#111111] border border-white/20 rounded-xl shadow-lg p-4 flex justify-between items-start" style={{ borderLeft: `4px solid ${getPriorityColor(def.priorityLevel)}` }}>
                         <div>
-                          <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", textTransform: "uppercase", marginBottom: "4px" }}>
+                          <div style={{ fontFamily: "inherit", fontSize: "14px", color: "#FFFFFF", textTransform: "uppercase", marginBottom: "4px" }}>
                             {def.description}
                           </div>
-                          <div style={{ fontFamily: "inherit", fontSize: "11px", color: "#E0E0E0" }}>
+                          <div style={{ fontFamily: "inherit", fontSize: "13px", color: "#E0E0E0" }}>
                             {typeof def.causalContext === 'string' ? def.causalContext : ''}
                           </div>
                         </div>
-                        <div style={{ border: `1px solid ${getPriorityColor(def.priorityLevel)}`, color: getPriorityColor(def.priorityLevel), fontFamily: "inherit", fontSize: "10px", padding: "2px 8px", textTransform: "uppercase", flexShrink: 0, marginLeft: "16px" }}>
+                        <div style={{ border: `1px solid ${getPriorityColor(def.priorityLevel)}`, color: getPriorityColor(def.priorityLevel), fontFamily: "inherit", fontSize: "12px", padding: "2px 8px", textTransform: "uppercase", flexShrink: 0, marginLeft: "16px" }}>
                           {def.priorityLevel}
                         </div>
                       </div>
@@ -849,21 +834,21 @@ const Results = () => {
               {/* FIX 3: Quick Wins — excludes items already in Top Deficiencies */}
               {quickWins.length > 0 && (
                 <section>
-                  <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#10B981", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "20px" }}>
+                  <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#10B981", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "20px" }}>
                     QUICK WINS
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                     {quickWins.map((win, i) => (
-                      <div key={i} style={{ background: "#0D0D0D", border: "1px solid #3A3A3A", borderLeft: "4px solid #10B981", boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)", padding: "16px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                      <div key={i} className="bg-[#111111] border border-white/20 rounded-xl shadow-lg border-l-[4px] border-l-[#10B981] p-4 flex justify-between items-start">
                         <div>
-                          <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", textTransform: "uppercase", marginBottom: "4px" }}>
+                          <div style={{ fontFamily: "inherit", fontSize: "14px", color: "#FFFFFF", textTransform: "uppercase", marginBottom: "4px" }}>
                             {win.description}
                           </div>
-                          <div style={{ fontFamily: "inherit", fontSize: "11px", color: "#E0E0E0" }}>
+                          <div style={{ fontFamily: "inherit", fontSize: "13px", color: "#E0E0E0" }}>
                             {typeof win.causalContext === 'string' ? win.causalContext : ''}
                           </div>
                         </div>
-                        <div style={{ border: "1px solid #10B981", color: "#10B981", fontFamily: "inherit", fontSize: "10px", padding: "2px 8px", textTransform: "uppercase", flexShrink: 0, marginLeft: "16px" }}>
+                        <div style={{ border: "1px solid #10B981", color: "#10B981", fontFamily: "inherit", fontSize: "12px", padding: "2px 8px", textTransform: "uppercase", flexShrink: 0, marginLeft: "16px" }}>
                           ≤ 2 HOURS
                         </div>
                       </div>
@@ -884,28 +869,28 @@ const Results = () => {
           {activeTab === "SKILL GAPS" && (
             <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
               <div>
-                <h2 style={{ fontFamily: "inherit", fontSize: "16px", color: "#FFFFFF", margin: "0 0 8px 0", letterSpacing: "0.05em" }}>SKILL GAP ANALYSIS</h2>
-                <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", marginBottom: "16px" }}>
+                <h2 style={{ fontFamily: "inherit", fontSize: "18px", color: "#FFFFFF", margin: "0 0 8px 0", letterSpacing: "0.05em" }}>SKILL GAP ANALYSIS</h2>
+                <div style={{ fontFamily: "inherit", fontSize: "14px", color: "#FFFFFF", marginBottom: "16px" }}>
                   Analyzing for: {topMatchTitle}
                 </div>
-                <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#E0E0E0" }}>
+                <div style={{ fontFamily: "inherit", fontSize: "14px", color: "#E0E0E0" }}>
                   {missingCoreSkills.length} core skills missing · {missingSuppSkills.length} supporting skills missing
                 </div>
               </div>
 
               {missingCoreSkills.length > 0 && (
                 <section>
-                  <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#EF4444", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "20px" }}>
+                  <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#EF4444", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "20px" }}>
                     CORE SKILLS (3× WEIGHT)
                   </div>
                   <div style={{ display: "flex", flexDirection: "column" }}>
                     {missingCoreSkills.map((skill, i) => (
-                      <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #111111", padding: "12px 0" }}>
+                      <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #333333", padding: "12px 0" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                          <span style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF" }}>{skill}</span>
-                          <span style={{ fontFamily: "inherit", fontSize: "10px", color: "#EF4444", border: "1px solid #EF4444", padding: "2px 6px" }}>MISSING</span>
+                          <span style={{ fontFamily: "inherit", fontSize: "14px", color: "#FFFFFF" }}>{skill}</span>
+                          <span style={{ fontFamily: "inherit", fontSize: "12px", color: "#EF4444", border: "1px solid #EF4444", padding: "2px 6px" }}>MISSING</span>
                         </div>
-                        <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#E0E0E0" }}>WEIGHT: 3.0</div>
+                        <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#E0E0E0" }}>WEIGHT: 3.0</div>
                       </div>
                     ))}
                   </div>
@@ -914,17 +899,17 @@ const Results = () => {
 
               {missingSuppSkills.length > 0 && (
                 <section>
-                  <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#F59E0B", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "20px" }}>
+                  <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#F59E0B", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "20px" }}>
                     SUPPORTING SKILLS (1.5× WEIGHT)
                   </div>
                   <div style={{ display: "flex", flexDirection: "column" }}>
                     {missingSuppSkills.map((skill, i) => (
-                      <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #111111", padding: "12px 0" }}>
+                      <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #333333", padding: "12px 0" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                          <span style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF" }}>{skill}</span>
-                          <span style={{ fontFamily: "inherit", fontSize: "10px", color: "#F59E0B", border: "1px solid #F59E0B", padding: "2px 6px" }}>MISSING</span>
+                          <span style={{ fontFamily: "inherit", fontSize: "14px", color: "#FFFFFF" }}>{skill}</span>
+                          <span style={{ fontFamily: "inherit", fontSize: "12px", color: "#F59E0B", border: "1px solid #F59E0B", padding: "2px 6px" }}>MISSING</span>
                         </div>
-                        <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#E0E0E0" }}>WEIGHT: 1.5</div>
+                        <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#E0E0E0" }}>WEIGHT: 1.5</div>
                       </div>
                     ))}
                   </div>
@@ -942,41 +927,41 @@ const Results = () => {
           {/* ATS TAB */}
           {activeTab === "ATS" && (
             <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
-              <h2 style={{ fontFamily: "inherit", fontSize: "16px", color: "#FFFFFF", margin: "0", letterSpacing: "0.05em" }}>ATS COMPATIBILITY</h2>
+              <h2 style={{ fontFamily: "inherit", fontSize: "18px", color: "#FFFFFF", margin: "0", letterSpacing: "0.05em" }}>ATS COMPATIBILITY</h2>
 
-              <div style={{ display: "flex", alignItems: "center", gap: "24px", background: "#0D0D0D", border: "1px solid #3A3A3A", boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)", padding: "32px" }}>
+              <div className="bg-[#111111] border border-white/20 rounded-xl shadow-lg p-8 flex items-center gap-6">
                 {/* FIX 7: Use DM Mono for score display */}
                 <div style={{ fontFamily: "inherit", fontSize: "72px", color: getScoreColor(engineScores[0].score), lineHeight: 1 }}>
                   {engineScores[0].score}<span style={{ fontFamily: "inherit", fontSize: "20px", color: "#E0E0E0" }}>/100</span>
                 </div>
                 <div>
-                  <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#FFFFFF", textTransform: "uppercase", letterSpacing: "0.1em" }}>ATS PARSABILITY SCORE</div>
-                  <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", marginTop: "4px" }}>Computed across 8 common applicant tracking systems</div>
+                  <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", textTransform: "uppercase", letterSpacing: "0.1em" }}>ATS PARSABILITY SCORE</div>
+                  <div style={{ fontFamily: "inherit", fontSize: "14px", color: "#FFFFFF", marginTop: "4px" }}>Computed across 8 common applicant tracking systems</div>
                 </div>
               </div>
 
               {data.scores.format?.risks && data.scores.format.risks.length > 0 && (
                 <section>
-                  <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#0EA5E9", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "20px" }}>
+                  <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#0EA5E9", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "20px" }}>
                     FORMATTING ISSUES
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                     {data.scores.format.risks.map((risk, i) => (
-                      <div key={i} style={{ background: "#0D0D0D", border: "1px solid #3A3A3A", boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)", padding: "16px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                      <div key={i} className="bg-[#111111] border border-white/20 rounded-xl shadow-lg p-4 flex justify-between items-start">
                         <div>
-                          <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", textTransform: "uppercase", marginBottom: "4px" }}>
+                          <div style={{ fontFamily: "inherit", fontSize: "14px", color: "#FFFFFF", textTransform: "uppercase", marginBottom: "4px" }}>
                             {risk.issue}
                           </div>
-                          <div style={{ fontFamily: "inherit", fontSize: "11px", color: "#E0E0E0" }}>
+                          <div style={{ fontFamily: "inherit", fontSize: "13px", color: "#E0E0E0" }}>
                             {risk.impact}
                           </div>
                           {risk.suggestion && (
-                            <div style={{ fontFamily: "inherit", fontSize: "11px", color: "#10B981", marginTop: "8px" }}>
+                            <div style={{ fontFamily: "inherit", fontSize: "13px", color: "#10B981", marginTop: "8px" }}>
                               → {risk.suggestion}
                             </div>
                           )}
                         </div>
-                        <div style={{ border: `1px solid ${getPriorityColor(risk.severity)}`, color: getPriorityColor(risk.severity), fontFamily: "inherit", fontSize: "10px", padding: "2px 8px", textTransform: "uppercase", flexShrink: 0, marginLeft: "16px" }}>
+                        <div style={{ border: `1px solid ${getPriorityColor(risk.severity)}`, color: getPriorityColor(risk.severity), fontFamily: "inherit", fontSize: "12px", padding: "2px 8px", textTransform: "uppercase", flexShrink: 0, marginLeft: "16px" }}>
                           {risk.severity}
                         </div>
                       </div>
@@ -986,17 +971,17 @@ const Results = () => {
               )}
 
               <section>
-                <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#0EA5E9", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "20px" }}>
+                <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#0EA5E9", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "20px" }}>
                   KEYWORD DENSITY (EXTRACTED)
                 </div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                   {data.parsedProfile.skills.normalizedSkills.map((s, i) => (
-                    <div key={i} style={{ background: "#3A3A3A", border: "1px solid #555555", color: "#FFFFFF", fontFamily: "inherit", fontSize: "10px", padding: "2px 8px" }}>
+                    <div key={i} style={{ background: "#3A3A3A", border: "1px solid #555555", color: "#FFFFFF", fontFamily: "inherit", fontSize: "12px", padding: "2px 8px" }}>
                       {s.canonical}
                     </div>
                   ))}
                   {data.gaps?.criticalGaps.map((g, i) => (
-                    <div key={`m-${i}`} style={{ background: "transparent", border: "1px solid #EF4444", color: "#EF4444", fontFamily: "inherit", fontSize: "10px", padding: "2px 8px" }}>
+                    <div key={`m-${i}`} style={{ background: "transparent", border: "1px solid #EF4444", color: "#EF4444", fontFamily: "inherit", fontSize: "12px", padding: "2px 8px" }}>
                       {g.keyword} (MISSING)
                     </div>
                   ))}
@@ -1019,16 +1004,16 @@ const Results = () => {
 
             return (
               <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
-                <h2 style={{ fontFamily: "inherit", fontSize: "16px", color: "#FFFFFF", margin: "0", letterSpacing: "0.05em" }}>IMPACT SCORING</h2>
+                <h2 style={{ fontFamily: "inherit", fontSize: "18px", color: "#FFFFFF", margin: "0", letterSpacing: "0.05em" }}>IMPACT SCORING</h2>
 
                 {/* FIX 4: Show meaningful fallback even when details array is empty */}
-                  <div style={{ display: "flex", alignItems: "center", gap: "24px", background: "#0D0D0D", border: "1px solid #3A3A3A", boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)", padding: "32px" }}>
+                  <div className="bg-[#111111] border border-white/20 rounded-xl shadow-lg p-8 flex items-center gap-6">
                     <div style={{ fontFamily: "inherit", fontSize: "72px", color: getScoreColor((specReport?.averageScore ?? 0) * 20), lineHeight: 1 }}>
                       {specReport?.overallGrade ?? 'N/A'}
                     </div>
                     <div>
-                      <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#FFFFFF", textTransform: "uppercase", letterSpacing: "0.1em" }}>IMPACT GRADE</div>
-                      <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", marginTop: "4px" }}>
+                      <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", textTransform: "uppercase", letterSpacing: "0.1em" }}>IMPACT GRADE</div>
+                      <div style={{ fontFamily: "inherit", fontSize: "14px", color: "#FFFFFF", marginTop: "4px" }}>
                         Average score: {specReport?.averageScore ?? 0}/5
                       </div>
                     </div>
@@ -1048,12 +1033,12 @@ const Results = () => {
 
                     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                       {details.map((bullet, idx) => (
-                        <div key={idx} style={{ background: "#0D0D0D", border: "1px solid #3A3A3A", borderLeft: `4px solid ${(bullet.score ?? 0) < 3 ? "#EF4444" : "#10B981"}`, boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)", padding: "16px" }}>
-                          <div style={{ fontFamily: "inherit", fontSize: "11px", color: "#FFFFFF", lineHeight: 1.5 }}>
+                        <div key={idx} className="bg-[#111111] border border-white/20 rounded-xl shadow-lg p-4" style={{ borderLeft: `4px solid ${(bullet.score ?? 0) < 3 ? "#EF4444" : "#10B981"}` }}>
+                          <div style={{ fontFamily: "inherit", fontSize: "13px", color: "#FFFFFF", lineHeight: 1.5 }}>
                             {bullet.text}
                           </div>
                           {(bullet.score ?? 0) < 3 && bullet.reasons?.length > 0 && (
-                            <div style={{ fontFamily: "inherit", fontSize: '10px', color: '#F59E0B', marginTop: '4px', lineHeight: 1.7 }}>
+                            <div style={{ fontFamily: "inherit", fontSize: '12px', color: '#F59E0B', marginTop: '4px', lineHeight: 1.7 }}>
                               → {bullet.reasons[0]}
                             </div>
                           )}
@@ -1063,15 +1048,15 @@ const Results = () => {
                   </>
                 ) : (
                   /* FIX 4: Informative fallback — no more "no bullets found" blank state */
-                  <div style={{ background: "#0D0D0D", border: "1px solid #3A3A3A", borderLeft: "4px solid #F59E0B", boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)", padding: "24px" }}>
-                    <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", marginBottom: "12px", textTransform: "uppercase" }}>
+                  <div className="bg-[#111111] border border-white/20 rounded-xl shadow-lg border-l-[4px] border-l-[#F59E0B] p-6">
+                    <div style={{ fontFamily: "inherit", fontSize: "14px", color: "#FFFFFF", marginBottom: "12px", textTransform: "uppercase" }}>
                       IMPACT ANALYSIS COMPLETE
                     </div>
-                    <div style={{ fontFamily: "inherit", fontSize: "11px", color: "#FFFFFF", lineHeight: 1.8 }}>
+                    <div style={{ fontFamily: "inherit", fontSize: "13px", color: "#FFFFFF", lineHeight: 1.8 }}>
                       Score: {specReport?.averageScore ?? 0}/5{"\n"}
                       Grade: {specReport?.overallGrade ?? 'N/A'}
                     </div>
-                    <div style={{ fontFamily: "inherit", fontSize: "11px", color: "#FFFFFF", marginTop: "12px", borderTop: "1px solid #333333", paddingTop: "12px" }}>
+                    <div style={{ fontFamily: "inherit", fontSize: "13px", color: "#FFFFFF", marginTop: "12px", borderTop: "1px solid #333333", paddingTop: "12px" }}>
                       The engine evaluated bullet point specificity across your resume. Add quantified achievements (numbers, percentages, outcomes) to improve this score.
                     </div>
                   </div>
@@ -1084,34 +1069,34 @@ const Results = () => {
           {activeTab === "KEYWORDS" && (() => {
             return (
               <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
-                <h2 style={{ fontFamily: "inherit", fontSize: "16px", color: "#FFFFFF", margin: "0", letterSpacing: "0.05em" }}>KEYWORD ALIGNMENT</h2>
+                <h2 style={{ fontFamily: "inherit", fontSize: "18px", color: "#FFFFFF", margin: "0", letterSpacing: "0.05em" }}>KEYWORD ALIGNMENT</h2>
 
                 {!data.scores.keywordCoverage ? (
-                  <div style={{ background: "#0D0D0D", border: "1px solid #3A3A3A", borderLeft: "4px solid #F59E0B", boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)", padding: "24px" }}>
-                    <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#E0E0E0" }}>
+                  <div className="bg-[#111111] border border-white/20 rounded-xl shadow-lg border-l-[4px] border-l-[#F59E0B] p-6">
+                    <div style={{ fontFamily: "inherit", fontSize: "14px", color: "#E0E0E0" }}>
                       No job description provided. Add one in Analyze Resume to enable keyword alignment.
                     </div>
                     <button
                       onClick={() => navigate('/upload')}
-                      style={{ fontFamily: "inherit", fontSize: "11px", color: "#0EA5E9", background: "none", border: "none", cursor: "pointer", letterSpacing: "0.1em", padding: 0, marginTop: "12px", textTransform: "uppercase" }}
+                      style={{ fontFamily: "inherit", fontSize: "13px", color: "#0EA5E9", background: "none", border: "none", cursor: "pointer", letterSpacing: "0.1em", padding: 0, marginTop: "12px", textTransform: "uppercase" }}
                     >
                       → ADD JOB DESCRIPTION
                     </button>
                   </div>
                 ) : (
                   <>
-                    <div style={{ display: "flex", alignItems: "center", gap: "24px", background: "#0D0D0D", border: "1px solid #3A3A3A", boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)", padding: "32px" }}>
+                    <div className="bg-[#111111] border border-white/20 rounded-xl shadow-lg p-8 flex items-center gap-6">
                       <div style={{ fontFamily: "inherit", fontSize: "72px", color: getScoreColor(data.scores.keywordCoverage.overallScore), lineHeight: 1 }}>
                         {data.scores.keywordCoverage.overallScore}<span style={{ fontFamily: "inherit", fontSize: "20px", color: "#E0E0E0" }}>%</span>
                       </div>
                       <div>
-                        <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#FFFFFF", textTransform: "uppercase", letterSpacing: "0.1em" }}>JD MATCH RATE</div>
-                        <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", marginTop: "4px" }}>Alignment against the provided target job description</div>
+                        <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", textTransform: "uppercase", letterSpacing: "0.1em" }}>JD MATCH RATE</div>
+                        <div style={{ fontFamily: "inherit", fontSize: "14px", color: "#FFFFFF", marginTop: "4px" }}>Alignment against the provided target job description</div>
                       </div>
                     </div>
 
                     <section>
-                      <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#EF4444", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "16px" }}>
+                      <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#EF4444", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "16px" }}>
                         MISSING KEYWORDS
                       </div>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
@@ -1124,7 +1109,7 @@ const Results = () => {
                                 border: '1px solid #EF4444',
                                 color: '#EF4444',
                                 fontFamily: "inherit",
-                                fontSize: '10px',
+                                fontSize: '12px',
                                 padding: '4px 10px',
                                 letterSpacing: '0.08em'
                               }}>{g.keyword}</div>
@@ -1135,7 +1120,7 @@ const Results = () => {
                                   return (
                                     <div style={{
                                       fontFamily: "inherit",
-                                      fontSize: '11px',
+                                      fontSize: '13px',
                                       color: '#F59E0B',
                                       lineHeight: 1.6
                                     }}>
@@ -1146,7 +1131,7 @@ const Results = () => {
                                 return (
                                   <div style={{
                                     fontFamily: "inherit",
-                                    fontSize: '11px',
+                                    fontSize: '13px',
                                     color: '#10B981'
                                   }}>No significant keyword gaps detected. Your resume aligns well with the job description.</div>
                                 );
@@ -1157,7 +1142,7 @@ const Results = () => {
                     </section>
 
                     <section>
-                      <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#10B981", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "16px", marginTop: "8px" }}>
+                      <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#10B981", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "16px", marginTop: "8px" }}>
                         PRESENT KEYWORDS
                       </div>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
@@ -1170,14 +1155,14 @@ const Results = () => {
                                 border: '1px solid #737373',
                                 color: '#E0E0E0',
                                 fontFamily: "inherit",
-                                fontSize: '10px',
+                                fontSize: '12px',
                                 padding: '4px 10px',
                                 letterSpacing: '0.08em'
                               }}>{kw}</div>
                             ))
                             : <div style={{
                               fontFamily: "inherit",
-                              fontSize: '11px',
+                              fontSize: '13px',
                               color: '#E0E0E0'
                             }}>No present keywords detected.</div>;
                         })()}
@@ -1192,28 +1177,28 @@ const Results = () => {
           {/* EXPERIENCE TAB */}
           {activeTab === "EXPERIENCE" && (
             <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
-              <h2 style={{ fontFamily: "inherit", fontSize: "16px", color: "#FFFFFF", margin: "0", letterSpacing: "0.05em" }}>EXPERIENCE DEPTH</h2>
-              <div style={{ display: "flex", alignItems: "center", gap: "24px", background: "#0D0D0D", border: "1px solid #3A3A3A", boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)", padding: "32px" }}>
+              <h2 style={{ fontFamily: "inherit", fontSize: "18px", color: "#FFFFFF", margin: "0", letterSpacing: "0.05em" }}>EXPERIENCE DEPTH</h2>
+              <div className="bg-[#111111] border border-white/20 rounded-xl shadow-lg p-8 flex items-center gap-6">
                 <div style={{ fontFamily: "inherit", fontSize: "72px", color: getScoreColor(engineScores[4].score), lineHeight: 1 }}>
                   {engineScores[4].score}<span style={{ fontFamily: "inherit", fontSize: "20px", color: "#E0E0E0" }}>/100</span>
                 </div>
                 <div>
-                  <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#FFFFFF", textTransform: "uppercase", letterSpacing: "0.1em" }}>SENIORITY SIGNAL</div>
+                  <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", textTransform: "uppercase", letterSpacing: "0.1em" }}>SENIORITY SIGNAL</div>
                   {/* FIX 5: Null-safe experience years */}
-                  <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", marginTop: "4px", lineHeight: 1.6 }}>
+                  <div style={{ fontFamily: "inherit", fontSize: "14px", color: "#FFFFFF", marginTop: "4px", lineHeight: 1.6 }}>
                     {expText}
                   </div>
                 </div>
               </div>
               <section>
-                <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#0EA5E9", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "16px" }}>
+                <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#0EA5E9", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "16px" }}>
                   CAREER STAGE ASSIGNMENT
                 </div>
-                <div style={{ background: "#0D0D0D", border: "1px solid #3A3A3A", borderLeft: "4px solid #10B981", boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)", padding: "16px" }}>
-                  <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", textTransform: "uppercase", marginBottom: "4px" }}>
+                <div className="bg-[#111111] border border-white/20 rounded-xl shadow-lg border-l-[4px] border-l-[#10B981] p-4">
+                  <div style={{ fontFamily: "inherit", fontSize: "14px", color: "#FFFFFF", textTransform: "uppercase", marginBottom: "4px" }}>
                     {data.careerStage.stage}
                   </div>
-                  <div style={{ fontFamily: "inherit", fontSize: "11px", color: "#E0E0E0" }}>
+                  <div style={{ fontFamily: "inherit", fontSize: "13px", color: "#E0E0E0" }}>
                     Confidence level: {data.careerStage.confidence}% based on leadership signals and complexity.
                   </div>
                 </div>
@@ -1293,12 +1278,12 @@ const Results = () => {
             const displayCerts = certLines.slice(0, 15);
 
             const mono = "inherit";
-            const box: React.CSSProperties = { border: '1px solid #3A3A3A', background: '#0D0D0D', boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)", padding: '24px' };
+            const boxClass = "bg-[#111111] border border-white/20 rounded-xl shadow-lg p-6";
 
             return (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                 {/* Header */}
-                <p style={{ fontFamily: mono, fontSize: '9px', color: '#0EA5E9', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '4px' }}>EDUCATION MATCH</p>
+                <p style={{ fontFamily: mono, fontSize: '11px', color: '#0EA5E9', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '4px' }}>EDUCATION MATCH</p>
 
                 {/* Score + key signals grid */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
@@ -1307,51 +1292,51 @@ const Results = () => {
                     { label: 'CERTS DETECTED', value: String(certCount), color: '#F0F0F0' },
                     { label: 'CERT CLUSTER SCORE', value: `${clusterScore}/100`, color: '#F0F0F0' },
                   ] as { label: string; value: string; color: string }[]).map(item => (
-                    <div key={item.label} style={{ background: '#0D0D0D', border: '1px solid #3A3A3A', boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)", padding: '20px 24px' }}>
-                      <p style={{ fontFamily: mono, fontSize: '9px', color: '#E0E0E0', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '10px' }}>{item.label}</p>
+                    <div key={item.label} className="bg-[#111111] border border-white/20 rounded-xl shadow-lg px-6 py-5">
+                      <p style={{ fontFamily: mono, fontSize: '11px', color: '#E0E0E0', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '10px' }}>{item.label}</p>
                       <p style={{ fontFamily: mono, fontSize: '28px', color: item.color, lineHeight: 1 }}>{item.value}</p>
                     </div>
                   ))}
                 </div>
 
                 {/* Academic status */}
-                <div style={box}>
-                  <p style={{ fontFamily: mono, fontSize: '9px', color: '#0EA5E9', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '16px' }}>ACADEMIC STATUS</p>
+                <div className={boxClass}>
+                  <p style={{ fontFamily: mono, fontSize: '11px', color: '#0EA5E9', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '16px' }}>ACADEMIC STATUS</p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ fontFamily: mono, fontSize: '11px', color: '#E0E0E0' }}>Currently Enrolled</span>
-                      <span style={{ fontFamily: mono, fontSize: '11px', color: isStudent ? '#10B981' : '#E0E0E0' }}>{isStudent ? 'YES' : 'NO'}</span>
+                      <span style={{ fontFamily: mono, fontSize: '13px', color: '#E0E0E0' }}>Currently Enrolled</span>
+                      <span style={{ fontFamily: mono, fontSize: '13px', color: isStudent ? '#10B981' : '#E0E0E0' }}>{isStudent ? 'YES' : 'NO'}</span>
                     </div>
                     {gradYear && (
                       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span style={{ fontFamily: mono, fontSize: '11px', color: '#E0E0E0' }}>Graduation Year</span>
-                        <span style={{ fontFamily: mono, fontSize: '11px', color: '#FFFFFF' }}>{gradYear}</span>
+                        <span style={{ fontFamily: mono, fontSize: '13px', color: '#E0E0E0' }}>Graduation Year</span>
+                        <span style={{ fontFamily: mono, fontSize: '13px', color: '#FFFFFF' }}>{gradYear}</span>
                       </div>
                     )}
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ fontFamily: mono, fontSize: '11px', color: '#E0E0E0' }}>Certification Heavy Profile</span>
-                      <span style={{ fontFamily: mono, fontSize: '11px', color: certHeavy ? '#0EA5E9' : '#E0E0E0' }}>{certHeavy ? 'YES' : 'NO'}</span>
+                      <span style={{ fontFamily: mono, fontSize: '13px', color: '#E0E0E0' }}>Certification Heavy Profile</span>
+                      <span style={{ fontFamily: mono, fontSize: '13px', color: certHeavy ? '#0EA5E9' : '#E0E0E0' }}>{certHeavy ? 'YES' : 'NO'}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Detected certifications */}
                 {displayCerts.length > 0 ? (
-                  <div style={box}>
-                    <p style={{ fontFamily: mono, fontSize: '9px', color: '#0EA5E9', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '16px' }}>DETECTED CERTIFICATIONS</p>
+                  <div className={boxClass}>
+                    <p style={{ fontFamily: mono, fontSize: '11px', color: '#0EA5E9', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '16px' }}>DETECTED CERTIFICATIONS</p>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                       {displayCerts.map((cert, i) => (
                         <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', borderBottom: '1px solid #333333', paddingBottom: '8px' }}>
-                          <span style={{ fontFamily: mono, fontSize: '10px', color: '#0EA5E9', minWidth: '24px' }}>{String(i + 1).padStart(2, '0')}</span>
-                          <span style={{ fontFamily: mono, fontSize: '11px', color: '#E0E0E0', lineHeight: 1.6 }}>{cert}</span>
-                          <span style={{ fontFamily: mono, fontSize: '9px', color: '#10B981', marginLeft: 'auto', whiteSpace: 'nowrap', paddingTop: '2px' }}>✓ DETECTED</span>
+                          <span style={{ fontFamily: mono, fontSize: '12px', color: '#0EA5E9', minWidth: '24px' }}>{String(i + 1).padStart(2, '0')}</span>
+                          <span style={{ fontFamily: mono, fontSize: '13px', color: '#E0E0E0', lineHeight: 1.6 }}>{cert}</span>
+                          <span style={{ fontFamily: mono, fontSize: '11px', color: '#10B981', marginLeft: 'auto', whiteSpace: 'nowrap', paddingTop: '2px' }}>✓ DETECTED</span>
                         </div>
                       ))}
                     </div>
                   </div>
                 ) : (
-                  <div style={{ ...box, textAlign: 'center', padding: '40px' }}>
-                    <p style={{ fontFamily: mono, fontSize: '11px', color: '#E0E0E0', lineHeight: 1.8 }}>
+                  <div className={`${boxClass} text-center p-10`}>
+                    <p style={{ fontFamily: mono, fontSize: '13px', color: '#E0E0E0', lineHeight: 1.8 }}>
                       No certification entries detected in resume text.<br />Add certifications to your resume to improve this score.
                     </p>
                   </div>
@@ -1359,7 +1344,7 @@ const Results = () => {
 
                 {/* Score explanation */}
                 <div style={{ borderTop: '1px solid #333333', paddingTop: '16px' }}>
-                  <p style={{ fontFamily: mono, fontSize: '10px', color: '#E0E0E0', lineHeight: 1.8, letterSpacing: '0.05em' }}>
+                  <p style={{ fontFamily: mono, fontSize: '12px', color: '#E0E0E0', lineHeight: 1.8, letterSpacing: '0.05em' }}>
                     CERTIFICATION FIT is calculated from the number of certifications detected and weighted against the target role requirements for your career stage.
                     {certHeavy && ' A certification-heavy profile is typical and valued for early-career candidates.'}
                   </p>
@@ -1372,36 +1357,36 @@ const Results = () => {
           {/* PORTFOLIO TAB */}
           {activeTab === "PORTFOLIO" && (
             <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
-              <h2 style={{ fontFamily: "inherit", fontSize: "16px", color: "#FFFFFF", margin: "0", letterSpacing: "0.05em" }}>PORTFOLIO SIGNALS</h2>
+              <h2 style={{ fontFamily: "inherit", fontSize: "18px", color: "#FFFFFF", margin: "0", letterSpacing: "0.05em" }}>PORTFOLIO SIGNALS</h2>
               {data.scores.portfolio ? (
                 <>
-                  <div style={{ display: "flex", alignItems: "center", gap: "24px", background: "#0D0D0D", border: "1px solid #3A3A3A", boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)", padding: "32px" }}>
+                  <div className="bg-[#111111] border border-white/20 rounded-xl shadow-lg p-8 flex items-center gap-6">
                     <div style={{ fontFamily: "inherit", fontSize: "72px", color: getScoreColor(engineScores[6].score), lineHeight: 1 }}>
                       {engineScores[6].score}<span style={{ fontFamily: "inherit", fontSize: "20px", color: "#E0E0E0" }}>/100</span>
                     </div>
                     <div>
-                      <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#FFFFFF", textTransform: "uppercase", letterSpacing: "0.1em" }}>GITHUB / PORTFOLIO IMPACT</div>
-                      <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", marginTop: "4px" }}>
+                      <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", textTransform: "uppercase", letterSpacing: "0.1em" }}>GITHUB / PORTFOLIO IMPACT</div>
+                      <div style={{ fontFamily: "inherit", fontSize: "14px", color: "#FFFFFF", marginTop: "4px" }}>
                         Analyzed {data.scores.portfolio.repositoryMetrics?.totalRepos ?? 0} repositories.
                       </div>
                     </div>
                   </div>
                   <section>
-                    <div style={{ fontFamily: "inherit", fontSize: "10px", color: "#0EA5E9", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "16px" }}>
+                    <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#0EA5E9", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "16px" }}>
                       TOP PROJECTS
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                       {data.scores.portfolio.topProjects?.map((repo, i) => (
-                        <div key={i} style={{ background: "#0D0D0D", border: "1px solid #3A3A3A", borderLeft: "4px solid #10B981", boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)", padding: "16px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                        <div key={i} className="bg-[#111111] border border-white/20 rounded-xl shadow-lg border-l-[4px] border-l-[#10B981] p-4 flex justify-between items-start">
                           <div>
-                            <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", textTransform: "uppercase", marginBottom: "4px" }}>
+                            <div style={{ fontFamily: "inherit", fontSize: "14px", color: "#FFFFFF", textTransform: "uppercase", marginBottom: "4px" }}>
                               {repo.name}
                             </div>
-                            <div style={{ fontFamily: "inherit", fontSize: "11px", color: "#E0E0E0" }}>
+                            <div style={{ fontFamily: "inherit", fontSize: "13px", color: "#E0E0E0" }}>
                               {repo.description || "No description provided."}
                             </div>
                           </div>
-                          <div style={{ color: "#FFFFFF", fontFamily: "inherit", fontSize: "10px", textTransform: "uppercase", flexShrink: 0, marginLeft: "16px" }}>
+                          <div style={{ color: "#FFFFFF", fontFamily: "inherit", fontSize: "12px", textTransform: "uppercase", flexShrink: 0, marginLeft: "16px" }}>
                             ★ {repo.stars} | {repo.language}
                           </div>
                         </div>
@@ -1410,16 +1395,16 @@ const Results = () => {
                   </section>
                 </>
               ) : (
-                <div style={{ background: "#0D0D0D", border: "1px solid #3A3A3A", borderLeft: "4px solid #F59E0B", boxShadow: "0 4px 12px rgba(255, 255, 255, 0.05)", padding: "24px" }}>
-                  <div style={{ fontFamily: "inherit", fontSize: "12px", color: "#FFFFFF", marginBottom: "8px", textTransform: "uppercase" }}>
+                <div className="bg-[#111111] border border-white/20 rounded-xl shadow-lg border-l-[4px] border-l-[#F59E0B] p-6">
+                  <div style={{ fontFamily: "inherit", fontSize: "14px", color: "#FFFFFF", marginBottom: "8px", textTransform: "uppercase" }}>
                     NO GITHUB PROFILE LINKED
                   </div>
-                  <div style={{ fontFamily: "inherit", fontSize: "11px", color: "#FFFFFF", marginBottom: "16px" }}>
+                  <div style={{ fontFamily: "inherit", fontSize: "13px", color: "#FFFFFF", marginBottom: "16px" }}>
                     Link a GitHub profile in Analyze Resume to evaluate portfolio signals.
                   </div>
                   <button
                     onClick={() => navigate('/upload')}
-                    style={{ fontFamily: "inherit", fontSize: "11px", color: "#0EA5E9", background: "none", border: "none", cursor: "pointer", letterSpacing: "0.1em", padding: 0, textTransform: "uppercase" }}
+                    style={{ fontFamily: "inherit", fontSize: "13px", color: "#0EA5E9", background: "none", border: "none", cursor: "pointer", letterSpacing: "0.1em", padding: 0, textTransform: "uppercase" }}
                   >
                     → ADD GITHUB PROFILE
                   </button>
@@ -1433,17 +1418,8 @@ const Results = () => {
       {/* Floating Feedback Button */}
       <button
         onClick={() => setShowFeedback(true)}
-        style={{
-          position: 'fixed', bottom: '24px', right: '24px',
-          background: '#0D0D0D', border: '1px solid #3A3A3A',
-          color: '#9A9A9A', fontFamily: "'DM Mono', monospace",
-          fontSize: '10px', textTransform: 'uppercase',
-          padding: '10px 16px', cursor: 'pointer',
-          letterSpacing: '0.1em', zIndex: 50,
-          transition: 'all 0.2s',
-        }}
-        onMouseEnter={e => { e.currentTarget.style.borderColor = '#0EA5E9'; e.currentTarget.style.color = '#0EA5E9'; }}
-        onMouseLeave={e => { e.currentTarget.style.borderColor = '#3A3A3A'; e.currentTarget.style.color = '#9A9A9A'; }}
+        className="fixed bottom-6 right-6 bg-[#111111] border border-white/20 text-[#9A9A9A] px-4 py-2 hover:border-[#0EA5E9] hover:text-[#0EA5E9] transition-all duration-200 z-50 uppercase tracking-[0.1em]"
+        style={{ fontFamily: "'DM Mono', monospace", fontSize: '12px' }}
       >
         ✦ FEEDBACK
       </button>

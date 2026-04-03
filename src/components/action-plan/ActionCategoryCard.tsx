@@ -54,13 +54,13 @@ export function ActionCategoryCard({ cat, categoryItems, catIdx, toggleItem }: A
             }}>
                 <div style={{
                     fontFamily: "inherit",
-                    fontSize: '10px',
+                    fontSize: '12px',
                     color: '#0EA5E9',
                     textTransform: 'uppercase',
                 }}>{config.label}</div>
                 <div style={{
                     fontFamily: "inherit",
-                    fontSize: '10px',
+                    fontSize: '12px',
                     color: '#E0E0E0',
                     fontFeatureSettings: '"zero" 0, "ss01" 0, "ss02" 0',
                     fontVariantNumeric: 'normal',
@@ -74,14 +74,9 @@ export function ActionCategoryCard({ cat, categoryItems, catIdx, toggleItem }: A
                     return (
                         <div
                             key={item.id}
-                            className="surface-card"
+                            className={`bg-[#111111] border border-white/20 rounded-xl shadow-lg transition-all duration-300 px-5 py-4 ${item.completed ? 'opacity-70 bg-[#10B981]/5' : ''}`}
                             style={{
                                 borderLeft: item.completed ? '4px solid #10B981' : `4px solid ${severityColor}`,
-                                borderRadius: '0px',
-                                padding: '16px 20px',
-                                opacity: item.completed ? 0.7 : 1, // Slightly higher opacity for readability
-                                backgroundColor: item.completed ? 'rgba(16, 185, 129, 0.05)' : undefined, // Soft green background hint
-                                transition: 'all 0.3s ease', // CSS transition for green flash
                             }}
                         >
                             {/* Row 1: Checkbox + Title + Priority */}
@@ -112,7 +107,7 @@ export function ActionCategoryCard({ cat, categoryItems, catIdx, toggleItem }: A
                                 </div>
                                 <div style={{
                                     fontFamily: "inherit",
-                                    fontSize: '12px',
+                                    fontSize: '14px',
                                     color: item.completed ? '#A0A0A0' : '#FFFFFF',
                                     textTransform: 'uppercase',
                                     display: 'flex',
@@ -126,7 +121,7 @@ export function ActionCategoryCard({ cat, categoryItems, catIdx, toggleItem }: A
                                             border: `1px solid ${severityColor}`,
                                             color: severityColor,
                                             fontFamily: "inherit",
-                                            fontSize: '10px',
+                                            fontSize: '12px',
                                             padding: '2px 8px',
                                             borderRadius: '0px',
                                             background: 'transparent',
@@ -141,7 +136,7 @@ export function ActionCategoryCard({ cat, categoryItems, catIdx, toggleItem }: A
                             {/* Row 2: Description */}
                             <div style={{
                                 fontFamily: "inherit",
-                                fontSize: '12px',
+                                fontSize: '14px',
                                 color: '#E0E0E0',
                                 marginLeft: '28px',
                                 marginTop: '12px',
@@ -152,16 +147,10 @@ export function ActionCategoryCard({ cat, categoryItems, catIdx, toggleItem }: A
 
                             {/* "WHY THIS WAS FLAGGED" block */}
                             {item.triggerReason && (
-                                <div style={{
-                                    background: '#1A1A1A',
-                                    border: '1px solid #555555',
-                                    padding: '12px 16px',
-                                    marginTop: '12px',
-                                    marginLeft: '28px',
-                                }}>
+                                <div className="bg-[#1A1A1A] border border-gray-500 p-4 mt-3 ml-7">
                                     <div style={{
                                         fontFamily: "inherit",
-                                        fontSize: '10px',
+                                        fontSize: '12px',
                                         color: '#0EA5E9',
                                         textTransform: 'uppercase',
                                         marginBottom: '6px'
@@ -170,7 +159,7 @@ export function ActionCategoryCard({ cat, categoryItems, catIdx, toggleItem }: A
                                     </div>
                                     <div style={{
                                         fontFamily: "inherit",
-                                        fontSize: '11px',
+                                        fontSize: '13px',
                                         color: '#E0E0E0',
                                         lineHeight: 1.5
                                     }}>
@@ -183,7 +172,7 @@ export function ActionCategoryCard({ cat, categoryItems, catIdx, toggleItem }: A
                             {item.category === 'skills' && item.title && (
                               <div style={{ marginTop: '16px', marginLeft: '28px' }}>
                                 <div style={{
-                                  fontFamily: 'inherit', fontSize: '10px', color: '#0EA5E9',
+                                  fontFamily: 'inherit', fontSize: '12px', color: '#0EA5E9',
                                   letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '8px'
                                 }}>
                                   WHERE TO LEARN
@@ -213,8 +202,8 @@ export function ActionCategoryCard({ cat, categoryItems, catIdx, toggleItem }: A
                                       target="_blank"
                                       rel="noopener noreferrer"
                                       style={{
-                                        fontFamily: 'inherit', fontSize: '10px',
-                                        color: '#9A9A9A', border: '1px solid #3A3A3A',
+                                        fontFamily: 'inherit', fontSize: '12px',
+                                        color: '#9A9A9A', border: '1px solid #555555',
                                         padding: '4px 10px', textDecoration: 'none',
                                         letterSpacing: '0.05em', transition: 'all 0.15s',
                                         background: 'transparent'
@@ -225,7 +214,7 @@ export function ActionCategoryCard({ cat, categoryItems, catIdx, toggleItem }: A
                                       }}
                                       onMouseLeave={e => {
                                         e.currentTarget.style.color = '#9A9A9A';
-                                        e.currentTarget.style.borderColor = '#3A3A3A';
+                                        e.currentTarget.style.borderColor = '#555555';
                                       }}
                                     >
                                       {link.label}
@@ -243,11 +232,11 @@ export function ActionCategoryCard({ cat, categoryItems, catIdx, toggleItem }: A
                                 marginTop: '20px',
                                 marginLeft: '28px',
                                 paddingTop: '16px',
-                                borderTop: '1px solid #333333'
+                                borderTop: '1px solid #444444'
                             }}>
                                 <div style={{
                                     fontFamily: "inherit",
-                                    fontSize: '11px',
+                                    fontSize: '13px',
                                 }}>
                                     <span style={{ color: '#E0E0E0', marginRight: '8px' }}>EFFORT</span>
                                     <span style={{ color: '#FFFFFF' }}>{item.estimatedEffort}</span>
@@ -257,7 +246,7 @@ export function ActionCategoryCard({ cat, categoryItems, catIdx, toggleItem }: A
                                     alignItems: 'center',
                                     gap: '12px'
                                 }}>
-                                    <span style={{ fontFamily: "inherit", fontSize: '11px', color: '#E0E0E0' }}>IMPACT</span>
+                                    <span style={{ fontFamily: "inherit", fontSize: '13px', color: '#E0E0E0' }}>IMPACT</span>
                                     <div style={{ display: 'flex', gap: '2px' }}>
                                         {Array.from({ length: 10 }).map((_, i) => (
                                             <div

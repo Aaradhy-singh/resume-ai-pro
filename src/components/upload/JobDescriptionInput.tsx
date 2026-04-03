@@ -28,14 +28,14 @@ export function JobDescriptionInput({ onJobDescriptionChange }: JobDescriptionIn
     const isValid = charCount >= minChars && charCount <= maxChars;
 
     return (
-        <Card className="rounded-none shadow-none" style={{ background: '#0D0D0D', border: '1px solid #555555' }}>
+        <Card className="rounded-none shadow-none border-none bg-transparent">
             <CardHeader>
-                <CardTitle style={{ fontFamily: "'DM Mono', monospace", fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#F0F0F0', fontWeight: 'normal' }}>Job Description</CardTitle>
-                <CardDescription style={{ fontFamily: "'DM Mono', monospace", fontSize: '11px', color: '#9A9A9A' }}>Paste the full job description to enable ATS scoring and keyword gap analysis</CardDescription>
+                <CardTitle className="font-mono text-[13px] uppercase tracking-[0.08em] text-white font-normal">Job Description</CardTitle>
+                <CardDescription className="font-mono text-[11px] text-gray-300">Paste the full job description to enable ATS scoring and keyword gap analysis</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="space-y-2">
-                    <Label htmlFor="job-description" className="font-[var(--font-body)] text-[11px] uppercase tracking-[0.1em] text-[#E0E0E0]">Job Description Text</Label>
+                    <Label htmlFor="job-description" className="font-mono text-[11px] uppercase tracking-[0.1em] text-white">Job Description Text</Label>
                     <Textarea
                         id="job-description"
                         placeholder="e.g. We are looking for an AI/ML Engineer with 3+ years of experience building LLM pipelines, prompt engineering, and deploying models using Python and PyTorch..."
@@ -43,9 +43,9 @@ export function JobDescriptionInput({ onJobDescriptionChange }: JobDescriptionIn
                         onChange={(e) => handleChange(e.target.value)}
                         onBlur={() => setJdTouched(true)}
                         rows={Math.max(10, Math.min(20, jobDescription.split('\n').length))}
-                        className="rounded-none resize-y min-h-[250px] shadow-none focus-visible:ring-0" style={{ background: '#080808', border: '1px solid #555555', color: '#F0F0F0', fontFamily: "'DM Mono', monospace", fontSize: '12px' }}
+                        className="bg-[#1A1A1A] border border-gray-500 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-[#00e5ff] focus:ring-1 focus:ring-[#00e5ff] resize-y min-h-[250px] shadow-none font-mono text-[14px]"
                     />
-                    <div className="flex items-center justify-between font-[var(--font-body)] text-[11px] text-[#E0E0E0] mt-2">
+                    <div className="flex items-center justify-between font-mono text-[11px] text-gray-300 mt-2">
                         <span className={charCount < minChars ? '' : isValid ? 'text-[var(--accent)]' : 'text-red-500'}>
                             {charCount.toLocaleString()} characters
                         </span>
@@ -68,23 +68,13 @@ export function JobDescriptionInput({ onJobDescriptionChange }: JobDescriptionIn
                 </div>
 
                 {jdTouched && jobDescription.length > 0 && jobDescription.length < minChars && (
-                    <p style={{
-                        fontFamily: 'DM Mono, monospace',
-                        fontSize: '10px',
-                        color: '#EF4444',
-                        marginTop: '6px',
-                    }}>
+                    <p className="font-mono text-[10px] text-red-500 mt-1">
                         Job description is too short for meaningful analysis.
                         Paste the full JD for accurate keyword gap detection.
                     </p>
                 )}
                 {jdTouched && jobDescription.length >= minChars && (
-                    <p style={{
-                        fontFamily: 'DM Mono, monospace',
-                        fontSize: '10px',
-                        color: '#10B981',
-                        marginTop: '6px',
-                    }}>
+                    <p className="font-mono text-[10px] text-green-500 mt-1">
                         ✓ {jobDescription.length} characters — ready for analysis
                     </p>
                 )}

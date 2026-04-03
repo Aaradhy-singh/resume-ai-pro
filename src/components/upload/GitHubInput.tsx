@@ -81,8 +81,11 @@ export function GitHubInput({ onValidUsername }: GitHubInputProps) {
                 <span style={{
                     fontFamily: "'DM Mono', monospace",
                     fontSize: '10px',
-                    color: '#E0E0E0',
-                    letterSpacing: '0.1em'
+                    color: '#444444',
+                    letterSpacing: '0.1em',
+                    border: '1px solid #222222',
+                    padding: '2px 6px',
+                    borderRadius: '4px'
                 }}>OPTIONAL</span>
             </div>
 
@@ -113,9 +116,9 @@ export function GitHubInput({ onValidUsername }: GitHubInputProps) {
                         }}
                         style={{
                             width: '100%',
-                            background: '#121212',
-                            border: `1px solid ${borderColor}`,
-                            color: '#F0F0F0',
+                            background: '#050505',
+                            border: `1px solid ${validationState === 'idle' && !isFocused ? '#222222' : borderColor}`,
+                            color: '#ffffff',
                             fontFamily: "'DM Mono', monospace",
                             fontSize: '12px',
                             padding: '10px 40px 10px 14px',

@@ -20,18 +20,18 @@ export function AppSidebar() {
   return (
     <Sidebar
       collapsible="offcanvas"
-      style={{ "--sidebar-width": "220px" } as React.CSSProperties}
-      className="border-r border-[var(--border)] bg-[var(--bg-primary)] w-[220px]"
+      style={{ "--sidebar-width": "200px" } as React.CSSProperties}
+      className="border-r border-[#1a1a1a] bg-[#000000]"
     >
-      <SidebarContent className="bg-[var(--bg-primary)]">
-        <div className="p-4 mb-2 mt-2">
-          <NavLink to="/" end className="flex items-center">
-            <span className="font-[var(--font-body)] text-[13px] tracking-[0.05em] text-[var(--text-primary)]">ResumeAI</span>
+      <SidebarContent className="bg-[#000000]">
+        <div className="p-5 mb-2 mt-2 border-b border-[#1a1a1a]">
+          <NavLink to="/" end className="flex items-center text-decoration-none">
+            <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: '16px', color: '#ffffff', letterSpacing: '0.05em' }}>ResumeAI</span>
           </NavLink>
         </div>
-        <SidebarGroup className="px-0">
-          <div className="px-4 font-[var(--font-body)] text-[10px] uppercase tracking-[0.15em] text-[var(--text-muted)] mb-[8px]">
-            Tools
+        <SidebarGroup className="px-0 pt-4">
+          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: '9px', color: '#E0E0E0', letterSpacing: '0.2em', textTransform: 'uppercase', padding: '0 20px', marginBottom: '12px' }}>
+            TOOLS
           </div>
           <SidebarGroupContent>
             <SidebarMenu className="gap-0">
@@ -41,13 +41,14 @@ export function AppSidebar() {
                     to={item.url}
                     end
                     className={({ isActive }) =>
-                      `flex items-center font-[var(--font-body)] text-[12px] px-[16px] py-[10px] rounded-none transition-colors border-l-2 ` +
+                      `flex items-center text-[13px] px-[20px] py-[10px] transition-colors border-l-2 ` +
                       (isActive
-                        ? "text-[var(--accent)] bg-transparent border-[var(--accent)]"
-                        : "text-[var(--text-secondary)] bg-transparent hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] border-transparent")
+                        ? "text-[#ffffff] bg-[#111111] border-[#00e5ff]"
+                        : "text-[#E0E0E0] bg-transparent hover:text-[#ffffff] hover:bg-[#111111] border-transparent")
                     }
+                    style={{ fontFamily: "'DM Mono', monospace", letterSpacing: '0.05em', textDecoration: 'none' }}
                   >
-                    <item.icon className="mr-3 h-[14px] w-[14px] text-current" />
+                    <item.icon className="mr-3 h-[13px] w-[13px] text-current" />
                     <span>{item.title}</span>
                   </NavLink>
                 </SidebarMenuItem>

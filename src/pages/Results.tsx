@@ -584,8 +584,15 @@ const Results = () => {
             </button>
             <button
               onClick={() => {
-                posthog.capture('share_modal_opened');
-                setShareModalOpen(true);
+                const score = overallScore;
+                const topRole = data?.roles?.topRoles?.[0]?.occupation?.title ?? 'Software Engineer';
+                const stage = data?.careerStage?.stage ?? 'student';
+
+                const shareUrl = `https://resume-ai-pro-psi.vercel.app`;
+
+                const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+                window.open(linkedInUrl, '_blank');
+                posthog.capture('results_shared_linkedin', { score, topRole, stage });
               }}
               style={{
                 background: 'transparent',

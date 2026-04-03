@@ -34,64 +34,92 @@ export function FeedbackModal({ onClose }: Props) {
     }
   };
 
-  const inputStyle: React.CSSProperties = {
-    width: '100%',
-    background: '#080808',
-    border: '1px solid #3A3A3A',
-    color: '#F0F0F0',
-    fontFamily: "'DM Mono', monospace",
-    fontSize: '12px',
-    padding: '10px 14px',
-    outline: 'none',
-    boxSizing: 'border-box',
-    resize: 'vertical' as const,
-  };
+  const mono = "'DM Mono', monospace";
+  const serif = "'DM Serif Display', serif";
 
   const labelStyle: React.CSSProperties = {
-    fontFamily: "'DM Mono', monospace",
+    fontFamily: mono,
     fontSize: '9px',
-    color: '#0EA5E9',
+    color: '#444444',
     letterSpacing: '0.2em',
-    textTransform: 'uppercase' as const,
+    textTransform: 'uppercase',
     display: 'block',
-    marginBottom: '8px',
+    marginBottom: '12px',
   };
 
-  const optionBtn = (value: string, current: string, setter: (v: string) => void) => (
-    <button
-      key={value}
-      onClick={() => setter(value)}
-      style={{
-        background: current === value ? '#0EA5E9' : 'transparent',
-        border: `1px solid ${current === value ? '#0EA5E9' : '#3A3A3A'}`,
-        color: current === value ? '#000000' : '#E0E0E0',
-        fontFamily: "'DM Mono', monospace",
-        fontSize: '11px',
-        padding: '6px 12px',
-        cursor: 'pointer',
-        letterSpacing: '0.05em',
-        transition: 'all 0.15s',
-      }}
-    >
-      {value}
-    </button>
-  );
+  const inputStyle: React.CSSProperties = {
+    width: '100%',
+    background: '#050505',
+    border: '1px solid #222222',
+    color: '#ffffff',
+    fontFamily: mono,
+    fontSize: '12px',
+    padding: '12px 14px',
+    outline: 'none',
+    boxSizing: 'border-box',
+    resize: 'vertical',
+    letterSpacing: '0.05em',
+  };
 
   const ratingBtn = (value: number, current: number, setter: (v: number) => void) => (
     <button
       key={value}
       onClick={() => setter(value)}
       style={{
-        background: current === value ? '#0EA5E9' : 'transparent',
-        border: `1px solid ${current === value ? '#0EA5E9' : '#3A3A3A'}`,
-        color: current === value ? '#000000' : '#E0E0E0',
-        fontFamily: "'DM Mono', monospace",
-        fontSize: '13px',
-        width: '36px',
-        height: '36px',
+        width: '40px', height: '40px',
+        background: current === value ? '#ffffff' : 'transparent',
+        border: `1px solid ${current === value ? '#ffffff' : '#222222'}`,
+        color: current === value ? '#000000' : '#555555',
+        fontFamily: serif,
+        fontSize: '16px',
         cursor: 'pointer',
-        fontWeight: 'bold',
         transition: 'all 0.15s',
+        fontWeight: 'bold',
+      }}
+      onMouseEnter={e => {
+        if (current !== value) {
+          e.currentTarget.style.borderColor = '#666666';
+          e.currentTarget.style.color = '#aaaaaa';
+        }
+      }}
+      onMouseLeave={e => {
+        if (current !== value) {
+          e.currentTarget.style.borderColor = '#222222';
+          e.currentTarget.style.color = '#555555';
+        }
+      }}
+    >
+      {value}
+    </button>
+  );
+
+  const optionBtn = (value: string, current: string, setter: (v: string) => void) => (
+    <button
+      key={value}
+      onClick={() => setter(value)}
+      style={{
+        background: current === value ? '#ffffff' : 'transparent',
+        border: `1px solid ${current === value ? '#ffffff' : '#222222'}`,
+        color: current === value ? '#000000' : '#555555',
+        fontFamily: mono,
+        fontSize: '10px',
+        padding: '7px 14px',
+        cursor: 'pointer',
+        letterSpacing: '0.08em',
+        textTransform: 'uppercase',
+        transition: 'all 0.15s',
+      }}
+      onMouseEnter={e => {
+        if (current !== value) {
+          e.currentTarget.style.borderColor = '#666666';
+          e.currentTarget.style.color = '#aaaaaa';
+        }
+      }}
+      onMouseLeave={e => {
+        if (current !== value) {
+          e.currentTarget.style.borderColor = '#222222';
+          e.currentTarget.style.color = '#555555';
+        }
       }}
     >
       {value}
@@ -101,36 +129,34 @@ export function FeedbackModal({ onClose }: Props) {
   return (
     <div style={{
       position: 'fixed', inset: 0,
-      background: 'rgba(0,0,0,0.88)',
+      background: 'rgba(0,0,0,0.92)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       zIndex: 1000,
     }}>
       <div style={{
-        background: '#0D0D0D',
-        border: '1px solid #3A3A3A',
-        borderTop: '2px solid #0EA5E9',
+        background: '#000000',
+        border: '1px solid #1a1a1a',
+        borderTop: '1px solid #333333',
         width: '520px',
         maxWidth: '95vw',
         maxHeight: '90vh',
         overflowY: 'auto',
-        padding: '32px',
+        padding: '40px',
       }}>
         {submitted ? (
-          <div style={{ textAlign: 'center', padding: '24px 0' }}>
-            <div style={{ fontSize: '32px', marginBottom: '16px' }}>✓</div>
-            <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: '22px', color: '#FFFFFF', marginBottom: '8px' }}>
-              Thank you
-            </div>
-            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: '12px', color: '#9A9A9A', marginBottom: '24px' }}>
-              Your feedback helps improve ResumeAI Pro for everyone.
+          <div style={{ textAlign: 'center', padding: '32px 0' }}>
+            <div style={{ fontFamily: serif, fontSize: '48px', color: '#ffffff', marginBottom: '16px', lineHeight: 1 }}>✓</div>
+            <div style={{ fontFamily: serif, fontSize: '28px', color: '#ffffff', marginBottom: '8px' }}>Thank you</div>
+            <div style={{ fontFamily: mono, fontSize: '11px', color: '#444444', marginBottom: '32px', letterSpacing: '0.1em' }}>
+              YOUR FEEDBACK HELPS IMPROVE RESUMEAI PRO
             </div>
             <button
               onClick={onClose}
               style={{
-                background: '#0EA5E9', color: '#000000',
-                fontFamily: "'DM Mono', monospace", fontSize: '11px',
-                textTransform: 'uppercase', padding: '10px 24px',
-                border: 'none', cursor: 'pointer', letterSpacing: '0.1em',
+                background: '#ffffff', color: '#000000',
+                fontFamily: mono, fontSize: '10px',
+                textTransform: 'uppercase', padding: '12px 32px',
+                border: 'none', cursor: 'pointer', letterSpacing: '0.15em',
                 fontWeight: 'bold',
               }}
             >
@@ -139,49 +165,45 @@ export function FeedbackModal({ onClose }: Props) {
           </div>
         ) : (
           <>
-            {/* Header */}
-            <div style={{ marginBottom: '24px' }}>
-              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: '9px', color: '#0EA5E9', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '6px' }}>
-                FEEDBACK — {step}/2
+            <div style={{ marginBottom: '32px' }}>
+              <div style={{ fontFamily: mono, fontSize: '9px', color: '#444444', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '8px' }}>
+                FEEDBACK — {step} / 2
               </div>
-              <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: '20px', color: '#FFFFFF', marginBottom: '4px' }}>
+              <div style={{ fontFamily: serif, fontSize: '26px', color: '#ffffff', marginBottom: '4px' }}>
                 {step === 1 ? 'How was your experience?' : 'Tell us more'}
               </div>
-              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: '11px', color: '#666666' }}>
+              <div style={{ fontFamily: mono, fontSize: '11px', color: '#333333', letterSpacing: '0.05em' }}>
                 Takes 60 seconds. Helps us improve.
               </div>
             </div>
 
             {/* Progress bar */}
-            <div style={{ width: '100%', height: '2px', background: '#1A1A1A', marginBottom: '24px' }}>
-              <div style={{ width: step === 1 ? '50%' : '100%', height: '100%', background: '#0EA5E9', transition: 'width 0.3s' }} />
+            <div style={{ width: '100%', height: '1px', background: '#111111', marginBottom: '32px' }}>
+              <div style={{ width: step === 1 ? '50%' : '100%', height: '100%', background: '#ffffff', transition: 'width 0.3s' }} />
             </div>
 
             {step === 1 && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                {/* Overall rating */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
                 <div>
                   <span style={labelStyle}>Overall Experience</span>
-                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                     {[1,2,3,4,5].map(v => ratingBtn(v, form.overall, val => setForm(p => ({ ...p, overall: val }))))}
-                    <span style={{ fontFamily: "'DM Mono', monospace", fontSize: '10px', color: '#666666', alignSelf: 'center', marginLeft: '8px' }}>
-                      {form.overall === 0 ? 'Select rating' : form.overall <= 2 ? 'Poor' : form.overall === 3 ? 'Average' : form.overall === 4 ? 'Good' : 'Excellent'}
+                    <span style={{ fontFamily: mono, fontSize: '10px', color: '#333333', marginLeft: '12px', letterSpacing: '0.05em' }}>
+                      {form.overall === 0 ? '' : form.overall <= 2 ? 'POOR' : form.overall === 3 ? 'AVERAGE' : form.overall === 4 ? 'GOOD' : 'EXCELLENT'}
                     </span>
                   </div>
                 </div>
 
-                {/* Accuracy rating */}
                 <div>
                   <span style={labelStyle}>How Accurate Were Your Results?</span>
-                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                     {[1,2,3,4,5].map(v => ratingBtn(v, form.accuracy, val => setForm(p => ({ ...p, accuracy: val }))))}
-                    <span style={{ fontFamily: "'DM Mono', monospace", fontSize: '10px', color: '#666666', alignSelf: 'center', marginLeft: '8px' }}>
-                      {form.accuracy === 0 ? 'Select rating' : form.accuracy <= 2 ? 'Very inaccurate' : form.accuracy === 3 ? 'Somewhat accurate' : form.accuracy === 4 ? 'Mostly accurate' : 'Very accurate'}
+                    <span style={{ fontFamily: mono, fontSize: '10px', color: '#333333', marginLeft: '12px', letterSpacing: '0.05em' }}>
+                      {form.accuracy === 0 ? '' : form.accuracy <= 2 ? 'INACCURATE' : form.accuracy === 3 ? 'MIXED' : form.accuracy === 4 ? 'MOSTLY ACCURATE' : 'VERY ACCURATE'}
                     </span>
                   </div>
                 </div>
 
-                {/* Most useful feature */}
                 <div>
                   <span style={labelStyle}>Most Useful Feature</span>
                   <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
@@ -191,7 +213,6 @@ export function FeedbackModal({ onClose }: Props) {
                   </div>
                 </div>
 
-                {/* Career stage */}
                 <div>
                   <span style={labelStyle}>Your Career Stage</span>
                   <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
@@ -204,8 +225,7 @@ export function FeedbackModal({ onClose }: Props) {
             )}
 
             {step === 2 && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                {/* What was wrong */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
                 <div>
                   <span style={labelStyle}>What Was Inaccurate or Missing?</span>
                   <textarea
@@ -217,7 +237,6 @@ export function FeedbackModal({ onClose }: Props) {
                   />
                 </div>
 
-                {/* Would recommend */}
                 <div>
                   <span style={labelStyle}>Would You Recommend ResumeAI Pro?</span>
                   <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
@@ -227,12 +246,11 @@ export function FeedbackModal({ onClose }: Props) {
                   </div>
                 </div>
 
-                {/* Anything else */}
                 <div>
                   <span style={labelStyle}>Any Other Feedback or Feature Requests?</span>
                   <textarea
                     rows={3}
-                    placeholder='Optional — anything else you want us to know'
+                    placeholder='Optional'
                     value={form.anythingElse}
                     onChange={e => setForm(p => ({ ...p, anythingElse: e.target.value }))}
                     style={inputStyle}
@@ -241,37 +259,52 @@ export function FeedbackModal({ onClose }: Props) {
               </div>
             )}
 
-            {/* Navigation buttons */}
-            <div style={{ display: 'flex', gap: '12px', marginTop: '28px', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div style={{ display: 'flex', gap: '12px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '36px', paddingTop: '24px', borderTop: '1px solid #111111' }}>
+              <div>
                 {step === 2 && (
                   <button
                     onClick={() => setStep(1)}
                     style={{
-                      background: 'transparent', color: '#9A9A9A',
-                      border: '1px solid #3A3A3A',
-                      fontFamily: "'DM Mono', monospace", fontSize: '11px',
+                      background: 'transparent', color: '#444444',
+                      border: '1px solid #222222',
+                      fontFamily: mono, fontSize: '10px',
                       textTransform: 'uppercase', padding: '10px 20px',
-                      cursor: 'pointer', letterSpacing: '0.08em',
+                      cursor: 'pointer', letterSpacing: '0.1em',
                     }}
+                    onMouseEnter={e => { e.currentTarget.style.color = '#ffffff'; e.currentTarget.style.borderColor = '#555555'; }}
+                    onMouseLeave={e => { e.currentTarget.style.color = '#444444'; e.currentTarget.style.borderColor = '#222222'; }}
                   >
                     ← BACK
                   </button>
                 )}
               </div>
-              <div>
+              <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                <button
+                  onClick={onClose}
+                  style={{
+                    background: 'transparent', color: '#333333',
+                    border: 'none', fontFamily: mono,
+                    fontSize: '10px', textTransform: 'uppercase',
+                    padding: '10px', cursor: 'pointer', letterSpacing: '0.1em',
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.color = '#666666'}
+                  onMouseLeave={e => e.currentTarget.style.color = '#333333'}
+                >
+                  SKIP
+                </button>
                 {step === 1 ? (
                   <button
                     onClick={() => setStep(2)}
                     disabled={form.overall === 0}
                     style={{
-                      background: form.overall === 0 ? '#1A1A1A' : '#0EA5E9',
-                      color: form.overall === 0 ? '#555555' : '#000000',
-                      border: 'none',
-                      fontFamily: "'DM Mono', monospace", fontSize: '11px',
+                      background: form.overall === 0 ? 'transparent' : '#ffffff',
+                      color: form.overall === 0 ? '#333333' : '#000000',
+                      border: `1px solid ${form.overall === 0 ? '#222222' : '#ffffff'}`,
+                      fontFamily: mono, fontSize: '10px',
                       textTransform: 'uppercase', padding: '10px 24px',
                       cursor: form.overall === 0 ? 'not-allowed' : 'pointer',
-                      letterSpacing: '0.08em', fontWeight: 'bold',
+                      letterSpacing: '0.1em', fontWeight: 'bold',
+                      transition: 'all 0.15s',
                     }}
                   >
                     NEXT →
@@ -281,14 +314,14 @@ export function FeedbackModal({ onClose }: Props) {
                     onClick={handleSubmit}
                     disabled={submitting}
                     style={{
-                      background: '#0EA5E9', color: '#000000',
-                      border: 'none',
-                      fontFamily: "'DM Mono', monospace", fontSize: '11px',
-                      textTransform: 'uppercase', padding: '10px 24px',
-                      cursor: 'pointer', letterSpacing: '0.08em', fontWeight: 'bold',
+                      background: '#ffffff', color: '#000000',
+                      border: 'none', fontFamily: mono,
+                      fontSize: '10px', textTransform: 'uppercase',
+                      padding: '10px 24px', cursor: 'pointer',
+                      letterSpacing: '0.1em', fontWeight: 'bold',
                     }}
                   >
-                    {submitting ? 'SENDING...' : 'SUBMIT FEEDBACK'}
+                    {submitting ? 'SENDING...' : 'SUBMIT'}
                   </button>
                 )}
               </div>

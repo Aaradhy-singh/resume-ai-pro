@@ -588,10 +588,90 @@ const Results = () => {
                 const topRole = data?.roles?.topRoles?.[0]?.occupation?.title ?? 'Software Engineer';
                 const stage = data?.careerStage?.stage ?? 'student';
 
-                const shareUrl = `https://resume-ai-pro-psi.vercel.app`;
+                const canvas = document.createElement('canvas');
+                canvas.width = 1200;
+                canvas.height = 630;
+                const ctx = canvas.getContext('2d');
+                if (!ctx) return;
 
-                const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
-                window.open(linkedInUrl, '_blank');
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(0, 0, 1200, 630);
+
+                ctx.strokeStyle = '#1a1a1a';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(1200, 0);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(0, 629);
+                ctx.lineTo(1200, 629);
+                ctx.stroke();
+
+                ctx.font = '11px monospace';
+                ctx.fillStyle = '#444444';
+                ctx.fillText('RESUMEAI PRO — RESUME ANALYSIS INTELLIGENCE', 80, 100);
+
+                const scoreColor = score >= 70 ? '#ffffff' : score >= 40 ? '#999999' : '#555555';
+                ctx.font = 'bold 140px serif';
+                ctx.fillStyle = scoreColor;
+                ctx.fillText(String(score), 80, 340);
+
+                ctx.font = '24px monospace';
+                ctx.fillStyle = '#333333';
+                ctx.fillText('/ 100', 80, 390);
+
+                ctx.strokeStyle = '#1a1a1a';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(320, 200);
+                ctx.lineTo(320, 400);
+                ctx.stroke();
+
+                ctx.font = '11px monospace';
+                ctx.fillStyle = '#444444';
+                ctx.fillText('TARGET ROLE', 360, 230);
+
+                ctx.font = '32px serif';
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(topRole.substring(0, 30), 360, 280);
+
+                ctx.font = '11px monospace';
+                ctx.fillStyle = '#444444';
+                ctx.fillText('CAREER STAGE', 360, 330);
+
+                ctx.font = '18px monospace';
+                ctx.fillStyle = '#666666';
+                ctx.fillText(stage.toUpperCase(), 360, 365);
+
+                ctx.strokeStyle = '#1a1a1a';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(80, 560);
+                ctx.lineTo(1120, 560);
+                ctx.stroke();
+
+                ctx.font = '13px monospace';
+                ctx.fillStyle = '#333333';
+                ctx.fillText('resume-ai-pro-psi.vercel.app', 80, 600);
+                ctx.fillText('FREE — NO ACCOUNT — BROWSER NATIVE', 700, 600);
+
+                canvas.toBlob((blob) => {
+                  if (!blob) return;
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `resumeai-score-${score}.png`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  setTimeout(() => {
+                    const shareUrl = 'https://resume-ai-pro-psi.vercel.app';
+                    const text = `I scored ${score}/100 on ResumeAI Pro for ${topRole}. Get your free resume diagnostic:`;
+                    const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&summary=${encodeURIComponent(text)}`;
+                    window.open(linkedInUrl, '_blank');
+                  }, 500);
+                }, 'image/png');
+
                 posthog.capture('results_shared_linkedin', { score, topRole, stage });
               }}
               style={{

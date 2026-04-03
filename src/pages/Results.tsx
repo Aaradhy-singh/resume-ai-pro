@@ -24,6 +24,8 @@ const Results = () => {
   const [showFeedback, setShowFeedback] = useState(false);
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [scoreDetailsOpen, setScoreDetailsOpen] = useState(false);
+  const [showShareOptions, setShowShareOptions] = useState(false);
+  const [shareImageBlob, setShareImageBlob] = useState<Blob | null>(null);
 
 
   useEffect(() => {
@@ -575,13 +577,79 @@ const Results = () => {
             </div>
             <h1 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "28px", color: "#FFFFFF", margin: 0, fontWeight: "normal", lineHeight: 1 }}>Results</h1>
           </div>
-          <div style={{ display: "flex", gap: "12px" }}>
+          <div style={{ display: "flex", gap: "12px", position: 'relative' }}>
             <button
               onClick={handleExport}
               style={{ background: "transparent", border: "1px solid #444444", color: "#FFFFFF", fontFamily: "'DM Mono', monospace", fontSize: "13px", textTransform: "uppercase", padding: "8px 16px", borderRadius: "0px", cursor: "pointer", letterSpacing: "0.08em" }}
             >
               ↓ EXPORT REPORT
             </button>
+
+            {/* Share options dropdown */}
+            {showShareOptions && (
+              <div style={{
+                position: 'absolute', top: '52px', right: '0',
+                background: '#0a0a0a', border: '1px solid #222222',
+                zIndex: 100, minWidth: '200px',
+              }}>
+                {[
+                  { label: 'LinkedIn', url: (score: number, role: string) => `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://resume-ai-pro-psi.vercel.app')}` },
+                  { label: 'WhatsApp', url: (score: number, role: string) => `https://wa.me/?text=${encodeURIComponent(`I scored ${score}/100 on ResumeAI Pro for ${role}. Get your free resume diagnostic: https://resume-ai-pro-psi.vercel.app`)}` },
+                  { label: 'Twitter / X', url: (score: number, role: string) => `https://twitter.com/intent/tweet?text=${encodeURIComponent(`I scored ${score}/100 on ResumeAI Pro for ${role}. Get your free resume diagnostic: https://resume-ai-pro-psi.vercel.app`)}` },
+                  { label: 'Download Image', url: null },
+                ].map(option => (
+                  <button
+                    key={option.label}
+                    onClick={() => {
+                      const score = overallScore;
+                      const topRole = data?.roles?.topRoles?.[0]?.occupation?.title ?? 'Software Engineer';
+                      const stage = data?.careerStage?.stage ?? 'student';
+
+                      if (shareImageBlob) {
+                        const blobUrl = URL.createObjectURL(shareImageBlob);
+                        const a = document.createElement('a');
+                        a.href = blobUrl;
+                        a.download = `resumeai-score-${score}.png`;
+                        a.click();
+                        URL.revokeObjectURL(blobUrl);
+                      }
+
+                      if (option.url) {
+                        setTimeout(() => window.open(option.url(score, topRole), '_blank'), 300);
+                      }
+
+                      setShowShareOptions(false);
+                      posthog.capture('results_shared', { platform: option.label, score, topRole, stage });
+                    }}
+                    style={{
+                      width: '100%', textAlign: 'left',
+                      background: 'transparent', border: 'none',
+                      borderBottom: '1px solid #1a1a1a',
+                      color: '#aaaaaa', fontFamily: "'DM Mono', monospace",
+                      fontSize: '11px', letterSpacing: '0.1em',
+                      padding: '14px 20px', cursor: 'pointer',
+                      textTransform: 'uppercase',
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.color = '#ffffff'; e.currentTarget.style.background = '#111111'; }}
+                    onMouseLeave={e => { e.currentTarget.style.color = '#aaaaaa'; e.currentTarget.style.background = 'transparent'; }}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+                <button
+                  onClick={() => setShowShareOptions(false)}
+                  style={{
+                    width: '100%', textAlign: 'left',
+                    background: 'transparent', border: 'none',
+                    color: '#444444', fontFamily: "'DM Mono', monospace",
+                    fontSize: '10px', padding: '10px 20px', cursor: 'pointer',
+                  }}
+                >
+                  CANCEL
+                </button>
+              </div>
+            )}
+
             <button
               onClick={() => {
                 const score = overallScore;
@@ -596,61 +664,36 @@ const Results = () => {
 
                 ctx.fillStyle = '#000000';
                 ctx.fillRect(0, 0, 1200, 630);
-
                 ctx.strokeStyle = '#1a1a1a';
                 ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.moveTo(0, 0);
-                ctx.lineTo(1200, 0);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.moveTo(0, 629);
-                ctx.lineTo(1200, 629);
-                ctx.stroke();
-
+                ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(1200, 0); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(0, 629); ctx.lineTo(1200, 629); ctx.stroke();
                 ctx.font = '11px monospace';
                 ctx.fillStyle = '#444444';
                 ctx.fillText('RESUMEAI PRO — RESUME ANALYSIS INTELLIGENCE', 80, 100);
-
                 const scoreColor = score >= 70 ? '#ffffff' : score >= 40 ? '#999999' : '#555555';
                 ctx.font = 'bold 140px serif';
                 ctx.fillStyle = scoreColor;
                 ctx.fillText(String(score), 80, 340);
-
                 ctx.font = '24px monospace';
                 ctx.fillStyle = '#333333';
                 ctx.fillText('/ 100', 80, 390);
-
                 ctx.strokeStyle = '#1a1a1a';
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.moveTo(320, 200);
-                ctx.lineTo(320, 400);
-                ctx.stroke();
-
+                ctx.beginPath(); ctx.moveTo(320, 200); ctx.lineTo(320, 400); ctx.stroke();
                 ctx.font = '11px monospace';
                 ctx.fillStyle = '#444444';
                 ctx.fillText('TARGET ROLE', 360, 230);
-
                 ctx.font = '32px serif';
                 ctx.fillStyle = '#ffffff';
                 ctx.fillText(topRole.substring(0, 30), 360, 280);
-
                 ctx.font = '11px monospace';
                 ctx.fillStyle = '#444444';
                 ctx.fillText('CAREER STAGE', 360, 330);
-
                 ctx.font = '18px monospace';
                 ctx.fillStyle = '#666666';
                 ctx.fillText(stage.toUpperCase(), 360, 365);
-
                 ctx.strokeStyle = '#1a1a1a';
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.moveTo(80, 560);
-                ctx.lineTo(1120, 560);
-                ctx.stroke();
-
+                ctx.beginPath(); ctx.moveTo(80, 560); ctx.lineTo(1120, 560); ctx.stroke();
                 ctx.font = '13px monospace';
                 ctx.fillStyle = '#333333';
                 ctx.fillText('resume-ai-pro-psi.vercel.app', 80, 600);
@@ -658,39 +701,24 @@ const Results = () => {
 
                 canvas.toBlob((blob) => {
                   if (!blob) return;
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement('a');
-                  a.href = url;
-                  a.download = `resumeai-score-${score}.png`;
-                  a.click();
-                  URL.revokeObjectURL(url);
-                  setTimeout(() => {
-                    const shareUrl = 'https://resume-ai-pro-psi.vercel.app';
-                    const text = `I scored ${score}/100 on ResumeAI Pro for ${topRole}. Get your free resume diagnostic:`;
-                    const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&summary=${encodeURIComponent(text)}`;
-                    window.open(linkedInUrl, '_blank');
-                  }, 500);
+                  setShareImageBlob(blob);
+                  setShowShareOptions(true);
                 }, 'image/png');
-
-                posthog.capture('results_shared_linkedin', { score, topRole, stage });
               }}
               style={{
                 background: 'transparent',
-                border: '1px solid #444444',
-                color: '#ffffff',
+                border: '1px solid #333333',
+                color: '#666666',
                 fontFamily: "'DM Mono', monospace",
-                fontSize: '13px',
-                fontWeight: 600,
-                letterSpacing: '0.1em',
+                fontSize: '11px',
                 textTransform: 'uppercase',
-                padding: '10px 20px',
+                padding: '10px 16px',
                 cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
+                letterSpacing: '0.08em',
+                position: 'relative',
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = '#111111'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+              onMouseEnter={e => { e.currentTarget.style.color = '#ffffff'; e.currentTarget.style.borderColor = '#ffffff'; }}
+              onMouseLeave={e => { e.currentTarget.style.color = '#666666'; e.currentTarget.style.borderColor = '#333333'; }}
             >
               SHARE
             </button>

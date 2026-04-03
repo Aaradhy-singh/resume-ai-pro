@@ -52,8 +52,8 @@ export function GitHubInput({ onValidUsername }: GitHubInputProps) {
             : validationState === 'invalid'
                 ? '#EF4444'
                 : isFocused
-                    ? '#0EA5E9'
-                    : '#888888';
+                    ? '#00e5ff'
+                    : '#6b7280';
 
     return (
         <div style={{
@@ -116,15 +116,18 @@ export function GitHubInput({ onValidUsername }: GitHubInputProps) {
                         }}
                         style={{
                             width: '100%',
-                            background: '#050505',
-                            border: `1px solid ${validationState === 'idle' && !isFocused ? '#222222' : borderColor}`,
+                            background: '#1A1A1A',
+                            border: `1px solid ${validationState === 'idle' && !isFocused ? '#6b7280' : borderColor}`,
+                            borderRadius: '0.5rem',
                             color: '#ffffff',
                             fontFamily: "'DM Mono', monospace",
-                            fontSize: '12px',
-                            padding: '10px 40px 10px 14px',
+                            fontSize: '14px',
+                            letterSpacing: '0.05em',
+                            padding: '12px 40px 12px 16px',
                             outline: 'none',
                             boxSizing: 'border-box',
-                            transition: 'border-color 150ms ease'
+                            transition: 'border-color 150ms ease, box-shadow 150ms ease',
+                            boxShadow: isFocused ? `0 0 0 1px ${borderColor}` : 'none'
                         }}
                     />
                     {validationState === 'valid' && (

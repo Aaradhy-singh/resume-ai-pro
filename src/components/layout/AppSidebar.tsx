@@ -21,7 +21,7 @@ export function AppSidebar() {
     <Sidebar
       collapsible="offcanvas"
       style={{ "--sidebar-width": "200px" } as React.CSSProperties}
-      className="border-r border-[#1a1a1a] bg-[#000000]"
+      className="border-r border-gray-800 bg-[#000000]"
     >
       <SidebarContent className="bg-[#000000]">
         <div className="p-5 mb-2 mt-2 border-b border-[#1a1a1a]">

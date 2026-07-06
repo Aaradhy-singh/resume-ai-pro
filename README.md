@@ -19,6 +19,6 @@ Tech Stack -
 * Custom rule-based analysis engines
 
 Live Demo
-[link here after Vercel deployment]
+[https://resume-ai-pro-psi.vercel.app/]
 Built by
 Aaradhy Singh

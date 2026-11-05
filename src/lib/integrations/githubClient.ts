@@ -3,19 +3,13 @@
  * Fetches and analyzes GitHub portfolio data using the GitHub REST API
  *
  * Fixes applied:
- *  - Buffer.from → atob() (browser-safe base64 decoding)
- *  - 15-second hard timeout wrapping the entire analysis
- *  - Per-repo try/catch so one bad repo never aborts the rest
- * 
- * Total calls with token:
- * 1. rateLimit check — REMOVED
- * 2. users.getByUsername — 1 call
- * 3. GET /users/repos — 1 call  
- * 4. listLanguages × 10 — 10 calls
- * 5. listCommits × 10 — 10 calls
- * 6. getReadme × 10 — 10 calls
- * Total: ~32 calls per analysis
- * Well within 5000/hour authenticated limit.
+ *  - Browser-safe README base64 decoding
+ *  - 30-second hard timeout wrapping the entire analysis
+ *  - Per-repo error handling so one failed repository does not abort the analysis
+ *
+ * This client uses GitHub's unauthenticated API and only reads public data.
+ * GitHub applies a 60-request/hour limit per client IP; repeated analyses may
+ * be rate-limited.
  */
 
 import { Octokit } from 'octokit';
@@ -145,14 +139,13 @@ function withTimeout<T>(promise: Promise<T>, ms: number, message: string): Promi
 
 /**
  * Analyze a GitHub portfolio.
- * Hard-limited to 15 seconds; if it times out, throws a descriptive error that
+ * Hard-limited to 30 seconds; if it times out, throws a descriptive error that
  * the orchestrator will catch and log as a warning (analysis continues without
  * portfolio data).
  */
 export async function analyzeGitHubPortfolio(
     usernameOrUrl: string,
     careerStage: CareerStage = 'mid-level',
-    githubToken?: string
 ): Promise<PortfolioAnalysis> {
     const username = extractGitHubUsername(usernameOrUrl);
 
@@ -161,7 +154,7 @@ export async function analyzeGitHubPortfolio(
     }
 
     return withTimeout(
-        _analyzeGitHubPortfolioInternal(username, careerStage, githubToken),
+        _analyzeGitHubPortfolioInternal(username, careerStage),
         30_000,
         'GitHub analysis timed out after 30 seconds. Portfolio data will be skipped.'
     );
@@ -174,8 +167,7 @@ async function _analyzeGitHubPortfolioInternal(
     careerStage: CareerStage,
     githubToken?: string
 ): Promise<PortfolioAnalysis> {
-    const token = githubToken || import.meta.env.VITE_GITHUB_TOKEN;
-    const octokit = new Octokit({ auth: token });
+    const octokit = new Octokit();
 
     try {
         // ── User profile ─────────────────────────────────────────────────────
@@ -383,8 +375,7 @@ async function _analyzeGitHubPortfolioInternal(
             throw new Error(`GitHub user "${username}" not found`);
         } else if (err.status === 403) {
             throw new Error(
-                'GitHub API rate limit exceeded. ' +
-                'Add VITE_GITHUB_TOKEN to your .env file for 5000 requests/hour.'
+                'GitHub API rate limit exceeded. Please wait before trying again.'
             );
         } else {
             throw new Error(

@@ -1,5 +1,7 @@
 ResumeAI Pro — Resume Analysis Intelligence
-A browser-based resume diagnostic tool that runs 8 analysis engines to identify skill gaps, ATS compatibility issues, and missing impact metrics. No account required. Your resume never leaves your browser.
+A browser-based resume diagnostic tool that runs 8 analysis engines to identify skill gaps, ATS compatibility issues, and missing impact metrics. No account required. Resume analysis is performed in the browser.
+
+GitHub portfolio analysis uses unauthenticated requests and reads public repositories only. GitHub may rate-limit repeated analyses (60 requests per hour per client IP); no GitHub access token is required or stored in this project.
 
 Features - 
 * Skill gap analysis against 300+ roles across 38 industries

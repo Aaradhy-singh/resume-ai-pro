@@ -165,7 +165,6 @@ export async function analyzeGitHubPortfolio(
 async function _analyzeGitHubPortfolioInternal(
     username: string,
     careerStage: CareerStage,
-    githubToken?: string
 ): Promise<PortfolioAnalysis> {
     const octokit = new Octokit();
 
